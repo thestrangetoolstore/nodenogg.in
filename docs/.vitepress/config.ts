@@ -76,7 +76,7 @@ export default defineConfig({
       {
         text: "Development",
         items: [
-          { text: "Changelog", link: "/changelog" },
+          { text: "Changelog", link: "/CHANGELOG" },
           { text: "Release Workflow", link: "/technical/release-workflow" },
         ],
       },
