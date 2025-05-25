@@ -75,7 +75,8 @@ pnpm build            # Build all packages
 pnpm release:patch    # Bug fix release
 pnpm release:minor    # Feature release
 pnpm release:major    # Breaking change release
-pnpm version:check    # Check current versions
+pnpm version:check    # Check/validate all package versions (CI-safe)
+pnpm version:sync     # Sync all packages to root version
 ```
 
 ## Commit Message Format
@@ -103,7 +104,7 @@ chore: upgrade dependencies
 ### Release Command Issues
 
 - **Dirty working directory**: Run `git status` and commit/stash changes
-- **Version sync problems**: Run `pnpm version:check` to verify versions
+- **Version sync problems**: Run `pnpm version:check` to verify versions, then `pnpm version:sync` to fix mismatches
 
 ### Deployment Failures
 
