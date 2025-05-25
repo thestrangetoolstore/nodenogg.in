@@ -6,7 +6,7 @@ import { execSync } from "child_process";
 const rootPackageJson = JSON.parse(readFileSync("package.json", "utf-8"));
 const rootVersion = rootPackageJson.version;
 
-function syncVersions() {
+function syncVersions(shouldCommit = false) {
   console.log(`Syncing all package versions to ${rootVersion}`);
   execSync(
     `pnpm --recursive exec npm version ${rootVersion} --no-git-tag-version`,
@@ -14,6 +14,13 @@ function syncVersions() {
       stdio: "inherit",
     }
   );
+  
+  if (shouldCommit) {
+    console.log("Adding synced package.json files to git...");
+    execSync("git add .", { stdio: "inherit" });
+    console.log("Amending last commit with version sync changes...");
+    execSync("git commit --amend --no-edit", { stdio: "inherit" });
+  }
 }
 
 function checkVersions() {
@@ -61,15 +68,17 @@ function checkVersions() {
 }
 
 const command = process.argv[2];
+const flags = process.argv.slice(3);
 
 switch (command) {
   case "sync":
-    syncVersions();
+    const shouldCommit = flags.includes("--commit");
+    syncVersions(shouldCommit);
     break;
   case "check":
     checkVersions();
     break;
   default:
-    console.error("Usage: tsx scripts/version-utils.ts [sync|check]");
+    console.error("Usage: tsx scripts/version-utils.ts [sync|check] [--commit]");
     process.exit(1);
 }

@@ -17,9 +17,9 @@
     "docs:dev": "vitepress dev docs --port 8081",
     "docs:build": "vitepress build docs",
     "docs:preview": "vitepress preview docs",
-    "release:patch": "pnpm dlx changelogen@latest --release --patch",
-    "release:minor": "pnpm dlx changelogen@latest --release --minor",
-    "release:major": "pnpm dlx changelogen@latest --release --major",
+    "release:patch": "pnpm dlx changelogen@latest --release --patch && pnpm version:sync --commit",
+    "release:minor": "pnpm dlx changelogen@latest --release --minor && pnpm version:sync --commit",
+    "release:major": "pnpm dlx changelogen@latest --release --major && pnpm version:sync --commit",
     "version:sync": "tsx scripts/version-utils.ts sync",
     "version:check": "tsx scripts/version-utils.ts check"
   },
