@@ -1,6 +1,20 @@
 # Changelog
 
 
+## v0.0.12
+
+[compare changes](https://github.com/thestrangetoolstore/nodenogg.in/compare/v0.0.11...v0.0.12)
+
+### 🏠 Chore
+
+- Updated changelog ([7b3fab5e](https://github.com/thestrangetoolstore/nodenogg.in/commit/7b3fab5e))
+- Moved changelog location ([0fa00222](https://github.com/thestrangetoolstore/nodenogg.in/commit/0fa00222))
+- Updated docs ([4adc6f22](https://github.com/thestrangetoolstore/nodenogg.in/commit/4adc6f22))
+
+### ❤️ Contributors
+
+- Toby Milner-Gulland <toby@figure.land>
+
 ## v0.0.11
 
 [compare changes](https://github.com/thestrangetoolstore/nodenogg.in/compare/v0.0.10...v0.0.11)
