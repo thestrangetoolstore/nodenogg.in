@@ -1,6 +1,28 @@
 # Changelog
 
 
+## v0.0.13
+
+[compare changes](https://github.com/thestrangetoolstore/nodenogg.in/compare/v0.0.12...v0.0.13)
+
+### 🚀 Features
+
+- Added versioning tools ([16aaabe3](https://github.com/thestrangetoolstore/nodenogg.in/commit/16aaabe3))
+- Enforced uniform package bumps across the monorepo ([04fc6439](https://github.com/thestrangetoolstore/nodenogg.in/commit/04fc6439))
+- Added version syncing across packages ([4cb7a0c6](https://github.com/thestrangetoolstore/nodenogg.in/commit/4cb7a0c6))
+
+### 🐛 Bug Fixes
+
+- Moved changelog ([615f0f90](https://github.com/thestrangetoolstore/nodenogg.in/commit/615f0f90))
+
+### 🤖 CI
+
+- Updated github actions ([aab24989](https://github.com/thestrangetoolstore/nodenogg.in/commit/aab24989))
+
+### ❤️ Contributors
+
+- Toby Milner-Gulland <toby@figure.land>
+
 ## v0.0.12
 
 [compare changes](https://github.com/thestrangetoolstore/nodenogg.in/compare/v0.0.11...v0.0.12)
