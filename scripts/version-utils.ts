@@ -6,7 +6,7 @@ import { execSync } from "child_process";
 const rootPackageJson = JSON.parse(readFileSync("package.json", "utf-8"));
 const rootVersion = rootPackageJson.version;
 
-const syncVersions = (shouldCommit = false) => {
+const syncVersions = ({ commit = false }: { commit: boolean }) => {
   console.log(`Syncing all package versions to ${rootVersion}`);
   execSync(
     `pnpm --recursive exec npm version ${rootVersion} --no-git-tag-version`,
@@ -15,7 +15,7 @@ const syncVersions = (shouldCommit = false) => {
     }
   );
 
-  if (shouldCommit) {
+  if (commit) {
     console.log("Adding synced package.json files to git...");
     execSync("git add .", { stdio: "inherit" });
     console.log("Amending last commit with version sync changes...");
@@ -70,8 +70,8 @@ const flags = process.argv.slice(3);
 
 switch (command) {
   case "sync":
-    const shouldCommit = flags.includes("--commit");
-    syncVersions(shouldCommit);
+    const commit = flags.includes("--commit");
+    syncVersions({ commit });
     break;
   case "check":
     checkVersions();
