@@ -1,0 +1,21 @@
+{
+  "$schema": "http://json.schemastore.org/tsconfig",
+  "compilerOptions": {
+    "allowJs": true,
+    "resolveJsonModule": true,
+    "declaration": true,
+    "declarationMap": true,
+    "target": "ESNext",
+    "lib": ["ES2020", "dom"],
+    "strict": true,
+    "noImplicitAny": false,
+    "esModuleInterop": true,
+    "moduleResolution": "bundler",
+    "module": "ESNext",
+    "skipLibCheck": true,
+    "rootDir": "src",
+    "strictPropertyInitialization": false
+  },
+  "exclude": ["node_modules", "src/**/*.test.ts"],
+  "include": ["src/**/*"]
+}
