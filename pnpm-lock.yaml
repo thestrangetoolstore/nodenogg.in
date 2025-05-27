@@ -39,8 +39,8 @@ importers:
   packages/core:
     dependencies:
       '@figureland/kit':
-        specifier: ^0.0.52
-        version: 0.0.52(typescript@5.8.3)(vue@3.5.15(typescript@5.8.3))
+        specifier: ^0.0.57
+        version: 0.0.57(typescript@5.8.3)(vue@3.5.15(typescript@5.8.3))
       '@figureland/versioned-schema':
         specifier: ^0.0.16
         version: 0.0.16(effect@3.14.5)(valibot@1.0.0(typescript@5.8.3))(zod@3.24.2)
@@ -85,8 +85,8 @@ importers:
   packages/schema:
     dependencies:
       '@figureland/kit':
-        specifier: ^0.0.52
-        version: 0.0.52(typescript@5.8.3)(vue@3.5.15(typescript@5.8.3))
+        specifier: ^0.0.57
+        version: 0.0.57(typescript@5.8.3)(vue@3.5.15(typescript@5.8.3))
       '@figureland/versioned-schema':
         specifier: ^0.0.16
         version: 0.0.16(effect@3.14.5)(valibot@1.0.0(typescript@5.8.3))(zod@3.24.2)
@@ -174,8 +174,8 @@ importers:
   packages/y-microcosm:
     dependencies:
       '@figureland/kit':
-        specifier: ^0.0.52
-        version: 0.0.52(typescript@5.8.3)(vue@3.5.15(typescript@5.8.3))
+        specifier: ^0.0.57
+        version: 0.0.57(typescript@5.8.3)(vue@3.5.15(typescript@5.8.3))
       '@hocuspocus/provider':
         specifier: ^2.15.2
         version: 2.15.2(y-protocols@1.0.6(yjs@13.6.27))(yjs@13.6.27)
@@ -229,8 +229,8 @@ importers:
   products/app:
     dependencies:
       '@figureland/kit':
-        specifier: ^0.0.52
-        version: 0.0.52(typescript@5.8.3)(vue@3.5.15(typescript@5.8.3))
+        specifier: ^0.0.57
+        version: 0.0.57(typescript@5.8.3)(vue@3.5.15(typescript@5.8.3))
       '@nodenogg.in/core':
         specifier: workspace:*
         version: link:../../packages/core
@@ -1343,8 +1343,8 @@ packages:
     resolution: {integrity: sha512-0J+zgWxHN+xXONWIyPWKFMgVuJoZuGiIFu8yxk7RJjxkzpGmyja5wRFqZIVtjDVOQpV+Rw0iOAjYPE2eQyjr0w==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
 
-  '@figureland/kit@0.0.52':
-    resolution: {integrity: sha512-pvu0ys1qtSykNqvitC9ITYDAp5K+IkrvVUlcmDJhDD8PKaxK7WshFGTeV3NYEwB3O7RXO8nOKbo5gggUlfHLzw==}
+  '@figureland/kit@0.0.57':
+    resolution: {integrity: sha512-KCzwqBiECSIG5Tv9oifMa6ETdoPKuc0hE/ei3BTXZWB30pHD/PYTNK+/7XnjYOYh5+KFZVpD9Krow5MaZz1xvw==}
     peerDependencies:
       react: '>=16.8'
       svelte: '>=4.0.0'
@@ -6078,7 +6078,7 @@ snapshots:
       '@eslint/core': 0.14.0
       levn: 0.4.1
 
-  '@figureland/kit@0.0.52(typescript@5.8.3)(vue@3.5.15(typescript@5.8.3))':
+  '@figureland/kit@0.0.57(typescript@5.8.3)(vue@3.5.15(typescript@5.8.3))':
     dependencies:
       typescript: 5.8.3
     optionalDependencies:

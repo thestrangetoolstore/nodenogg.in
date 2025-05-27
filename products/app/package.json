@@ -15,7 +15,7 @@
     "format": "prettier --write src/"
   },
   "dependencies": {
-    "@figureland/kit": "^0.0.52",
+    "@figureland/kit": "^0.0.57",
     "@nodenogg.in/core": "workspace:*",
     "@nodenogg.in/schema": "workspace:*",
     "@nodenogg.in/spatial-view": "workspace:*",

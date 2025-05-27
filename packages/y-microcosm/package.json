@@ -30,7 +30,7 @@
     "vitest": "^3.1.4"
   },
   "dependencies": {
-    "@figureland/kit": "^0.0.52",
+    "@figureland/kit": "^0.0.57",
     "@hocuspocus/provider": "^2.15.2",
     "@nodenogg.in/core": "workspace:*",
     "@nodenogg.in/schema": "workspace:*",

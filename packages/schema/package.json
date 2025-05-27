@@ -32,13 +32,13 @@
     "vitest": "^3.1.4"
   },
   "dependencies": {
-    "@figureland/kit": "^0.0.52",
+    "@figureland/kit": "^0.0.57",
     "@figureland/versioned-schema": "^0.0.16",
     "@paralleldrive/cuid2": "^2.2.2",
     "valibot": "1.0.0"
   },
   "peerDependencies": {
-    "@figureland/kit": "^0.0.52",
+    "@figureland/kit": "^0.0.57",
     "@figureland/versioned-schema": "^0.0.16",
     "@paralleldrive/cuid2": "^2.2.2",
     "valibot": "1.0.0-rc.1"
