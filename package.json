@@ -29,13 +29,13 @@
     "@types/node": "^22.15.21",
     "husky": "^9.1.7",
     "lint-staged": "^15.5.2",
-    "tsx": "^4.19.2",
+    "tsx": "^4.19.4",
     "vitepress": "^1.6.3",
-    "vue": "^3.5.14"
+    "vue": "^3.5.15"
   },
   "pnpm": {
     "overrides": {
-      "esbuild": ">=0.25.0"
+      "esbuild": ">=0.25.5"
     }
   }
 }
