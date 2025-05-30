@@ -3,15 +3,23 @@ import { ref, watch } from 'vue'
 import { VueFlow, useVueFlow, type NodeChange } from '@vue-flow/core'
 import { Background } from '@vue-flow/background'
 import { MiniMap } from '@vue-flow/minimap'
-import ResizableNode from './ResizableNode.vue'
 
-import type { MicrocosmSpatialViewProps, MicrocosmSpatialViewEmits } from './types'
+import type { MicrocosmSpatialViewEmits, PositionedNode } from './types'
+import HTMLEntity from './entity/HTMLEntity.vue'
 
-const props = defineProps<MicrocosmSpatialViewProps>()
+withDefaults(defineProps<{
+  view_id: string;
+  nodes: PositionedNode[];
+  ui?: boolean;
+  minimap?: boolean
+}>(), { 
+  ui: false,
+  minimap: false
+})
+
 const emit = defineEmits<MicrocosmSpatialViewEmits>()
 
 const { onNodesChange, viewport, ...rest } = useVueFlow()
-console.log(rest)
 
 // Reactive reference to track the canvas element
 const canvasContainer = ref<HTMLElement | null>(null)
@@ -23,24 +31,37 @@ watch(() => viewport.value.zoom, (newZoom) => {
   }
 })
 
+// This will capture ALL node changes: position (drag), dimensions (resize), etc.
 const handleNodeChange = (changes: NodeChange[]) => {
-  // Emit the changes to parent component
+  console.log('Node changes:', changes)
   emit('nodes-change', changes)
 }
 
 // Register the node change handler
 onNodesChange(handleNodeChange)
+
+// Helper function to manually trigger dimension changes from resize events
+const handleResize = (nodeId: string, dimensions: { width: number; height: number }) => {
+  const dimensionChange: NodeChange = {
+    id: nodeId,
+    type: 'dimensions',
+    dimensions,
+    resizing: false
+  }
+  // Manually trigger the node change for resize events
+  handleNodeChange([dimensionChange])
+}
 </script>
 
 <template>
   <div class="container" ref="canvasContainer">
-    <VueFlow :nodes="nodes" fit-view-on-init class="pinia-flow" @nodes-change="handleNodeChange"
-        pan-on-scroll :apply-default="false" >
+    <VueFlow :nodes="nodes" fit-view-on-init class="pinia-flow" @nodes-change="handleNodeChange" pan-on-scroll
+      :apply-default="false">
       <Background variant="lines" patternColor="var(--ui-80)" />
-      <!-- <MiniMap pannable zoomable class="mini-map" title="Mini map" /> -->
+      <MiniMap v-if="minimap" pannable zoomable class="mini-map" title="Mini map" />
       <template #node-resizable="resizableNodeProps">
         <slot name="node-resizable" v-bind="resizableNodeProps">
-          <ResizableNode :entity="resizableNodeProps.data" />
+          <HTMLEntity :entity="resizableNodeProps.data" @resize="handleResize" />
         </slot>
       </template>
     </VueFlow>

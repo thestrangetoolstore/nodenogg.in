@@ -62,7 +62,7 @@ const create = (data: Entity['data']) => {
 
 const clone = (entity: Entity) => create(c(entity.data))
 
-const update = (entity: Entity, data: Partial<Omit<Entity['data'], 'type'>>) => {
+const update = (entity: Entity, data: EntityUpdate) => {
   try {
     return schema.parse({
       ...entity,
@@ -76,6 +76,8 @@ const update = (entity: Entity, data: Partial<Omit<Entity['data'], 'type'>>) => 
     throw new Error(error instanceof ValiError ? error.message : 'Unknown error')
   }
 }
+
+export type EntityUpdate = Partial<Omit<Entity['data'], 'type'>>
 
 export type Entity = InferVersionedSchema<typeof schema>
 

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import { MicrocosmSpatialView, ResizableNode } from '@nodenogg.in/spatial-view'
+import { SpatialView, HTMLEntity } from '@nodenogg.in/spatial-view'
 import { useCurrentMicrocosm } from '@/state'
 import { EntitySchema } from '@nodenogg.in/schema'
 import Editor from '@/components/editor/Editor.vue'
@@ -62,12 +62,14 @@ const handleNodeChange = async (changes: NodeChange[]) => {
     }
   }
 }
+const update = (...args: any) => console.log(args)
+
 </script>
 
 <template>
-  <MicrocosmSpatialView :view_id="view_id" :ui="ui" :nodes="positionedNodes" @nodes-change="handleNodeChange">
+  <SpatialView :view_id="view_id" :ui="ui" :nodes="positionedNodes" @nodes-change="handleNodeChange">
     <template #node-resizable="resizableNodeProps">
-      <ResizableNode :entity="resizableNodeProps.data" :Editor="Editor" />
+      <HTMLEntity :entity="resizableNodeProps.data" :Editor="Editor" :update="update"/>
     </template>
-  </MicrocosmSpatialView>
+  </SpatialView>
 </template>

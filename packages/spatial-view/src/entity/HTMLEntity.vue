@@ -1,28 +1,28 @@
 <script setup lang="ts">
-import { useNode } from '@vue-flow/core'
-import { ref, watch } from 'vue'
+import { ref } from 'vue'
 
-import { NodeResizer, OnResize } from './node-resizer'
-import { Entity } from '@nodenogg.in/schema';
+import { NodeResizer, OnResize } from '../node-resizer'
+import type { EntityOfType, EntityUpdate } from '@nodenogg.in/schema';
 
 const props = defineProps<{
-  entity: Entity;
+  entity: EntityOfType<'html'>;
   Editor?: unknown;
 }>()
 
 const emit = defineEmits<{
-  change: [nodeId: string, dimensions: { width: number, height: number }]
+  resize: [nodeId: string, dimensions: { width: number; height: number }]
 }>()
 
 const nodeRef = ref<HTMLElement | null>(null)
 
-// Use Vue Flow's useNode to track position changes
-const { node } = useNode()
-
 
 // Handle node resize events
 const onResize = ({ params }: OnResize) => {
-  emit('change', props.entity.uuid, params)
+  // Emit resize event with just the dimensions
+  emit('resize', props.entity.uuid, {
+    width: params.width,
+    height: params.height
+  })
 }
 
 const handleKeydown = (event: KeyboardEvent) => {
@@ -35,7 +35,6 @@ const handleKeydown = (event: KeyboardEvent) => {
 
 <template>
   <NodeResizer :min-width="50" :min-height="50" :node-id="entity.uuid" @resize="onResize" />
-
   <div class="resizable-container" tabindex="0" @keydown="handleKeydown" ref="nodeRef">
     <component v-if="Editor" :is="Editor" :value="entity?.data.content" :onChange="(html) => { }" :editable="false"
       @click="() => { }" @cancel="() => { }" />

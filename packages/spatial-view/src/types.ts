@@ -1,10 +1,10 @@
-import type { Entity } from "@nodenogg.in/schema";
+import type { EntityOfType } from "@nodenogg.in/schema";
 import type { NodeChange } from "@vue-flow/core";
 
 export interface PositionedNode {
   id: string;
   type: string;
-  data: Entity;
+  data: EntityOfType<"html">;
   position: { x: number; y: number };
   dimensions: { width: number; height: number };
 }

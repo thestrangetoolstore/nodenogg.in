@@ -4,6 +4,7 @@ import {
   type EntityPointer,
   type EntityOfType,
   type Entity,
+  type EntityUpdate,
   EntitySchema
 } from './Entity.schema'
 import { IdentitySchema, type Identity, type IdentityUUID } from './Identity.schema'
@@ -19,6 +20,7 @@ export {
   type EntityPointer,
   type EntityDataType,
   type EntityOfType,
+  type EntityUpdate,
   MicrocosmSchema,
   type Microcosm,
   type MicrocosmUUID
