@@ -35,7 +35,7 @@ pnpm install
 
 3. (Optional) We recommend using [VSCode](https://code.visualstudio.com/). For working with Vue code, we recommend installing the [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) plugin.
 
-# Running locally for testing
+## Running locally for testing
 
 Make sure you have the latest code from the main branch and remember to run
 
@@ -51,17 +51,17 @@ pnpm dev
 
 This runs both the app and the Yjs server. You are now good to test the latest version of nodenogg.in
 
-## Local nodenogg.in documentaion
+## Local nodenogg.in documentation
 
-If you would also like to run the nodenogg.in documentaion locally you can, please note that embeeded YouTube videos will need an externally connected network connection (connection to the internet)
+If you would also like to run the nodenogg.in documentation locally you can, please note that embedded YouTube videos will need an externally connected network connection (connection to the internet)
 
 ```bash
 pnpm docs:dev
 ```
 
-# Container development for deployment
+## Container development for deployment
 
-These steps are more for deployment related to hosting your own instance of the app nodenogg.in on a server, such as Azure, AWS or your own Virtual Private Server. You will want to be familar with docker.
+These steps are more for deployment related to hosting your own instance of the app nodenogg.in on a server, such as Azure, AWS or your own Virtual Private Server. You will want to be familiar with docker.
 
 ## Install docker locally
 
@@ -69,4 +69,4 @@ We recommend using [Docker Desktop](https://docs.docker.com/get-docker/) for dev
 
 ## Build and run the whole system
 
-MISSING STEPS
+More details to come.
