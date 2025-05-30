@@ -26,12 +26,12 @@
   "devDependencies": {
     "@commitlint/cli": "^19.8.1",
     "@commitlint/config-conventional": "^19.8.1",
-    "@types/node": "^22.15.21",
+    "@types/node": "^22.15.29",
     "husky": "^9.1.7",
     "lint-staged": "^15.5.2",
     "tsx": "^4.19.4",
     "vitepress": "^1.6.3",
-    "vue": "^3.5.15"
+    "vue": "^3.5.16"
   },
   "pnpm": {
     "overrides": {
