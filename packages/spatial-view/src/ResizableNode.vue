@@ -1,53 +1,44 @@
 <script setup lang="ts">
-import type { Entity } from '@nodenogg.in/schema'
-import { Handle, Position, useVueFlow } from '@vue-flow/core'
-import { ref } from 'vue'
+import { useNode } from '@vue-flow/core'
+import { ref, watch } from 'vue'
 
-import type { ResizableNodeProps } from './types'
+import { NodeResizer, OnResize } from './node-resizer'
+import { Entity } from '@nodenogg.in/schema';
 
-const props = defineProps<ResizableNodeProps>()
+const props = defineProps<{
+  entity: Entity;
+  Editor?: unknown;
+}>()
 
-const { updateNode } = useVueFlow()
+const emit = defineEmits<{
+  change: [nodeId: string, dimensions: { width: number, height: number }]
+}>()
+
 const nodeRef = ref<HTMLElement | null>(null)
 
+// Use Vue Flow's useNode to track position changes
+const { node } = useNode()
+
+
 // Handle node resize events
-const onResize = (nodeId: string, newDimensions: { width: number, height: number }) => {
-  // Update the node dimensions in the Vue Flow state
-  updateNode(nodeId, { dimensions: newDimensions })
+const onResize = ({ params }: OnResize) => {
+  emit('change', props.entity.uuid, params)
 }
 
-// Handle keyboard events
 const handleKeydown = (event: KeyboardEvent) => {
-  // Handle Space or Enter key to enter edit mode
   if (event.key === 'Enter' || event.key === ' ') {
     event.preventDefault()
-    // Trigger edit mode
-    // In the future, this would enable the editor
     console.log('Enter edit mode for node:', props.entity.uuid)
   }
 }
 </script>
 
 <template>
-  <component 
-    v-if="NodeResizer" 
-    :is="NodeResizer" 
-    :min-width="50" 
-    :min-height="50" 
-    :node-id="entity.uuid"
-    @resize="(_, newDimensions) => onResize(entity.uuid, newDimensions)" 
-  />
+  <NodeResizer :min-width="50" :min-height="50" :node-id="entity.uuid" @resize="onResize" />
 
   <div class="resizable-container" tabindex="0" @keydown="handleKeydown" ref="nodeRef">
-    <component 
-      v-if="Editor" 
-      :is="Editor" 
-      :value="entity?.data.content" 
-      :onChange="(html) => { }" 
-      :editable="false" 
-      @click="() => { }"
-      @cancel="() => { }" 
-    />
+    <component v-if="Editor" :is="Editor" :value="entity?.data.content" :onChange="(html) => { }" :editable="false"
+      @click="() => { }" @cancel="() => { }" />
     {{ entity.data }}
 
     <div class="screen-space-element">

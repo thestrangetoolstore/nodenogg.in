@@ -15,12 +15,6 @@ export interface MicrocosmSpatialViewProps {
   nodes: PositionedNode[];
 }
 
-export interface ResizableNodeProps {
-  entity: Entity;
-  NodeResizer?: unknown;
-  Editor?: unknown;
-}
-
 export interface MicrocosmSpatialViewEmits {
   "nodes-change": [changes: NodeChange[]];
 }

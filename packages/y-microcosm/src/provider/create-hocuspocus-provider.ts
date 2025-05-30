@@ -3,8 +3,13 @@ import { isValidURL } from '@figureland/kit/tools'
 import { NNError } from '@nodenogg.in/core'
 import type { ProviderFactory } from '.'
 
-export const createHocuspocusProvider = ({ sync }: { sync: string }): ProviderFactory => {
-  const url = sync
+export const createHocuspocusProvider = ({
+  sync: url,
+  quiet = true
+}: {
+  sync: string
+  quiet?: boolean
+}): ProviderFactory => {
   if (!isValidURL(url)) {
     console.log(
       new NNError({
@@ -17,7 +22,7 @@ export const createHocuspocusProvider = ({ sync }: { sync: string }): ProviderFa
 
   const websocketProvider = new HocuspocusProviderWebsocket({
     url,
-    quiet: true
+    quiet
   })
 
   return async (name, document, token = 'default') => {

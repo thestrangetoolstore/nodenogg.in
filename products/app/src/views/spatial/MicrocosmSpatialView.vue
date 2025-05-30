@@ -1,11 +1,9 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import { MicrocosmSpatialView } from '@nodenogg.in/spatial-view'
+import { MicrocosmSpatialView, ResizableNode } from '@nodenogg.in/spatial-view'
 import { useCurrentMicrocosm } from '@/state'
 import { EntitySchema } from '@nodenogg.in/schema'
-import ResizableNode from './ResizableNode.vue'
 import Editor from '@/components/editor/Editor.vue'
-import { NodeResizer } from '@/components/node-resizer'
 import type { NodeChange } from '@vue-flow/core'
 
 defineProps({
@@ -69,7 +67,7 @@ const handleNodeChange = async (changes: NodeChange[]) => {
 <template>
   <MicrocosmSpatialView :view_id="view_id" :ui="ui" :nodes="positionedNodes" @nodes-change="handleNodeChange">
     <template #node-resizable="resizableNodeProps">
-      <ResizableNode :entity="resizableNodeProps.data" :NodeResizer="NodeResizer" :Editor="Editor" />
+      <ResizableNode :entity="resizableNodeProps.data" :Editor="Editor" />
     </template>
   </MicrocosmSpatialView>
 </template>

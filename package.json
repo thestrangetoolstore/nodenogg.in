@@ -4,7 +4,7 @@
   "description": "Monorepo for Nodenoggin app and server",
   "type": "module",
   "scripts": {
-    "dev": "pnpm --parallel --stream dev",
+    "dev": "VITE_SYNC_SERVER_ENDPOINT=ws://localhost:8787/sync pnpm --parallel --stream dev",
     "dev:app": "VITE_SYNC_SERVER_ENDPOINT=ws://localhost:8787/sync pnpm --filter nodenogg.in dev",
     "dev:server": "pnpm --filter @nodenogg.in/yjs-sync-server dev",
     "build": "pnpm --filter @* build",

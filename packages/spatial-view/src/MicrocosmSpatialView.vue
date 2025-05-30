@@ -10,7 +10,8 @@ import type { MicrocosmSpatialViewProps, MicrocosmSpatialViewEmits } from './typ
 const props = defineProps<MicrocosmSpatialViewProps>()
 const emit = defineEmits<MicrocosmSpatialViewEmits>()
 
-const { onNodesChange, viewport } = useVueFlow()
+const { onNodesChange, viewport, ...rest } = useVueFlow()
+console.log(rest)
 
 // Reactive reference to track the canvas element
 const canvasContainer = ref<HTMLElement | null>(null)
@@ -34,7 +35,7 @@ onNodesChange(handleNodeChange)
 <template>
   <div class="container" ref="canvasContainer">
     <VueFlow :nodes="nodes" fit-view-on-init class="pinia-flow" @nodes-change="handleNodeChange"
-        pan-on-scroll>
+        pan-on-scroll :apply-default="false" >
       <Background variant="lines" patternColor="var(--ui-80)" />
       <!-- <MiniMap pannable zoomable class="mini-map" title="Mini map" /> -->
       <template #node-resizable="resizableNodeProps">
