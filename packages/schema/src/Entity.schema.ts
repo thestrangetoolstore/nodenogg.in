@@ -77,7 +77,7 @@ const update = (entity: Entity, data: EntityUpdate) => {
   }
 }
 
-export type EntityUpdate = Partial<Omit<Entity['data'], 'type'>>
+export type EntityUpdate = Partial<Entity['data']>
 
 export type Entity = InferVersionedSchema<typeof schema>
 

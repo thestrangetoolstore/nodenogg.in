@@ -1,12 +1,18 @@
 import { defineStore } from 'pinia'
 import { inject, ref } from 'vue'
 import { vue } from '@figureland/kit/state/vue'
-import { type Entity, type Identity, type MicrocosmUUID } from '@nodenogg.in/schema'
+import {
+  type Entity,
+  type EntityUpdate,
+  type Identity,
+  type MicrocosmUUID
+} from '@nodenogg.in/schema'
 import { app, client } from './app'
 import { randomInt } from '@figureland/kit/math/random'
 
 export const useMicrocosm = async (uuid: MicrocosmUUID) => {
   const microcosm = await client.register({ uuid })
+  let identity = client.identity.get()
 
   const id = client.identity.get()
   if (id) {
@@ -34,67 +40,21 @@ export const useMicrocosm = async (uuid: MicrocosmUUID) => {
     }
 
     // Update entity content
-    const update = async (entity: Entity, content: string) => {
+    const update = async (entity_id: string, update: EntityUpdate) => {
       // Get current microcosm when the function is called rather than at store initialization
-      const identity = client.identity.get()
-
-      if (identity && microcosm) {
-        await microcosm.update([
-          [
-            {
-              entity_id: entity.uuid,
-              identity_id: identity.uuid
-            },
-            {
-              content
-            }
-          ]
-        ])
+      if (!identity) {
+        identity = client.identity.get()
       }
-    }
 
-    // Update entity position
-    const updatePosition = async (entity: Entity, position: { x: number; y: number }) => {
-      const identity = client.identity.get()
-
-      if (identity && microcosm) {
-        await microcosm.update([
-          [
-            {
-              entity_id: entity.uuid,
-              identity_id: identity.uuid
-            },
-            {
-              x: position.x,
-              y: position.y
-            }
-          ]
-        ])
-      }
-    }
-
-    // Update entity dimensions
-    const updateDimensions = async (
-      entity: Entity,
-      dimensions: { width: number; height: number }
-    ) => {
-      // Get current microcosm when the function is called
-      const identity = client.identity.get()
-
-      if (identity && microcosm) {
-        await microcosm.update([
-          [
-            {
-              entity_id: entity.uuid,
-              identity_id: identity.uuid
-            },
-            {
-              width: dimensions.width,
-              height: dimensions.height
-            }
-          ]
-        ])
-      }
+      await microcosm?.update([
+        [
+          {
+            entity_id,
+            identity_id: identity.uuid
+          },
+          update
+        ]
+      ])
     }
 
     // Delete entity
@@ -154,8 +114,6 @@ export const useMicrocosm = async (uuid: MicrocosmUUID) => {
       setEditingNode,
       isEditing,
       update,
-      updatePosition,
-      updateDimensions,
       deleteEntity,
       create
     }

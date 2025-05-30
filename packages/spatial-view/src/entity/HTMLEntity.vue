@@ -1,29 +1,15 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 
-import { NodeResizer, OnResize } from '../node-resizer'
-import type { EntityOfType, EntityUpdate } from '@nodenogg.in/schema';
+import { NodeResizer } from '../node-resizer'
+import type { EntityOfType } from '@nodenogg.in/schema';
 
 const props = defineProps<{
   entity: EntityOfType<'html'>;
-  Editor?: unknown;
-}>()
-
-const emit = defineEmits<{
-  resize: [nodeId: string, dimensions: { width: number; height: number }]
+  Editor?: any; // TODO: Type this properly when Editor component types are available
 }>()
 
 const nodeRef = ref<HTMLElement | null>(null)
-
-
-// Handle node resize events
-const onResize = ({ params }: OnResize) => {
-  // Emit resize event with just the dimensions
-  emit('resize', props.entity.uuid, {
-    width: params.width,
-    height: params.height
-  })
-}
 
 const handleKeydown = (event: KeyboardEvent) => {
   if (event.key === 'Enter' || event.key === ' ') {
@@ -34,11 +20,12 @@ const handleKeydown = (event: KeyboardEvent) => {
 </script>
 
 <template>
-  <NodeResizer :min-width="50" :min-height="50" :node-id="entity.uuid" @resize="onResize" />
+  <NodeResizer :min-width="50" :min-height="50" :node-id="entity.uuid" />
   <div class="resizable-container" tabindex="0" @keydown="handleKeydown" ref="nodeRef">
-    <component v-if="Editor" :is="Editor" :value="entity?.data.content" :onChange="(html) => { }" :editable="false"
-      @click="() => { }" @cancel="() => { }" />
-    {{ entity.data }}
+    <div class="content-wrapper">
+      <component v-if="Editor" :is="Editor" :value="entity?.data.content" :onChange="(html) => { }" :editable="false"
+        @click="() => { }" @cancel="() => { }" />
+    </div>
 
     <div class="screen-space-element">
       {{ entity.uuid }}
@@ -57,11 +44,30 @@ const handleKeydown = (event: KeyboardEvent) => {
   position: relative;
   outline: none;
   transition: outline 0.2s ease;
+  /* Enforce dimensions and handle overflow */
+  box-sizing: border-box;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
 
 .resizable-container:focus {
   outline: 2px solid var(--ui-primary-100);
   outline-offset: 2px;
+}
+
+/* Content wrapper to handle overflow */
+.content-wrapper {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+/* Ensure editor content respects container */
+.content-wrapper :deep(*) {
+  max-width: 100%;
 }
 
 /* This element will maintain a consistent size regardless of zoom level */

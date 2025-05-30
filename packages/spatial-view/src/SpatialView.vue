@@ -19,7 +19,7 @@ withDefaults(defineProps<{
 
 const emit = defineEmits<MicrocosmSpatialViewEmits>()
 
-const { onNodesChange, viewport, ...rest } = useVueFlow()
+const { onNodesChange, viewport, applyNodeChanges } = useVueFlow()
 
 // Reactive reference to track the canvas element
 const canvasContainer = ref<HTMLElement | null>(null)
@@ -33,24 +33,14 @@ watch(() => viewport.value.zoom, (newZoom) => {
 
 // This will capture ALL node changes: position (drag), dimensions (resize), etc.
 const handleNodeChange = (changes: NodeChange[]) => {
-  console.log('Node changes:', changes)
+  // In controlled mode, we need to apply changes to Vue Flow's internal state
+  applyNodeChanges(changes)
+  // Then emit to parent for store updates
   emit('nodes-change', changes)
 }
 
 // Register the node change handler
 onNodesChange(handleNodeChange)
-
-// Helper function to manually trigger dimension changes from resize events
-const handleResize = (nodeId: string, dimensions: { width: number; height: number }) => {
-  const dimensionChange: NodeChange = {
-    id: nodeId,
-    type: 'dimensions',
-    dimensions,
-    resizing: false
-  }
-  // Manually trigger the node change for resize events
-  handleNodeChange([dimensionChange])
-}
 </script>
 
 <template>
@@ -61,7 +51,7 @@ const handleResize = (nodeId: string, dimensions: { width: number; height: numbe
       <MiniMap v-if="minimap" pannable zoomable class="mini-map" title="Mini map" />
       <template #node-resizable="resizableNodeProps">
         <slot name="node-resizable" v-bind="resizableNodeProps">
-          <HTMLEntity :entity="resizableNodeProps.data" @resize="handleResize" />
+          <HTMLEntity :entity="resizableNodeProps.data" />
         </slot>
       </template>
     </VueFlow>

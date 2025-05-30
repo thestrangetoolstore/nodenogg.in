@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import { SpatialView, HTMLEntity } from '@nodenogg.in/spatial-view'
+import { SpatialView, HTMLEntity} from '@nodenogg.in/spatial-view'
 import { useCurrentMicrocosm } from '@/state'
 import { EntitySchema } from '@nodenogg.in/schema'
 import Editor from '@/components/editor/Editor.vue'
@@ -18,8 +18,7 @@ defineProps({
 
 // Use the unified entity operations API
 const microcosm = useCurrentMicrocosm()
-const { entities } = microcosm
-const { updatePosition, updateDimensions } = microcosm
+const { entities, update } = microcosm
 
 // Compute positioned nodes for the spatial view
 const positionedNodes = computed(() => {
@@ -45,31 +44,25 @@ const positionedNodes = computed(() => {
 const handleNodeChange = async (changes: NodeChange[]) => {
   // Process position and dimension changes
   for (const change of changes) {
+    const { id } = change
     // Handle position changes
     if (change.type === 'position' && change.position) {
-      const entity = entities.find(e => e.uuid === change.id)
-      if (entity) {
-        await updatePosition(entity, change.position)
-      }
+        await update(id, change.position)
     }
 
     // Handle dimension changes
     if (change.type === 'dimensions' && change.dimensions) {
-      const entity = entities.find(e => e.uuid === change.id)
-      if (entity) {
-        await updateDimensions(entity, change.dimensions)
-      }
+    
+        await update(id, change.dimensions)
     }
   }
 }
-const update = (...args: any) => console.log(args)
-
 </script>
 
 <template>
   <SpatialView :view_id="view_id" :ui="ui" :nodes="positionedNodes" @nodes-change="handleNodeChange">
     <template #node-resizable="resizableNodeProps">
-      <HTMLEntity :entity="resizableNodeProps.data" :Editor="Editor" :update="update"/>
+      <HTMLEntity :entity="resizableNodeProps.data" :Editor="Editor" />
     </template>
   </SpatialView>
 </template>
