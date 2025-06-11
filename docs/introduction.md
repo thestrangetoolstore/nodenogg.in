@@ -34,12 +34,12 @@ nodenogg.in is purposefully small.
 <CardLink
   title="Principles"
   description="The Principles that guide how every decision behind how this product is made."
-  href="/principles"
+  href="/edtech/principles"
 />
 <CardLink
   title="Roadmap"
   description="To see how nodenogg.in is evolving and how it will develop in the coming year, see our Roadmap "
-  href="/roadmap"
+  href="/architecture/roadmap"
 />
 <CardLink
   title="Architecture"
