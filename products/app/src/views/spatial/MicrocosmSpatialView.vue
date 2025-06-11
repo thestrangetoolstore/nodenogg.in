@@ -43,6 +43,8 @@ const positionedNodes = computed(() => {
 // Handle node changes from the spatial view
 const handleNodeChange = async (changes: NodeChange[]) => {
   // Process position and dimension changes
+  console.log('updating')
+  console.log(changes)
   for (const change of changes) {
     const { id } = change
     // Handle position changes
