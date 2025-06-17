@@ -29,9 +29,9 @@ const props = defineProps({
 const app = useApp()
 const router = useAppRouter()
 const microcosm = await useMicrocosm(props.uuid)
+
 provide(MICROCOSM_DATA_INJECTION_KEY, microcosm)
 
-// Get the current view component based on the URL parameter
 const ActiveViewComponent = computed(() => {
   return getViewComponent(router.value.viewType)
 })

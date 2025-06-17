@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import { SpatialView, HTMLEntity} from '@nodenogg.in/spatial-view'
+import { SpatialView, HTMLEntity } from '@nodenogg.in/spatial-view'
 import { useCurrentMicrocosm } from '@/state'
 import { EntitySchema } from '@nodenogg.in/schema'
 import Editor from '@/components/editor/Editor.vue'
@@ -43,19 +43,17 @@ const positionedNodes = computed(() => {
 // Handle node changes from the spatial view
 const handleNodeChange = async (changes: NodeChange[]) => {
   // Process position and dimension changes
-  console.log('updating')
-  console.log(changes)
   for (const change of changes) {
     const { id } = change
     // Handle position changes
     if (change.type === 'position' && change.position) {
-        await update(id, change.position)
+      await update(id, change.position)
     }
 
     // Handle dimension changes
     if (change.type === 'dimensions' && change.dimensions) {
-    
-        await update(id, change.dimensions)
+
+      await update(id, change.dimensions)
     }
   }
 }
@@ -64,7 +62,7 @@ const handleNodeChange = async (changes: NodeChange[]) => {
 <template>
   <SpatialView :view_id="view_id" :ui="ui" :nodes="positionedNodes" @nodes-change="handleNodeChange">
     <template #node-resizable="resizableNodeProps">
-      <HTMLEntity :entity="resizableNodeProps.data" :Editor="Editor" />
+      <HTMLEntity :entity="resizableNodeProps.data" :Editor="Editor" :onUpdate="update" />
     </template>
   </SpatialView>
 </template>

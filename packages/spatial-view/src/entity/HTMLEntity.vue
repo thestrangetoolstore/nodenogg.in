@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 
 import { NodeResizer } from '../node-resizer'
 import type { EntityOfType } from '@nodenogg.in/schema';
@@ -7,14 +7,35 @@ import type { EntityOfType } from '@nodenogg.in/schema';
 const props = defineProps<{
   entity: EntityOfType<'html'>;
   Editor?: any; // TODO: Type this properly when Editor component types are available
+  onUpdate?: (uuid: string, data: any) => void;
 }>()
 
 const nodeRef = ref<HTMLElement | null>(null)
+const isEditing = ref(false)
+
+// Handler for content changes
+const handleContentChange = (html: string) => {
+  if (props.onUpdate && props.entity) {
+    props.onUpdate(props.entity.uuid, { content: html })
+  }
+}
+
+// Handler for when editing is cancelled
+const handleCancel = () => {
+  isEditing.value = false
+}
+
+// Handler for clicking on the content
+const handleClick = () => {
+  if (!isEditing.value) {
+    isEditing.value = true
+  }
+}
 
 const handleKeydown = (event: KeyboardEvent) => {
-  if (event.key === 'Enter' || event.key === ' ') {
+  if ((event.key === 'Enter' || event.key === ' ') && !isEditing.value) {
     event.preventDefault()
-    console.log('Enter edit mode for node:', props.entity.uuid)
+    isEditing.value = true
   }
 }
 </script>
@@ -23,8 +44,8 @@ const handleKeydown = (event: KeyboardEvent) => {
   <NodeResizer :min-width="50" :min-height="50" :node-id="entity.uuid" />
   <div class="resizable-container" tabindex="0" @keydown="handleKeydown" ref="nodeRef">
     <div class="content-wrapper">
-      <component v-if="Editor" :is="Editor" :value="entity?.data.content" :onChange="(html) => { }" :editable="false"
-        @click="() => { }" @cancel="() => { }" />
+      <component v-if="Editor" :is="Editor" :value="entity?.data.content" :onChange="handleContentChange"
+        :editable="isEditing" @click="handleClick" @cancel="handleCancel" />
     </div>
 
     <div class="screen-space-element">

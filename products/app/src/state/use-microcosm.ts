@@ -15,6 +15,7 @@ export const useMicrocosm = async (uuid: MicrocosmUUID) => {
   let identity = client.identity.get()
 
   const id = client.identity.get()
+
   if (id) {
     await microcosm.identify(id.uuid)
     microcosm.join(id)
@@ -42,9 +43,6 @@ export const useMicrocosm = async (uuid: MicrocosmUUID) => {
     // Update entity content
     const update = async (entity_id: string, update: EntityUpdate) => {
       // Get current microcosm when the function is called rather than at store initialization
-      if (!identity) {
-        identity = client.identity.get()
-      }
 
       await microcosm?.update([
         [
