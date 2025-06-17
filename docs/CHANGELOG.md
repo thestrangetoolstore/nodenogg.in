@@ -1,6 +1,36 @@
 # Changelog
 
 
+## v0.0.14
+
+[compare changes](https://github.com/thestrangetoolstore/nodenogg.in/compare/v0.0.12...v0.0.14)
+
+### 🚀 Features
+
+- Added versioning tools ([16aaabe3](https://github.com/thestrangetoolstore/nodenogg.in/commit/16aaabe3))
+- Enforced uniform package bumps across the monorepo ([04fc6439](https://github.com/thestrangetoolstore/nodenogg.in/commit/04fc6439))
+- Added version syncing across packages ([4cb7a0c6](https://github.com/thestrangetoolstore/nodenogg.in/commit/4cb7a0c6))
+
+### 🐛 Bug Fixes
+
+- Moved changelog ([615f0f90](https://github.com/thestrangetoolstore/nodenogg.in/commit/615f0f90))
+- Removed obsolete README.md ([09639912](https://github.com/thestrangetoolstore/nodenogg.in/commit/09639912))
+- Updates contributing and readme files ([0e1fa74b](https://github.com/thestrangetoolstore/nodenogg.in/commit/0e1fa74b))
+
+### 🏠 Chore
+
+- **release:** V0.0.13 ([887b3bc8](https://github.com/thestrangetoolstore/nodenogg.in/commit/887b3bc8))
+- Doc links ([0e15fcc1](https://github.com/thestrangetoolstore/nodenogg.in/commit/0e15fcc1))
+
+### 🤖 CI
+
+- Updated github actions ([aab24989](https://github.com/thestrangetoolstore/nodenogg.in/commit/aab24989))
+
+### ❤️ Contributors
+
+- Adam Procter ([@adamprocter](https://github.com/adamprocter))
+- Toby Milner-Gulland <toby@figure.land>
+
 ## v0.0.13
 
 [compare changes](https://github.com/thestrangetoolstore/nodenogg.in/compare/v0.0.12...v0.0.13)
