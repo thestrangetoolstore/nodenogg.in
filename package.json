@@ -26,10 +26,10 @@
   "devDependencies": {
     "@commitlint/cli": "^19.8.1",
     "@commitlint/config-conventional": "^19.8.1",
-    "@types/node": "^22.15.29",
+    "@types/node": "^22.15.32",
     "husky": "^9.1.7",
     "lint-staged": "^15.5.2",
-    "tsx": "^4.19.4",
+    "tsx": "^4.20.3",
     "vitepress": "^1.6.3",
     "vue": "^3.5.16"
   },
