@@ -10,7 +10,6 @@ const props = defineProps<{
   onUpdate?: (uuid: string, data: any) => void;
 }>()
 
-const nodeRef = ref<HTMLElement | null>(null)
 const isEditing = ref(false)
 
 // Handler for content changes
@@ -42,7 +41,7 @@ const handleKeydown = (event: KeyboardEvent) => {
 
 <template>
   <NodeResizer :min-width="50" :min-height="50" :node-id="entity.uuid" />
-  <div class="resizable-container" tabindex="0" @keydown="handleKeydown" ref="nodeRef">
+  <div class="resizable-container" tabindex="0" @keydown="handleKeydown">
     <div class="content-wrapper">
       <component v-if="Editor" :is="Editor" :value="entity?.data.content" :onChange="handleContentChange"
         :editable="isEditing" @click="handleClick" @cancel="handleCancel" />
@@ -56,7 +55,6 @@ const handleKeydown = (event: KeyboardEvent) => {
 
 <style scoped>
 .resizable-container {
-  padding: var(--size-8);
   background: var(--ui-80);
   color: var(--ui-0);
   border-radius: var(--ui-radius);
@@ -65,7 +63,6 @@ const handleKeydown = (event: KeyboardEvent) => {
   position: relative;
   outline: none;
   transition: outline 0.2s ease;
-  /* Enforce dimensions and handle overflow */
   box-sizing: border-box;
   overflow: hidden;
   display: flex;

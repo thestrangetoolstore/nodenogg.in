@@ -5,6 +5,7 @@ import { useCurrentMicrocosm } from '@/state'
 import { EntitySchema } from '@nodenogg.in/schema'
 import Editor from '@/components/editor/Editor.vue'
 import type { NodeChange } from '@vue-flow/core'
+import { storeToRefs } from 'pinia'
 
 defineProps({
   view_id: {
@@ -18,11 +19,13 @@ defineProps({
 
 // Use the unified entity operations API
 const microcosm = useCurrentMicrocosm()
-const { entities, update } = microcosm
+const { update } = microcosm
+
+const { entities } = storeToRefs(microcosm)
 
 // Compute positioned nodes for the spatial view
 const positionedNodes = computed(() => {
-  return entities.filter(e => EntitySchema.utils.isType(e, 'html')).map((entity) => {
+  return entities.value.filter(e => EntitySchema.utils.isType(e, 'html')).map((entity) => {
     const { width, height, x, y } = entity.data
     return {
       id: entity.uuid,
@@ -44,22 +47,24 @@ const positionedNodes = computed(() => {
 const handleNodeChange = async (changes: NodeChange[]) => {
   // Process position and dimension changes
   for (const change of changes) {
-    const { id } = change
-    // Handle position changes
+    if (!('id' in change))
+      return
     if (change.type === 'position' && change.position) {
-      await update(id, change.position)
+      await update(change.id, change.position)
     }
 
+    console.log(change)
     // Handle dimension changes
-    if (change.type === 'dimensions' && change.dimensions) {
-
-      await update(id, change.dimensions)
+    if (change.type === 'dimensions' && change.dimensions && change.resizing) {
+      console.log('hello!')
+      await update(change.id, change.dimensions)
     }
   }
 }
 </script>
 
 <template>
+  <div :style="`position: fixed; z-index: 500; font-size: 10px;`">{{ positionedNodes }}</div>
   <SpatialView :view_id="view_id" :ui="ui" :nodes="positionedNodes" @nodes-change="handleNodeChange">
     <template #node-resizable="resizableNodeProps">
       <HTMLEntity :entity="resizableNodeProps.data" :Editor="Editor" :onUpdate="update" />

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue'
+import { onMounted, ref, watch } from 'vue'
 import { VueFlow, useVueFlow, type NodeChange } from '@vue-flow/core'
 import { Background } from '@vue-flow/background'
 import { MiniMap } from '@vue-flow/minimap'
@@ -7,35 +7,38 @@ import { MiniMap } from '@vue-flow/minimap'
 import type { MicrocosmSpatialViewEmits, PositionedNode } from './types'
 import HTMLEntity from './entity/HTMLEntity.vue'
 
-withDefaults(defineProps<{
+const props = withDefaults(defineProps<{
   view_id: string;
   nodes: PositionedNode[];
   ui?: boolean;
   minimap?: boolean
-}>(), { 
+}>(), {
   ui: false,
   minimap: false
 })
 
 const emit = defineEmits<MicrocosmSpatialViewEmits>()
 
-const { onNodesChange, viewport, applyNodeChanges } = useVueFlow()
+const { onNodesChange, viewport } = useVueFlow()
 
 // Reactive reference to track the canvas element
 const canvasContainer = ref<HTMLElement | null>(null)
 
-// Watch for zoom changes and update CSS variable
-watch(() => viewport.value.zoom, (newZoom) => {
+const setCSSVariables = (newZoom: string | number) => {
   if (canvasContainer.value) {
     canvasContainer.value.style.setProperty('--zoom-value', String(newZoom))
   }
+
+}
+// Watch for zoom changes and update CSS variable
+watch(() => viewport.value.zoom, setCSSVariables)
+
+onMounted(() => {
+  setCSSVariables(1.)
 })
 
 // This will capture ALL node changes: position (drag), dimensions (resize), etc.
 const handleNodeChange = (changes: NodeChange[]) => {
-  // In controlled mode, we need to apply changes to Vue Flow's internal state
-  applyNodeChanges(changes)
-  // Then emit to parent for store updates
   emit('nodes-change', changes)
 }
 
@@ -45,8 +48,7 @@ onNodesChange(handleNodeChange)
 
 <template>
   <div class="container" ref="canvasContainer">
-    <VueFlow :nodes="nodes" fit-view-on-init class="pinia-flow" @nodes-change="handleNodeChange" pan-on-scroll
-      :apply-default="false">
+    <VueFlow :nodes="nodes" class="pinia-flow" @nodes-change="handleNodeChange" pan-on-scroll :apply-default="false">
       <Background variant="lines" patternColor="var(--ui-80)" />
       <MiniMap v-if="minimap" pannable zoomable class="mini-map" title="Mini map" />
       <template #node-resizable="resizableNodeProps">

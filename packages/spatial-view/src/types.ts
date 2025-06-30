@@ -5,8 +5,14 @@ export interface PositionedNode {
   id: string;
   type: string;
   data: EntityOfType<"html">;
-  position: { x: number; y: number };
-  dimensions: { width: number; height: number };
+  position: {
+    x: number;
+    y: number;
+  };
+  dimensions: {
+    width: number;
+    height: number;
+  };
 }
 
 export interface MicrocosmSpatialViewProps {
