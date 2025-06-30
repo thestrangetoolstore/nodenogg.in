@@ -39,6 +39,10 @@ const positionedNodes = computed(() => {
         width,
         height
       },
+      style: {
+        width: `${width}px`,
+        height: `${height}px`
+      }
     }
   })
 })
@@ -53,10 +57,8 @@ const handleNodeChange = async (changes: NodeChange[]) => {
       await update(change.id, change.position)
     }
 
-    console.log(change)
     // Handle dimension changes
     if (change.type === 'dimensions' && change.dimensions && change.resizing) {
-      console.log('hello!')
       await update(change.id, change.dimensions)
     }
   }
@@ -64,7 +66,7 @@ const handleNodeChange = async (changes: NodeChange[]) => {
 </script>
 
 <template>
-  <div :style="`position: fixed; z-index: 500; font-size: 10px;`">{{ positionedNodes }}</div>
+  <!-- <div :style="`position: fixed; z-index: 500; font-size: 10px;`">{{ positionedNodes }}</div> -->
   <SpatialView :view_id="view_id" :ui="ui" :nodes="positionedNodes" @nodes-change="handleNodeChange">
     <template #node-resizable="resizableNodeProps">
       <HTMLEntity :entity="resizableNodeProps.data" :Editor="Editor" :onUpdate="update" />

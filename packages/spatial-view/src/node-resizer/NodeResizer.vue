@@ -24,6 +24,8 @@ const nodeId = toRef(() => (typeof props.nodeId === 'string' ? props.nodeId : co
 
 const node = computed(() => findNode(nodeId.value))
 
+let isFirstRun = true
+
 watch(
   [
     () => props.minWidth,
@@ -36,6 +38,12 @@ watch(
     const n = node.value
 
     if (n && isInitialized) {
+      // Skip the first run to avoid firing resize events on mount
+      if (isFirstRun) {
+        isFirstRun = false
+        return
+      }
+
       const dimensionChange: NodeDimensionChange = {
         id: n.id,
         type: 'dimensions',

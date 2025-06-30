@@ -13,6 +13,10 @@ export interface PositionedNode {
     width: number;
     height: number;
   };
+  style?: {
+    width: string;
+    height: string;
+  };
 }
 
 export interface MicrocosmSpatialViewProps {

@@ -60,7 +60,9 @@ const handleKeydown = (event: KeyboardEvent) => {
   border-radius: var(--ui-radius);
   width: 100%;
   height: 100%;
-  position: relative;
+  position: absolute;
+  top: 0;
+  left: 0;
   outline: none;
   transition: outline 0.2s ease;
   box-sizing: border-box;

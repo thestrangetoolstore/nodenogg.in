@@ -48,7 +48,7 @@ onNodesChange(handleNodeChange)
 
 <template>
   <div class="container" ref="canvasContainer">
-    <VueFlow :nodes="nodes" class="pinia-flow" @nodes-change="handleNodeChange" pan-on-scroll :apply-default="false">
+    <VueFlow :nodes="nodes" class="pinia-flow" @nodes-change="handleNodeChange" pan-on-scroll>
       <Background variant="lines" patternColor="var(--ui-80)" />
       <MiniMap v-if="minimap" pannable zoomable class="mini-map" title="Mini map" />
       <template #node-resizable="resizableNodeProps">
