@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, provide, type PropType } from 'vue'
-import type { MicrocosmUUID } from '@nodenogg.in/schema'
+import type { MicrocosmID } from '@nodenogg.in/schema'
 import MicrocosmContainer from './MicrocosmContainer.vue'
 import MicrocosmNav from './MicrocosmNav.vue'
 import {
@@ -17,7 +17,7 @@ const props = defineProps({
     required: true
   },
   uuid: {
-    type: String as unknown as PropType<MicrocosmUUID>,
+    type: String as unknown as PropType<MicrocosmID>,
     required: true
   },
   ui: {

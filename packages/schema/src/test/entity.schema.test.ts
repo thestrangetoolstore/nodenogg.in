@@ -1,29 +1,29 @@
 import { describe, it, expect } from 'vitest'
-import { createEntityUUID, EntitySchema, type Entity } from '../Entity.schema'
+import { createEntityID, EntitySchema, type Entity } from '../Entity.schema'
 
 const { utils, schema } = EntitySchema
 
 describe('entity', () => {
-  describe('isValidEntityUUID', () => {
+  describe('isValidEntityID', () => {
     it('should validate correct entity UUIDs', () => {
       const validID = 'ebt4nhr27z8198jp6'
-      expect(utils.isValidEntityUUID(validID)).toBe(true)
+      expect(utils.isValidEntityID(validID)).toBe(true)
     })
 
     it('should reject invalid entity UUIDs', () => {
-      expect(utils.isValidEntityUUID('invalid')).toBe(false)
-      expect(utils.isValidEntityUUID('e123')).toBe(false)
-      expect(utils.isValidEntityUUID('e123456!')).toBe(false)
-      expect(utils.isValidEntityUUID(123)).toBe(false)
-      expect(utils.isValidEntityUUID(null)).toBe(false)
-      expect(utils.isValidEntityUUID('a12345678')).toBe(false)
+      expect(utils.isValidEntityID('invalid')).toBe(false)
+      expect(utils.isValidEntityID('e123')).toBe(false)
+      expect(utils.isValidEntityID('e123456!')).toBe(false)
+      expect(utils.isValidEntityID(123)).toBe(false)
+      expect(utils.isValidEntityID(null)).toBe(false)
+      expect(utils.isValidEntityID('a12345678')).toBe(false)
     })
   })
 
   describe('createEntityID', () => {
     it('should create valid entity UUID with prefix', () => {
-      const id = utils.createEntityUUID()
-      expect(utils.isValidEntityUUID(id)).toBe(true)
+      const id = utils.createEntityID()
+      expect(utils.isValidEntityID(id)).toBe(true)
       expect(id.startsWith('e')).toBe(true)
       expect(id.length).toBe(17)
     })
@@ -90,7 +90,7 @@ describe('entity', () => {
 
       const result = EntitySchema.api.create(partial as Entity['data'])
 
-      expect(EntitySchema.utils.isValidEntityUUID(result.uuid)).toBe(true)
+      expect(EntitySchema.utils.isValidEntityID(result.uuid)).toBe(true)
       expect(EntitySchema.utils.isType(result, 'html')).toBe(true)
 
       expect(result.lastEdited).toBeTypeOf('number')
@@ -217,8 +217,8 @@ describe('entity', () => {
     })
 
     it('should correctly identify connection entities', () => {
-      const fromId = createEntityUUID()
-      const toId = createEntityUUID()
+      const fromId = createEntityID()
+      const toId = createEntityID()
       const connectionEntity = EntitySchema.api.create({
         type: 'connection',
         from: fromId,
@@ -248,8 +248,8 @@ describe('entity', () => {
 
   describe('connection variant', () => {
     it('should create a valid connection entity with optional fields', () => {
-      const fromId = createEntityUUID()
-      const toId = createEntityUUID()
+      const fromId = createEntityID()
+      const toId = createEntityID()
 
       // Test with both fields
       const result1 = EntitySchema.api.create({
@@ -301,11 +301,11 @@ describe('entity', () => {
         {
           type: 'connection',
           from: 'invalid-id',
-          to: createEntityUUID()
+          to: createEntityID()
         },
         {
           type: 'connection',
-          from: createEntityUUID(),
+          from: createEntityID(),
           to: 'invalid-id'
         },
         {
@@ -322,9 +322,9 @@ describe('entity', () => {
     })
 
     it('should patch a connection entity', () => {
-      const fromId = EntitySchema.utils.createEntityUUID()
-      const toId = EntitySchema.utils.createEntityUUID()
-      const newToId = EntitySchema.utils.createEntityUUID()
+      const fromId = EntitySchema.utils.createEntityID()
+      const toId = EntitySchema.utils.createEntityID()
+      const newToId = EntitySchema.utils.createEntityID()
 
       const original = EntitySchema.api.create({
         type: 'connection',

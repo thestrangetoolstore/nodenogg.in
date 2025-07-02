@@ -1,7 +1,7 @@
 import { is, object, string, optional } from 'valibot'
 import { computed, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { MicrocosmSchema, type MicrocosmUUID } from '@nodenogg.in/schema'
+import { MicrocosmSchema, type MicrocosmID } from '@nodenogg.in/schema'
 import { DEFAULT_VIEW, type ViewType } from '@/views'
 
 const queryParamsSchema = object({
@@ -9,12 +9,12 @@ const queryParamsSchema = object({
   view: optional(string())
 })
 
-const { isValidMicrocosmUUID } = MicrocosmSchema.utils
+const { isValidMicrocosmID } = MicrocosmSchema.utils
 
 const parseQuery = (q: unknown) => {
   if (is(queryParamsSchema, q)) {
     const parts = q.with?.split(',') || []
-    return parts.filter(isValidMicrocosmUUID)
+    return parts.filter(isValidMicrocosmID)
   } else {
     return []
   }
@@ -28,18 +28,18 @@ export const useAppRouter = () => {
   const router = useRouter()
 
   const handleRoute = () => {
-    const microcosm_uuid = route.params.microcosm_uuid as string
-    if (microcosm_uuid && !isValidMicrocosmUUID(paramToString(microcosm_uuid))) {
+    const microcosm_id = route.params.microcosm_id as string
+    if (microcosm_id && !isValidMicrocosmID(paramToString(microcosm_id))) {
       // app.telemetry.log({
       //   name: 'useAppRouter',
-      //   message: `${microcosm_uuid} is not a valid Microcosm ID`,
+      //   message: `${microcosm_id} is not a valid Microcosm ID`,
       //   level: 'warn'
       // })
 
       router.push({
         name: 'NotFound',
         query: {
-          message: `${microcosm_uuid} is not a valid Microcosm UUID`
+          message: `${microcosm_id} is not a valid Microcosm ID`
         }
       })
     }
@@ -50,13 +50,12 @@ export const useAppRouter = () => {
   handleRoute()
 
   return computed(() => {
-    const microcosm_uuid = paramToString(route.params.microcosm_uuid)
+    const microcosm_id = paramToString(route.params.microcosm_id)
     const viewType = route.query.view as ViewType | undefined
 
     return {
-      microcosm_uuid:
-        MicrocosmSchema.utils.isValidMicrocosmUUID(microcosm_uuid) &&
-        (microcosm_uuid as MicrocosmUUID),
+      microcosm_id:
+        MicrocosmSchema.utils.isValidMicrocosmID(microcosm_id) && (microcosm_id as MicrocosmID),
       subviews: parseQuery(route.query),
       viewType: viewType || DEFAULT_VIEW
     }

@@ -2,25 +2,25 @@ import { describe, it, expect } from 'vitest'
 import { IdentitySchema, type Identity } from '../Identity.schema'
 
 describe('identity schema', () => {
-  describe('isValidIdentityUUID', () => {
+  describe('isValidIdentityID', () => {
     it('should validate correct identity UUIDs', () => {
       const validID = '@bt4nhr27z8198jp6'
-      expect(IdentitySchema.utils.isValidIdentityUUID(validID)).toBe(true)
+      expect(IdentitySchema.utils.isValidIdentityID(validID)).toBe(true)
     })
 
     it('should reject invalid identity UUIDs', () => {
-      expect(IdentitySchema.utils.isValidIdentityUUID('invalid')).toBe(false)
-      expect(IdentitySchema.utils.isValidIdentityUUID('@short')).toBe(false)
-      expect(IdentitySchema.utils.isValidIdentityUUID('@invalid!')).toBe(false)
-      expect(IdentitySchema.utils.isValidIdentityUUID(123)).toBe(false)
-      expect(IdentitySchema.utils.isValidIdentityUUID(null)).toBe(false)
+      expect(IdentitySchema.utils.isValidIdentityID('invalid')).toBe(false)
+      expect(IdentitySchema.utils.isValidIdentityID('@short')).toBe(false)
+      expect(IdentitySchema.utils.isValidIdentityID('@invalid!')).toBe(false)
+      expect(IdentitySchema.utils.isValidIdentityID(123)).toBe(false)
+      expect(IdentitySchema.utils.isValidIdentityID(null)).toBe(false)
     })
   })
 
   describe('createIdentityID', () => {
     it('should create valid identity UUID with prefix', () => {
       const { uuid } = IdentitySchema.api.create()
-      expect(IdentitySchema.utils.isValidIdentityUUID(uuid)).toBe(true)
+      expect(IdentitySchema.utils.isValidIdentityID(uuid)).toBe(true)
       expect(uuid.startsWith('@')).toBe(true)
       expect(uuid.length).toBe(17)
     })

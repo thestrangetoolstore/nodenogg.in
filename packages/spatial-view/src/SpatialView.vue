@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import { onMounted, ref, watch } from 'vue'
+import { onMounted, ref, watch, computed } from 'vue'
 import { VueFlow, useVueFlow, type NodeChange } from '@vue-flow/core'
 import { Background } from '@vue-flow/background'
 import { MiniMap } from '@vue-flow/minimap'
 
 import type { MicrocosmSpatialViewEmits, PositionedNode } from './types'
 import HTMLEntity from './entity/HTMLEntity.vue'
+import { useSpatialSelection } from './composables/useSpatialSelection'
 
 const props = withDefaults(defineProps<{
   view_id: string;
@@ -20,6 +21,10 @@ const props = withDefaults(defineProps<{
 const emit = defineEmits<MicrocosmSpatialViewEmits>()
 
 const { onNodesChange, viewport } = useVueFlow()
+const { selectedNodeId, isEditing, selectNode, clearSelection } = useSpatialSelection()
+
+// Create a ref for VueFlow instance
+const vueFlowRef = ref()
 
 // Reactive reference to track the canvas element
 const canvasContainer = ref<HTMLElement | null>(null)
@@ -42,18 +47,56 @@ const handleNodeChange = (changes: NodeChange[]) => {
   emit('nodes-change', changes)
 }
 
+// Handle node clicks for selection
+const handleNodeClick = (event: MouseEvent, node: any) => {
+  selectNode(node.id)
+}
+
+// Handle pane clicks for deselection
+const handlePaneClick = () => {
+  if (!isEditing.value) {
+    clearSelection()
+  }
+}
+
 // Register the node change handler
 onNodesChange(handleNodeChange)
+
+// Computed properties for controlling interactions
+const panOnDrag = computed(() => !isEditing.value)
+const zoomOnScroll = computed(() => !isEditing.value)
+const zoomOnPinch = computed(() => !isEditing.value)
+const zoomOnDoubleClick = computed(() => !isEditing.value)
+const preventScrolling = computed(() => isEditing.value)
+const nodesDraggable = computed(() => !isEditing.value)
+const nodesConnectable = computed(() => !isEditing.value)
+const elementsSelectable = computed(() => !isEditing.value)
 </script>
 
 <template>
   <div class="container" ref="canvasContainer">
-    <VueFlow :nodes="nodes" class="pinia-flow" @nodes-change="handleNodeChange" pan-on-scroll>
+    <VueFlow 
+      ref="vueFlowRef"
+      :nodes="nodes" 
+      class="pinia-flow" 
+      @nodes-change="handleNodeChange" 
+      @node-click="handleNodeClick"
+      @pane-click="handlePaneClick"
+      :pan-on-drag="panOnDrag"
+      :pan-on-scroll="panOnDrag"
+      :zoom-on-scroll="zoomOnScroll"
+      :zoom-on-pinch="zoomOnPinch"
+      :zoom-on-double-click="zoomOnDoubleClick"
+      :prevent-scrolling="preventScrolling"
+      :nodes-draggable="nodesDraggable"
+      :nodes-connectable="nodesConnectable"
+      :elements-selectable="elementsSelectable"
+    >
       <Background variant="lines" patternColor="var(--ui-80)" />
       <MiniMap v-if="minimap" pannable zoomable class="mini-map" title="Mini map" />
       <template #node-resizable="resizableNodeProps">
-        <slot name="node-resizable" v-bind="resizableNodeProps">
-          <HTMLEntity :entity="resizableNodeProps.data" />
+        <slot name="node-resizable" v-bind="{ ...resizableNodeProps, isSelected: selectedNodeId === resizableNodeProps.id }">
+          <HTMLEntity :entity="resizableNodeProps.data" :is-selected="selectedNodeId === resizableNodeProps.id" />
         </slot>
       </template>
     </VueFlow>

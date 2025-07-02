@@ -1,9 +1,9 @@
 import { describe, it, expect } from 'vitest'
 import { MicrocosmSchema } from '../Microcosm.schema'
 
-describe('isValidMicrocosmUUID', () => {
-  it('should validate correct microcosm UUIDs', () => {
-    const validID = MicrocosmSchema.utils.createMicrocosmUUID()
-    expect(MicrocosmSchema.utils.isValidMicrocosmUUID(validID)).toBe(true)
+describe('isValidMicrocosmID', () => {
+  it('should validate correct microcosm IDs', () => {
+    const validID = MicrocosmSchema.utils.createMicrocosmID()
+    expect(MicrocosmSchema.utils.isValidMicrocosmID(validID)).toBe(true)
   })
 })

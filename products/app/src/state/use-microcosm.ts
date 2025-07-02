@@ -5,12 +5,12 @@ import {
   type Entity,
   type EntityUpdate,
   type Identity,
-  type MicrocosmUUID
+  type MicrocosmID
 } from '@nodenogg.in/schema'
 import { app, client } from './app'
 import { randomInt } from '@figureland/kit/math/random'
 
-export const useMicrocosm = async (uuid: MicrocosmUUID) => {
+export const useMicrocosm = async (uuid: MicrocosmID) => {
   const microcosm = await client.register({ uuid })
   let identity = client.identity.get()
 
@@ -58,11 +58,10 @@ export const useMicrocosm = async (uuid: MicrocosmUUID) => {
     // Delete entity
     const deleteEntity = async (entity: Entity) => {
       // Get current microcosm when the function is called
-      const microcosm = useCurrentMicrocosm()
       const identity = client.identity.get()
 
-      if (identity && microcosm && microcosm.api) {
-        await microcosm.api.delete([
+      if (identity && microcosm) {
+        await microcosm.delete([
           {
             entity_id: entity.uuid,
             identity_id: identity.uuid

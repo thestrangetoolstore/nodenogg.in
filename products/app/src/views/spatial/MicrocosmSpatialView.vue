@@ -69,7 +69,12 @@ const handleNodeChange = async (changes: NodeChange[]) => {
   <!-- <div :style="`position: fixed; z-index: 500; font-size: 10px;`">{{ positionedNodes }}</div> -->
   <SpatialView :view_id="view_id" :ui="ui" :nodes="positionedNodes" @nodes-change="handleNodeChange">
     <template #node-resizable="resizableNodeProps">
-      <HTMLEntity :entity="resizableNodeProps.data" :Editor="Editor" :onUpdate="update" />
+      <HTMLEntity 
+        :entity="resizableNodeProps.data" 
+        :Editor="Editor" 
+        :onUpdate="update" 
+        :is-selected="resizableNodeProps.isSelected" 
+      />
     </template>
   </SpatialView>
 </template>

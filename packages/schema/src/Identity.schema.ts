@@ -4,16 +4,16 @@ import { createUUID, isValidUUID } from './uuid'
 import { isString } from './utils'
 import { freeze } from '@figureland/kit/tools/object'
 
-export const isValidIdentityUUID = (input: unknown): input is IdentityUUID =>
+export const isValidIdentityID = (input: unknown): input is IdentityID =>
   isString(input) && input.startsWith('@') && input.length === 17 && isValidUUID(input.slice(1))
 
-const createIdentityID = (): IdentityUUID => createUUID('@') as IdentityUUID
+const createIdentityID = (): IdentityID => createUUID('@') as IdentityID
 
-export type IdentityUUID = `@${string}`
+export type IdentityID = `@${string}`
 
 const schema = createVersionedSchema({
   base: {
-    uuid: custom<IdentityUUID>(isValidIdentityUUID)
+    uuid: custom<IdentityID>(isValidIdentityID)
   },
   versions: {
     '1': {
@@ -37,6 +37,6 @@ export const IdentitySchema = freeze({
   },
   schema,
   utils: {
-    isValidIdentityUUID
+    isValidIdentityID
   }
 })
