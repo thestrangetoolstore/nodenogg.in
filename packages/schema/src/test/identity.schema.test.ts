@@ -19,17 +19,17 @@ describe('identity schema', () => {
 
   describe('createIdentityID', () => {
     it('should create valid identity UUID with prefix', () => {
-      const { uuid } = IdentitySchema.api.create()
-      expect(IdentitySchema.utils.isValidIdentityID(uuid)).toBe(true)
-      expect(uuid.startsWith('@')).toBe(true)
-      expect(uuid.length).toBe(17)
+      const { id } = IdentitySchema.api.create()
+      expect(IdentitySchema.utils.isValidIdentityID(id)).toBe(true)
+      expect(id.startsWith('@')).toBe(true)
+      expect(id.length).toBe(17)
     })
   })
 
   describe('identitySchema', () => {
     it('should validate correct identity object', () => {
       const validIdentity = {
-        uuid: '@bt4nhr27z8198jp6',
+        id: '@bt4nhr27z8198jp6',
         nickname: 'test-user',
         version: '1'
       }
@@ -40,7 +40,7 @@ describe('identity schema', () => {
 
     it('should allow optional nickname', () => {
       const validIdentity: Identity = {
-        uuid: '@bt4nhr27z8198jp6',
+        id: '@bt4nhr27z8198jp6',
         version: '1'
       }
 
@@ -50,10 +50,10 @@ describe('identity schema', () => {
 
     it('should reject invalid identity objects', () => {
       const invalidIdentities = [
-        { uuid: 'invalid' },
-        { uuid: '@invalid!' },
-        { uuid: '@short' },
-        { uuid: '@bt4nhr27z8198jp6', nickname: 123 }
+        { id: 'invalid' },
+        { id: '@invalid!' },
+        { id: '@short' },
+        { id: '@bt4nhr27z8198jp6', nickname: 123 }
       ]
 
       invalidIdentities.forEach((invalid) => {

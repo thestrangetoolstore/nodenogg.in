@@ -8,17 +8,17 @@ import { useSpatialSelection } from '../composables/useSpatialSelection'
 const props = defineProps<{
   entity: EntityOfType<'html'>;
   Editor?: any; // TODO: Type this properly when Editor component types are available
-  onUpdate?: (uuid: string, data: any) => void;
+  onUpdate?: (id: string, data: any) => void;
   isSelected?: boolean;
 }>()
 
 const { startEditing, stopEditing, isNodeEditing } = useSpatialSelection()
-const isEditing = computed(() => isNodeEditing.value(props.entity.uuid))
+const isEditing = computed(() => isNodeEditing.value(props.entity.id))
 
 // Handler for content changes
 const handleContentChange = (html: string) => {
   if (props.onUpdate && props.entity) {
-    props.onUpdate(props.entity.uuid, { content: html })
+    props.onUpdate(props.entity.id, { content: html })
   }
 }
 
@@ -30,7 +30,7 @@ const handleCancel = () => {
 // Handler for double-clicking to edit
 const handleDoubleClick = (event: MouseEvent) => {
   event.stopPropagation()
-  startEditing(props.entity.uuid)
+  startEditing(props.entity.id)
 }
 
 // Handler for single click (prevent propagation when editing)
@@ -43,7 +43,7 @@ const handleClick = (event: MouseEvent) => {
 const handleKeydown = (event: KeyboardEvent) => {
   if ((event.key === 'Enter' || event.key === ' ') && !isEditing.value) {
     event.preventDefault()
-    startEditing(props.entity.uuid)
+    startEditing(props.entity.id)
   }
   // ESC key to stop editing
   if (event.key === 'Escape' && isEditing.value) {
@@ -68,7 +68,7 @@ const handleWheel = (event: WheelEvent) => {
 </script>
 
 <template>
-  <NodeResizer :min-width="50" :min-height="50" :node-id="entity.uuid" />
+  <NodeResizer :min-width="50" :min-height="50" :node-id="entity.id" />
   <div 
     class="resizable-container" 
     :class="{ 'is-selected': isSelected, 'is-editing': isEditing }"
@@ -85,7 +85,7 @@ const handleWheel = (event: WheelEvent) => {
     </div>
 
     <div class="screen-space-element">
-      {{ entity.uuid }}
+      {{ entity.id }}
     </div>
   </div>
 </template>

@@ -11,13 +11,13 @@ export const isValidEntityID = (input: unknown): input is string =>
 
 export const createEntityID = (): string => createUUID('e')
 
-const entityUUID = custom<string>(isValidEntityID)
+const entityID = custom<string>(isValidEntityID)
 
 const schema = createVersionedSchema({
   base: {},
   versions: {
     '1': {
-      uuid: entityUUID,
+      id: entityID,
       lastEdited: number(),
       created: number(),
       data: variant('type', [
@@ -32,13 +32,14 @@ const schema = createVersionedSchema({
         }),
         object({
           type: literal('connection'),
-          from: optional(entityUUID),
-          to: optional(entityUUID)
+          from: optional(entityID),
+          to: optional(entityID)
         }),
         object({
           type: literal('emoji'),
           content: string(),
-          entity: optional(entityUUID)
+          x: number(),
+          y: number()
         })
       ])
     }
@@ -49,7 +50,7 @@ const create = (data: Entity['data']) => {
   try {
     const timestamp = createTimestamp()
     return schema.parse({
-      uuid: createEntityID(),
+      id: createEntityID(),
       lastEdited: timestamp,
       created: timestamp,
       version: schema.latest,

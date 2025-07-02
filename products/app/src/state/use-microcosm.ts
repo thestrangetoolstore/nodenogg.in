@@ -10,18 +10,16 @@ import {
 import { app, client } from './app'
 import { randomInt } from '@figureland/kit/math/random'
 
-export const useMicrocosm = async (uuid: MicrocosmID) => {
-  const microcosm = await client.register({ uuid })
+export const useMicrocosm = async (id: MicrocosmID) => {
+  const microcosm = await client.register({ id })
   let identity = client.identity.get()
 
-  const id = client.identity.get()
-
-  if (id) {
-    await microcosm.identify(id.uuid)
-    microcosm.join(id)
+  if (identity) {
+    await microcosm.identify(identity.id)
+    microcosm.join(identity)
   }
 
-  return defineStore(`microcosm/${uuid}`, () => {
+  return defineStore(`microcosm/${id}`, () => {
     const entities = vue(
       microcosm.entities.derive((e) =>
         Array.from(e.values()).sort((a, b) => (b.created || 0) - (a.created || 0))
@@ -48,7 +46,7 @@ export const useMicrocosm = async (uuid: MicrocosmID) => {
         [
           {
             entity_id,
-            identity_id: identity.uuid
+            identity_id: identity.id
           },
           update
         ]
@@ -63,8 +61,8 @@ export const useMicrocosm = async (uuid: MicrocosmID) => {
       if (identity && microcosm) {
         await microcosm.delete([
           {
-            entity_id: entity.uuid,
-            identity_id: identity.uuid
+            entity_id: entity.id,
+            identity_id: identity.id
           }
         ])
       }
@@ -84,8 +82,8 @@ export const useMicrocosm = async (uuid: MicrocosmID) => {
           content: ''
         })
 
-        if (result && result.uuid) {
-          editingNodeId.value = result.uuid
+        if (result && result.id) {
+          editingNodeId.value = result.id
           return result
         }
       }
@@ -101,7 +99,7 @@ export const useMicrocosm = async (uuid: MicrocosmID) => {
     }
 
     return {
-      uuid,
+      id,
       api: microcosm,
       getUser,
       status,

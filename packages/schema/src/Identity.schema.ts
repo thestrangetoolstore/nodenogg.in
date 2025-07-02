@@ -13,7 +13,7 @@ export type IdentityID = `@${string}`
 
 const schema = createVersionedSchema({
   base: {
-    uuid: custom<IdentityID>(isValidIdentityID)
+    id: custom<IdentityID>(isValidIdentityID)
   },
   versions: {
     '1': {
@@ -24,7 +24,7 @@ const schema = createVersionedSchema({
 
 const create = (nickname?: string) =>
   schema.parse({
-    uuid: createIdentityID(),
+    id: createIdentityID(),
     nickname,
     version: schema.latest
   })

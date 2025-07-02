@@ -31,7 +31,7 @@ describe('entity', () => {
 
   describe('entity schema', () => {
     const validEntityV1: Entity = {
-      uuid: 'eexaji9ebltqb6i58',
+      id: 'eexaji9ebltqb6i58',
       lastEdited: 1234567890,
       created: 1234567890,
       version: '1',
@@ -53,8 +53,8 @@ describe('entity', () => {
 
     it('should reject invalid entity objects', () => {
       const invalidEntities = [
-        { uuid: 'invalid' },
-        { uuid: 'e12345678', type: 'invalid' },
+        { id: 'invalid' },
+        { id: 'e12345678', type: 'invalid' },
         {
           ...validEntityV1,
           lastEdited: 'invalid'
@@ -90,7 +90,7 @@ describe('entity', () => {
 
       const result = EntitySchema.api.create(partial as Entity['data'])
 
-      expect(EntitySchema.utils.isValidEntityID(result.uuid)).toBe(true)
+      expect(EntitySchema.utils.isValidEntityID(result.id)).toBe(true)
       expect(EntitySchema.utils.isType(result, 'html')).toBe(true)
 
       expect(result.lastEdited).toBeTypeOf('number')
@@ -156,7 +156,7 @@ describe('entity', () => {
 
       const result = EntitySchema.api.update(original, patchData)
 
-      expect(result.uuid).toBe(original.uuid)
+      expect(result.id).toBe(original.id)
       expect(result.data.type).toBe('html')
       expect(result.created).toBe(original.created)
       expect(result.lastEdited).toBeGreaterThan(original.lastEdited)
@@ -231,7 +231,7 @@ describe('entity', () => {
 
     it('should reject invalid entities', () => {
       const invalidEntity = {
-        uuid: 'invalid',
+        id: 'invalid',
         lastEdited: 1234567890,
         created: 1234567890,
         version: '1',

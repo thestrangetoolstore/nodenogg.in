@@ -35,9 +35,9 @@ const containerRef = ref<HTMLElement | null>(null)
       <button @click="handleCreateEntity" class="button">New node</button>
     </div>
     <div class="nodes">
-      <SimpleNode v-for="e in entities" v-bind:key="`node/${e.uuid}`" :entity="e"
-        :onChange="content => update(e.uuid, { content })" :onDelete="() => deleteEntity(e)"
-        :isEditing="isEditing(e.uuid)" @startEditing="setEditingNode(e.uuid)" @stopEditing="setEditingNode(null)" />
+      <SimpleNode v-for="e in entities" v-bind:key="`node/${e.id}`" :entity="e"
+        :onChange="content => update(e.id, { content })" :onDelete="() => deleteEntity(e)" :isEditing="isEditing(e.id)"
+        @startEditing="setEditingNode(e.id)" @stopEditing="setEditingNode(null)" />
     </div>
   </div>
 </template>

@@ -12,7 +12,7 @@ import { MicrocosmAPI, MicrocosmAPIFactory } from '..'
 const { isValidMicrocosmID } = MicrocosmSchema.utils
 
 export type MicrocosmReference = {
-  uuid: MicrocosmID
+  id: MicrocosmID
   lastAccessed: number
   password?: string
 }
@@ -20,7 +20,7 @@ export type MicrocosmReference = {
 type MicrocosmMap = Map<MicrocosmID, MicrocosmReference>
 
 export type MicrocosmEntryRequest = {
-  uuid: MicrocosmID
+  id: MicrocosmID
   password?: string
 }
 
@@ -35,9 +35,7 @@ export class MicrocosmClient<M extends MicrocosmAPI = MicrocosmAPI> {
   public ready = this.use(state(false))
   private ongoingRegistrations = new Map<MicrocosmID, Promise<M>>()
   public references = this.use(
-    state((get) =>
-      sortMapToArray(get(this.state), 'uuid').filter((m) => isValidMicrocosmID(m.uuid))
-    )
+    state((get) => sortMapToArray(get(this.state), 'id').filter((m) => isValidMicrocosmID(m.id)))
   )
 
   constructor(
@@ -58,47 +56,47 @@ export class MicrocosmClient<M extends MicrocosmAPI = MicrocosmAPI> {
     this.ready.set(true)
   }
 
-  private removeReference = (uuid: MicrocosmID) => {
+  private removeReference = (id: MicrocosmID) => {
     this.state.mutate((microcosms) => {
-      microcosms.delete(uuid)
+      microcosms.delete(id)
     })
   }
 
-  private registerReference = ({ uuid, password }: MicrocosmEntryRequest): MicrocosmReference => {
-    const existing = this.state.get().get(uuid)
+  private registerReference = ({ id, password }: MicrocosmEntryRequest): MicrocosmReference => {
+    const existing = this.state.get().get(id)
     const updatedReference = {
-      uuid,
+      id,
       lastAccessed: createTimestamp(),
       password: password || existing?.password
     }
     this.state.mutate((microcosms) => {
-      microcosms.set(uuid, updatedReference)
+      microcosms.set(id, updatedReference)
     })
     return updatedReference
   }
 
-  public isActive = (uuid: MicrocosmID) =>
-    this.store.unique(uuid, () => state((get) => get(this.active) === uuid))
+  public isActive = (id: MicrocosmID) =>
+    this.store.unique(id, () => state((get) => get(this.active) === id))
 
-  public setActive = (uuid: MicrocosmID) => this.active.set(uuid)
+  public setActive = (id: MicrocosmID) => this.active.set(id)
 
   public register = async (config: MicrocosmEntryRequest): Promise<M> => {
-    if (!isValidMicrocosmID(config.uuid)) {
-      throw new Error(`Invalid microcosm ID: ${config.uuid}`)
+    if (!isValidMicrocosmID(config.id)) {
+      throw new Error(`Invalid microcosm ID: ${config.id}`)
     }
 
     const promise = this.performRegistration(config).finally(() => {
-      this.ongoingRegistrations.delete(config.uuid)
+      this.ongoingRegistrations.delete(config.id)
     })
 
-    this.ongoingRegistrations.set(config.uuid, promise)
+    this.ongoingRegistrations.set(config.id, promise)
 
     return promise
   }
 
   private performRegistration = async (config: MicrocosmEntryRequest): Promise<M> => {
     const reference = this.registerReference(config)
-    this.setActive(config.uuid)
+    this.setActive(config.id)
 
     // const timer = this.config.telemetry?.time({
     //   name: 'microcosms',
@@ -113,24 +111,24 @@ export class MicrocosmClient<M extends MicrocosmAPI = MicrocosmAPI> {
       // })
     }
 
-    if (this.microcosms.has(config.uuid)) {
+    if (this.microcosms.has(config.id)) {
       // timer?.finish()
-      return this.microcosms.get(config.uuid) as M
+      return this.microcosms.get(config.id) as M
     }
 
     const microcosm = await this.config.api(reference)
 
-    this.microcosms.set(config.uuid, microcosm)
+    this.microcosms.set(config.id, microcosm)
     // timer?.finish()
     return microcosm
   }
 
-  public remove = async (uuid: MicrocosmID) => {
-    const microcosm = this.microcosms.get(uuid)
+  public remove = async (id: MicrocosmID) => {
+    const microcosm = this.microcosms.get(id)
     if (microcosm) {
       microcosm.dispose()
-      this.removeReference(uuid)
-      this.microcosms.delete(uuid)
+      this.removeReference(id)
+      this.microcosms.delete(id)
     }
   }
 

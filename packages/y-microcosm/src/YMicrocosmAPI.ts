@@ -188,7 +188,7 @@ export class YMicrocosmAPI extends MicrocosmAPI {
   public join = (identity: Identity) => {
     // this.telemetry?.log({
     //   name: 'MicrocosmAPI',
-    //   message: `Joined ${this.uuid} (${identity.IdentityID}:${identity.nickname || ''})`,
+    //   message: `Joined ${this.id} (${identity.IdentityID}:${identity.nickname || ''})`,
     //   level: 'info'
     // })
 
@@ -200,7 +200,7 @@ export class YMicrocosmAPI extends MicrocosmAPI {
   public leave = (identity: Identity) => {
     // this.telemetry?.log({
     //   name: 'MicrocosmAPI',
-    //   message: `Left ${this.uuid} (${identity.IdentityID}:${identity.nickname || ''})`,
+    //   message: `Left ${this.id} (${identity.IdentityID}:${identity.nickname || ''})`,
     //   level: 'info'
     // })
 

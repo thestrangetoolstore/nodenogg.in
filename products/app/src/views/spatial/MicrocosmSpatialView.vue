@@ -28,7 +28,7 @@ const positionedNodes = computed(() => {
   return entities.value.filter(e => EntitySchema.utils.isType(e, 'html')).map((entity) => {
     const { width, height, x, y } = entity.data
     return {
-      id: entity.uuid,
+      id: entity.id,
       type: 'resizable',
       data: entity,
       position: {
@@ -69,12 +69,8 @@ const handleNodeChange = async (changes: NodeChange[]) => {
   <!-- <div :style="`position: fixed; z-index: 500; font-size: 10px;`">{{ positionedNodes }}</div> -->
   <SpatialView :view_id="view_id" :ui="ui" :nodes="positionedNodes" @nodes-change="handleNodeChange">
     <template #node-resizable="resizableNodeProps">
-      <HTMLEntity 
-        :entity="resizableNodeProps.data" 
-        :Editor="Editor" 
-        :onUpdate="update" 
-        :is-selected="resizableNodeProps.isSelected" 
-      />
+      <HTMLEntity :entity="resizableNodeProps.data" :Editor="Editor" :onUpdate="update"
+        :is-selected="resizableNodeProps.isSelected" />
     </template>
   </SpatialView>
 </template>

@@ -21,16 +21,16 @@ const sanitizeMicrocosmIDTitle = (input?: string): string => {
 const createMicrocosmID = (input?: string): MicrocosmID => {
   if (isValidMicrocosmID(input)) return input
   // const sanitizedInput = sanitizeMicrocosmIDTitle(input)
-  // const uuid = createUUID()
+  // const id = createUUID()
   return createUUID()
-  // return `${sanitizedInput}_${uuid}`.slice(0, MAX_LENGTH) as MicrocosmID
+  // return `${sanitizedInput}_${id}`.slice(0, MAX_LENGTH) as MicrocosmID
 }
 
-export const parseMicrocosmID = (uuid: string) => {
-  if (!isValidMicrocosmID(uuid)) {
+export const parseMicrocosmID = (id: string) => {
+  if (!isValidMicrocosmID(id)) {
     throw new Error()
   }
-  return uuid
+  return id
 }
 
 export const isValidMicrocosmID = (input: unknown): input is MicrocosmID =>
@@ -41,7 +41,7 @@ export type MicrocosmID = string
 
 const schema = createVersionedSchema({
   base: {
-    uuid: custom<string>(isValidMicrocosmID)
+    id: custom<string>(isValidMicrocosmID)
   },
   versions: {
     '1': {}
