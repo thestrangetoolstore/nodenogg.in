@@ -11,9 +11,11 @@ const createIdentityID = (): IdentityID => createUUID('@') as IdentityID
 
 export type IdentityID = `@${string}`
 
+export const identityID = custom<IdentityID>(isValidIdentityID)
+
 const schema = createVersionedSchema({
   base: {
-    id: custom<IdentityID>(isValidIdentityID)
+    id: identityID
   },
   versions: {
     '1': {

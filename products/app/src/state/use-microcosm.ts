@@ -42,15 +42,7 @@ export const useMicrocosm = async (id: MicrocosmID) => {
     const update = async (entity_id: string, update: EntityUpdate) => {
       // Get current microcosm when the function is called rather than at store initialization
 
-      await microcosm?.update([
-        [
-          {
-            entity_id,
-            identity_id: identity.id
-          },
-          update
-        ]
-      ])
+      await microcosm?.update([[entity_id, update]])
     }
 
     // Delete entity

@@ -3,7 +3,7 @@ import { createVersionedSchema, type InferVersionedSchema } from '@figureland/ve
 import { clone as c } from '@figureland/kit/tools/clone'
 import { createTimestamp, isString } from './utils'
 import { createUUID, isValidUUID } from './uuid'
-import { IdentitySchema, type IdentityID } from './Identity.schema'
+import { identityID, IdentitySchema, type IdentityID } from './Identity.schema'
 import { freeze } from '@figureland/kit/tools/object'
 
 export const isValidEntityID = (input: unknown): input is string =>
@@ -18,6 +18,7 @@ const schema = createVersionedSchema({
   versions: {
     '1': {
       id: entityID,
+      identity_id: identityID,
       lastEdited: number(),
       created: number(),
       data: variant('type', [
@@ -46,11 +47,12 @@ const schema = createVersionedSchema({
   }
 })
 
-const create = (data: Entity['data']) => {
+const create = (identity_id: IdentityID, data: Entity['data']) => {
   try {
     const timestamp = createTimestamp()
     return schema.parse({
       id: createEntityID(),
+      identity_id,
       lastEdited: timestamp,
       created: timestamp,
       version: schema.latest,
@@ -61,7 +63,7 @@ const create = (data: Entity['data']) => {
   }
 }
 
-const clone = (entity: Entity) => create(c(entity.data))
+const clone = (identity_id: IdentityID, entity: Entity) => create(identity_id, c(entity.data))
 
 const update = (entity: Entity, data: EntityUpdate) => {
   try {

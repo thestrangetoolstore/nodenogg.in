@@ -136,7 +136,7 @@ export class YMicrocosmDoc {
           name: 'YMicrocosmAPI'
         })
       }
-      const payload = await this.sign(EntitySchema.api.create(data))
+      const payload = await this.sign(EntitySchema.api.create(this.identity_id, data))
       this.collection.set(payload.content.id, payload)
       return payload.content
     } catch (error) {

@@ -156,12 +156,12 @@ export class YMicrocosmAPI extends MicrocosmAPI {
   /**
    * Updates one or more {@link Entity}s
    */
-  public update = async (updates: [EntityPointer, Partial<Omit<Entity['data'], 'type'>>][]) => {
+  public update = async (updates: [string, Partial<Omit<Entity['data'], 'type'>>][]) => {
     this.doc.yDoc.transact(() => {
       for (const [e, update] of updates) {
-        const parsed = isString(e) ? EntitySchema.utils.parseEntityLocation(e) : e
+        const parsed = EntitySchema.utils.isValidEntityID(e)
         if (parsed) {
-          this.doc.update(parsed.entity_id, update)
+          this.doc.update(e, update)
         }
       }
     })

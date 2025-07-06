@@ -1,7 +1,10 @@
 import { describe, it, expect } from 'vitest'
 import { createEntityID, EntitySchema, type Entity } from '../Entity.schema'
+import { IdentitySchema } from '../Identity.schema'
 
 const { utils, schema } = EntitySchema
+
+const demoId = IdentitySchema.api.create()
 
 describe('entity', () => {
   describe('isValidEntityID', () => {
@@ -31,6 +34,7 @@ describe('entity', () => {
 
   describe('entity schema', () => {
     const validEntityV1: Entity = {
+      identity_id: demoId.id,
       id: 'eexaji9ebltqb6i58',
       lastEdited: 1234567890,
       created: 1234567890,
@@ -88,7 +92,7 @@ describe('entity', () => {
         content: ''
       }
 
-      const result = EntitySchema.api.create(partial as Entity['data'])
+      const result = EntitySchema.api.create(demoId.id, partial as Entity['data'])
 
       expect(EntitySchema.utils.isValidEntityID(result.id)).toBe(true)
       expect(EntitySchema.utils.isType(result, 'html')).toBe(true)
@@ -110,7 +114,7 @@ describe('entity', () => {
     })
 
     it('should create a valid entity with all data', () => {
-      const result = EntitySchema.api.create({
+      const result = EntitySchema.api.create(demoId.id, {
         type: 'html',
         x: 100,
         y: 200,
@@ -135,7 +139,7 @@ describe('entity', () => {
 
   describe('patch', () => {
     it('should patch an existing entity with partial data', async () => {
-      const original = EntitySchema.api.create({
+      const original = EntitySchema.api.create(demoId.id, {
         type: 'html',
         x: 100,
         y: 200,
@@ -175,7 +179,7 @@ describe('entity', () => {
     })
 
     it('should maintain unchanged properties', () => {
-      const original = EntitySchema.api.create({
+      const original = EntitySchema.api.create(demoId.id, {
         type: 'html',
         x: 100,
         y: 200,
@@ -203,7 +207,7 @@ describe('entity', () => {
 
   describe('isEntityType', () => {
     it('should correctly identify html entities', () => {
-      const htmlEntity = EntitySchema.api.create({
+      const htmlEntity = EntitySchema.api.create(demoId.id, {
         type: 'html',
         x: 100,
         y: 200,
@@ -219,7 +223,7 @@ describe('entity', () => {
     it('should correctly identify connection entities', () => {
       const fromId = createEntityID()
       const toId = createEntityID()
-      const connectionEntity = EntitySchema.api.create({
+      const connectionEntity = EntitySchema.api.create(demoId.id, {
         type: 'connection',
         from: fromId,
         to: toId
@@ -252,7 +256,7 @@ describe('entity', () => {
       const toId = createEntityID()
 
       // Test with both fields
-      const result1 = EntitySchema.api.create({
+      const result1 = EntitySchema.api.create(demoId.id, {
         type: 'connection',
         from: fromId,
         to: toId
@@ -264,7 +268,7 @@ describe('entity', () => {
       }
 
       // Test with only from field
-      const result2 = EntitySchema.api.create({
+      const result2 = EntitySchema.api.create(demoId.id, {
         type: 'connection',
         from: fromId
       })
@@ -275,7 +279,7 @@ describe('entity', () => {
       }
 
       // Test with only to field
-      const result3 = EntitySchema.api.create({
+      const result3 = EntitySchema.api.create(demoId.id, {
         type: 'connection',
         to: toId
       })
@@ -286,9 +290,10 @@ describe('entity', () => {
       }
 
       // Test with no fields
-      const result4 = EntitySchema.api.create({
+      const result4 = EntitySchema.api.create(demoId.id, {
         type: 'connection'
       })
+
       expect(EntitySchema.utils.isType(result4, 'connection')).toBe(true)
       if (EntitySchema.utils.isType(result4, 'connection')) {
         expect(result4.data.from).toBeUndefined()
@@ -326,7 +331,7 @@ describe('entity', () => {
       const toId = EntitySchema.utils.createEntityID()
       const newToId = EntitySchema.utils.createEntityID()
 
-      const original = EntitySchema.api.create({
+      const original = EntitySchema.api.create(demoId.id, {
         type: 'connection',
         from: fromId,
         to: toId
