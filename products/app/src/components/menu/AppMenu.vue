@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import {
     AlertDialogAction,
     AlertDialogCancel,
@@ -18,16 +18,45 @@ import {
     MenubarSeparator,
     MenubarTrigger,
 } from 'reka-ui'
-import { useApp } from '@/state';
+import { useRouter, useRoute } from 'vue-router'
+import { useApp, useAppRouter } from '@/state';
 import { client } from '@/state/app';
 import { exportAndDownloadMicrocosm, deleteAllUserEntities } from '@/utils/export';
+import { viewRegistry } from '@/views';
 import JoinMicrocosmDialog from './JoinMicrocosmDialog.vue';
 import Icon from '@/components/icon/Icon.vue';
 import Tooltip from '../Tooltip.vue';
 
 const app = useApp()
+const router = useRouter()
+const route = useRoute()
+const appRouter = useAppRouter()
 const appMenu = ref('')
 const deleteDialogOpen = ref(false)
+
+// View switching logic
+const switchView = (viewType: string) => {
+    if (!viewType) return
+
+    router.push({
+        path: route.path,
+        query: {
+            ...route.query,
+            view: viewType
+        }
+    })
+}
+
+// Get current view type
+const currentViewType = computed({
+    get: () => appRouter.value.viewType as string,
+    set: (value: string) => switchView(value)
+})
+
+// Capitalize first letter of view name for display
+const formatViewName = (name: string) => {
+    return name.charAt(0).toUpperCase() + name.slice(1)
+}
 
 // Microcosm menu actions
 const handleLeave = () => {
@@ -127,6 +156,28 @@ const handleExport = async () => {
                             <MenubarSeparator />
                             <MenubarItem class="menubar-item" @click="handleDeleteData">
                                 Delete my data
+                            </MenubarItem>
+                        </MenubarContent>
+                    </MenubarPortal>
+                </MenubarMenu>
+                
+                <MenubarSeparator class="breadcrumb-separator" />
+                <MenubarMenu value="view">
+                    <MenubarTrigger class="menubar-trigger view-trigger">
+                        <Icon :type="currentViewType === 'collect' ? 'list' : 'grid'" />
+                        <span class="view-name">{{ formatViewName(currentViewType) }}</span>
+                    </MenubarTrigger>
+                    <MenubarPortal>
+                        <MenubarContent class="menubar-content" align="start" :side-offset="5" :align-offset="-3">
+                            <MenubarItem 
+                                v-for="(_, viewType) in viewRegistry" 
+                                :key="viewType"
+                                class="menubar-item view-item"
+                                :class="{ active: currentViewType === viewType }"
+                                @click="switchView(viewType)"
+                            >
+                                <Icon :type="viewType === 'collect' ? 'list' : 'grid'" />
+                                <span>{{ formatViewName(viewType) }}</span>
                             </MenubarItem>
                         </MenubarContent>
                     </MenubarPortal>
@@ -357,5 +408,30 @@ nav {
 
 .alert-dialog-action.warning:hover {
     background: var(--ui-red-90);
+}
+
+/* View trigger styles */
+.view-trigger {
+    padding: 0 var(--size-8);
+    gap: var(--size-6);
+}
+
+.view-name {
+    font-weight: 500;
+    color: var(--ui-20);
+}
+
+/* View menu item styles */
+.view-item {
+    gap: var(--size-8);
+}
+
+.view-item.active {
+    background: var(--ui-primary-100);
+    color: var(--ui-100);
+}
+
+.view-item.active:hover {
+    background: var(--ui-primary-90);
 }
 </style>

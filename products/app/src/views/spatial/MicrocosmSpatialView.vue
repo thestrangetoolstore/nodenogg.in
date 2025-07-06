@@ -7,6 +7,8 @@ import Editor from '@/components/editor/Editor.vue'
 import type { NodeChange } from '@vue-flow/core'
 import { storeToRefs } from 'pinia'
 import ViewContainer from '@/components/ViewContainer.vue'
+import ActionButton from '@/components/ActionButton.vue'
+import { randomInt } from '@figureland/kit/math/random'
 
 defineProps({
   view_id: {
@@ -20,7 +22,7 @@ defineProps({
 
 // Use the unified entity operations API
 const microcosm = useCurrentMicrocosm()
-const { update } = microcosm
+const { update, create, createEmoji } = microcosm
 
 const { entities } = storeToRefs(microcosm)
 
@@ -71,6 +73,22 @@ const handleNodeChange = async (changes: NodeChange[]) => {
     }
   }
 }
+
+// Action handlers for spatial view
+const handleCreateNode = async () => {
+  await create({
+    type: 'html',
+    x: randomInt(-400, 400),
+    y: randomInt(-400, 400),
+    width: 200,
+    height: 200,
+    content: ''
+  })
+}
+
+const handleCreateEmoji = async () => {
+  await createEmoji(`❤️`, randomInt(-400, 400), randomInt(-400, 400))
+}
 </script>
 
 <template>
@@ -81,5 +99,10 @@ const handleNodeChange = async (changes: NodeChange[]) => {
           :is-selected="resizableNodeProps.isSelected" />
       </template>
     </SpatialView>
+    
+    <template #actions>
+      <ActionButton icon="plus" label="New node" @click="handleCreateNode" />
+      <ActionButton icon="heart" label="React" @click="handleCreateEmoji" />
+    </template>
   </ViewContainer>
 </template>

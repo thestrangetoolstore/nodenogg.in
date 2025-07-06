@@ -3,6 +3,7 @@ import { useCurrentMicrocosm } from '@/state'
 import SimpleNode from './CollectNode.vue'
 import { storeToRefs } from 'pinia'
 import ViewContainer from '@/components/ViewContainer.vue'
+import ActionButton from '@/components/ActionButton.vue'
 import { computed } from 'vue'
 import { EntitySchema } from '@nodenogg.in/schema'
 
@@ -36,41 +37,20 @@ const handleCreateEmoji = async () => {
 
 <template>
   <ViewContainer>
-    <div class="actions">
-      <button @click="handleCreateEntity" class="button">New node</button>
-      <button @click="handleCreateEmoji" class="button">React</button>
-    </div>
     <div class="entities">
       <SimpleNode v-for="e in entities" v-bind:key="`entity/${e.id}`" :entity="e"
         :onChange="content => update(e.id, { content })" :onDelete="() => deleteEntity(e)" :isEditing="isEditing(e.id)"
         @startEditing="setEditingNode(e.id)" @stopEditing="setEditingNode(null)" />
     </div>
+    
+    <template #actions>
+      <ActionButton icon="plus" label="New node" @click="handleCreateEntity" />
+      <ActionButton icon="heart" label="React" @click="handleCreateEmoji" />
+    </template>
   </ViewContainer>
 </template>
 
 <style scoped>
-.button {
-  cursor: pointer;
-  background: var(--ui-95);
-  box-shadow: var(--ui-container-shadow);
-  border-radius: calc(var(--ui-radius));
-  padding: var(--size-8);
-}
-
-.button:hover {
-  background: var(--ui-primary-100);
-  color: var(--ui-100);
-}
-
-.actions {
-  padding: var(--size-12);
-  gap: var(--size-4);
-  position: absolute;
-  top: 0;
-  left: 0;
-  z-index: 1;
-}
-
 .entities {
   display: flex;
   flex-direction: column;
@@ -80,7 +60,7 @@ const handleCreateEmoji = async () => {
   gap: 1em;
   width: 100%;
   height: 100%;
-  padding: var(--size-56) var(--size-12) var(--size-12) var(--size-12);
+  padding: var(--size-12);
   top: 0;
   left: 0;
   overflow-y: auto;
