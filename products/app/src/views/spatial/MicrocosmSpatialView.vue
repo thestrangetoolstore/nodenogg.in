@@ -1,13 +1,23 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import { SpatialView, HTMLEntity } from '@nodenogg.in/spatial-view'
 import { useCurrentMicrocosm } from '@/state'
-import { EntitySchema } from '@nodenogg.in/schema'
+import { EntitySchema, type Entity } from '@nodenogg.in/schema'
 import Editor from '@/components/editor/Editor.vue'
 import type { NodeChange } from '@vue-flow/core'
+import { useVueFlow } from '@vue-flow/core'
 import { storeToRefs } from 'pinia'
 import ViewContainer from '@/components/ViewContainer.vue'
 import ActionButton from '@/components/ActionButton.vue'
+import Icon from '@/components/icon/Icon.vue'
+import {
+  ContextMenuContent,
+  ContextMenuItem,
+  ContextMenuPortal,
+  ContextMenuRoot,
+  ContextMenuSeparator,
+  ContextMenuTrigger,
+} from 'reka-ui'
 import { randomInt } from '@figureland/kit/math/random'
 
 defineProps({
@@ -22,9 +32,12 @@ defineProps({
 
 // Use the unified entity operations API
 const microcosm = useCurrentMicrocosm()
-const { update, create, createEmoji } = microcosm
+const { update, create, createEmoji, deleteEntity } = microcosm
 
 const { entities } = storeToRefs(microcosm)
+
+// Access vue-flow instance for coordinate transformation and interaction control
+const { screenToFlowCoordinate, panOnDrag, zoomOnScroll, zoomOnPinch } = useVueFlow()
 
 // Compute positioned nodes for the spatial view
 const positionedNodes = computed(() => {
@@ -74,6 +87,97 @@ const handleNodeChange = async (changes: NodeChange[]) => {
   }
 }
 
+// Context menu state
+const contextMenuOpen = ref(false)
+const contextMenuTarget = ref<Entity | null>(null)
+const contextMenuPosition = ref({ x: 0, y: 0 })
+
+// Store original interaction settings
+const originalInteractions = ref({
+  panOnDrag: true,
+  zoomOnScroll: true,
+  zoomOnPinch: true
+})
+
+// Handle context menu open state changes
+const handleContextMenuOpenChange = (open: boolean) => {
+  contextMenuOpen.value = open
+  
+  if (open) {
+    // Store current interaction settings and disable them
+    originalInteractions.value = {
+      panOnDrag: panOnDrag.value,
+      zoomOnScroll: zoomOnScroll.value,
+      zoomOnPinch: zoomOnPinch.value
+    }
+    
+    // Disable interactions while context menu is open
+    panOnDrag.value = false
+    zoomOnScroll.value = false
+    zoomOnPinch.value = false
+  } else {
+    // Restore original interaction settings when menu closes
+    panOnDrag.value = originalInteractions.value.panOnDrag
+    zoomOnScroll.value = originalInteractions.value.zoomOnScroll
+    zoomOnPinch.value = originalInteractions.value.zoomOnPinch
+    
+    // Reset target
+    contextMenuTarget.value = null
+  }
+}
+
+// Handle right-click to determine context
+const handleContextMenuTrigger = (event: MouseEvent) => {
+  // Get the target element
+  const target = event.target as HTMLElement
+  
+  // Try to find if we're clicking on a node
+  const nodeElement = target.closest('.vue-flow__node')
+  let targetEntity: Entity | null = null
+  
+  if (nodeElement) {
+    const nodeId = nodeElement.getAttribute('data-id')
+    if (nodeId) {
+      targetEntity = entities.value.find(e => e.id === nodeId) || null
+    }
+  }
+  
+  // Convert screen coordinates to flow coordinates and store
+  const flowPosition = screenToFlowCoordinate({
+    x: event.clientX,
+    y: event.clientY
+  })
+  
+  contextMenuTarget.value = targetEntity
+  contextMenuPosition.value = flowPosition
+}
+
+// Context menu actions
+const handleAddReactionToEntity = (entity: Entity) => {
+  if (entity.data.x !== undefined && entity.data.y !== undefined) {
+    createEmoji('❤️', entity.data.x + 50, entity.data.y - 30)
+  }
+}
+
+const handleDeleteEntity = (entity: Entity) => {
+  deleteEntity(entity)
+}
+
+const handleCreateNodeAtPosition = () => {
+  create({
+    type: 'html',
+    x: contextMenuPosition.value.x - 100, // Center the node
+    y: contextMenuPosition.value.y - 100,
+    width: 200,
+    height: 200,
+    content: ''
+  })
+}
+
+const handleCreateEmojiAtPosition = () => {
+  createEmoji('❤️', contextMenuPosition.value.x, contextMenuPosition.value.y)
+}
+
 // Action handlers for spatial view
 const handleCreateNode = async () => {
   await create({
@@ -93,12 +197,47 @@ const handleCreateEmoji = async () => {
 
 <template>
   <ViewContainer>
-    <SpatialView :view_id="view_id" :ui="ui" :nodes="positionedNodes" @nodes-change="handleNodeChange">
-      <template #node-resizable="resizableNodeProps">
-        <HTMLEntity :entity="resizableNodeProps.data" :Editor="Editor" :onUpdate="update"
-          :is-selected="resizableNodeProps.isSelected" />
-      </template>
-    </SpatialView>
+    <ContextMenuRoot :modal="true" @update:open="handleContextMenuOpenChange">
+      <ContextMenuTrigger as-child>
+        <div @contextmenu="handleContextMenuTrigger" class="spatial-canvas">
+          <SpatialView :view_id="view_id" :ui="ui" :nodes="positionedNodes" @nodes-change="handleNodeChange">
+            <template #node-resizable="resizableNodeProps">
+              <HTMLEntity :entity="resizableNodeProps.data" :Editor="Editor" :onUpdate="update"
+                :is-selected="resizableNodeProps.isSelected" />
+            </template>
+          </SpatialView>
+        </div>
+      </ContextMenuTrigger>
+      
+      <ContextMenuPortal>
+        <ContextMenuContent class="context-menu-content" :side-offset="2">
+          <!-- Entity-specific menu items -->
+          <template v-if="contextMenuTarget">
+            <ContextMenuItem class="context-menu-item" @click="handleAddReactionToEntity(contextMenuTarget)">
+              <Icon type="heart" class="context-menu-icon" />
+              <span>Add Reaction</span>
+            </ContextMenuItem>
+            <ContextMenuSeparator class="context-menu-separator" />
+            <ContextMenuItem class="context-menu-item destructive" @click="handleDeleteEntity(contextMenuTarget)">
+              <Icon type="trash" class="context-menu-icon" />
+              <span>Delete</span>
+            </ContextMenuItem>
+          </template>
+          
+          <!-- Canvas-specific menu items -->
+          <template v-else>
+            <ContextMenuItem class="context-menu-item" @click="handleCreateNodeAtPosition">
+              <Icon type="plus" class="context-menu-icon" />
+              <span>Create Node</span>
+            </ContextMenuItem>
+            <ContextMenuItem class="context-menu-item" @click="handleCreateEmojiAtPosition">
+              <Icon type="heart" class="context-menu-icon" />
+              <span>Add Reaction</span>
+            </ContextMenuItem>
+          </template>
+        </ContextMenuContent>
+      </ContextMenuPortal>
+    </ContextMenuRoot>
     
     <template #actions>
       <ActionButton icon="plus" label="New node" @click="handleCreateNode" />
@@ -106,3 +245,70 @@ const handleCreateEmoji = async () => {
     </template>
   </ViewContainer>
 </template>
+
+<style scoped>
+.spatial-canvas {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+/* Context Menu Styles */
+:deep(.context-menu-content) {
+  min-width: 160px;
+  background: var(--ui-95);
+  border: 1px solid var(--ui-80);
+  border-radius: calc(var(--ui-radius));
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  padding: var(--size-4);
+  z-index: 1000;
+}
+
+@media (prefers-color-scheme: dark) {
+  :deep(.context-menu-content) {
+    background: var(--ui-90);
+    border-color: var(--ui-70);
+  }
+}
+
+:deep(.context-menu-item) {
+  display: flex;
+  align-items: center;
+  gap: var(--size-8);
+  padding: var(--size-6) var(--size-8);
+  border-radius: calc(var(--ui-radius) - 2px);
+  cursor: pointer;
+  color: var(--ui-20);
+  font-size: 0.875rem;
+  transition: background-color 0.2s ease;
+  outline: none;
+  user-select: none;
+}
+
+:deep(.context-menu-item:hover),
+:deep(.context-menu-item[data-highlighted]) {
+  background: var(--ui-80);
+}
+
+:deep(.context-menu-item.destructive) {
+  color: var(--ui-red);
+}
+
+:deep(.context-menu-item.destructive:hover),
+:deep(.context-menu-item.destructive[data-highlighted]) {
+  background: var(--ui-red);
+  color: var(--ui-100);
+}
+
+:deep(.context-menu-icon) {
+  width: var(--size-16);
+  height: var(--size-16);
+  flex-shrink: 0;
+}
+
+:deep(.context-menu-separator) {
+  height: 1px;
+  background: var(--ui-80);
+  margin: var(--size-4) 0;
+}
+</style>
