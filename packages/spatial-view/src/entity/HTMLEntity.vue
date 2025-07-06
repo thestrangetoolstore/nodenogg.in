@@ -162,19 +162,6 @@ const handleWheel = (event: WheelEvent) => {
   max-width: 100%;
 }
 
-/* Read-only indicator */
-.read-only-indicator {
-  position: absolute;
-  top: var(--size-8);
-  right: var(--size-8);
-  width: var(--size-16);
-  height: var(--size-16);
-  color: var(--ui-50);
-  opacity: 0.7;
-  transform: scale(calc(1 / var(--zoom-value)));
-  transform-origin: top right;
-  pointer-events: none;
-}
 
 @media (prefers-color-scheme: dark) {
   .resizable-container.read-only {
