@@ -12,6 +12,7 @@ import pin from './pin.icon.svg?raw'
 import tool from './tool.icon.svg?raw'
 import plus from './plus.icon.svg?raw'
 import region from './draw-region.icon.svg?raw'
+import home from './home.icon.svg?raw'
 
 export type IconName = keyof typeof icons
 
@@ -29,5 +30,6 @@ export const icons = {
   tool,
   newMicrocosm,
   plus,
-  region
+  region,
+  home
 } as const

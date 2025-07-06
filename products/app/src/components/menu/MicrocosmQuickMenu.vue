@@ -63,45 +63,44 @@ const filter = (list: (string[]), term: string) =>
 <template>
     <ComboboxRoot v-model:searchTerm="inputValue" :filter-function="filter">
 
-            <ComboboxInput asChild>
-                <Input large :placeholder="placeholder" autoFocus v-on:keyup="(e) => {
-                }" />
-            </ComboboxInput>
-            <ComboboxContent>
-                <ComboboxViewport class="viewport">
-                    <ComboboxGroup>
-                        <ComboboxLabel class="group-label">Recent microcosms</ComboboxLabel>
-                        <ComboboxItem v-for="(m) in options" :key="m.id" :value="m.id" asChild
-                            @select.prevent="() => onSelect(m.id)">
-                            <article class="item">
-                                <span>{{ parseMicrocosmID(m.id) }}</span> <span
-                                    class="secondary">{{
-                                        getTimeSince(m.lastAccessed)
-                                    }}</span>
-                            </article>
-                        </ComboboxItem>
-                    </ComboboxGroup>
-                    <ComboboxItem value="new" asChild @select="onCreate" v-if="!existingMicrocosm">
-                        <article class="item new">
-                            <p>Create <span class="bold">{{ sanitizeMicrocosmIDTitle(inputValue) }}</span>
-
-                            </p>
-                            <div class="instruction">Press<span class="keycommand">↲</span></div>
-
-                            <!-- <p>
-                            <small>{{ newMicrocosmID }}</small>
-                        </p> -->
+        <ComboboxInput asChild>
+            <Input large :placeholder="placeholder" autoFocus v-on:keyup="(e) => {
+            }" />
+        </ComboboxInput>
+        <ComboboxContent>
+            <ComboboxViewport class="viewport">
+                <ComboboxGroup>
+                    <ComboboxLabel class="group-label">Recent microcosms</ComboboxLabel>
+                    <ComboboxItem v-for="(m) in options" :key="m.id" :value="m.id" asChild
+                        @select.prevent="() => onSelect(m.id)">
+                        <article class="item">
+                            <span>{{ parseMicrocosmID(m.id) }}</span> <span class="secondary">{{
+                                getTimeSince(m.lastAccessed)
+                            }}</span>
                         </article>
                     </ComboboxItem>
+                </ComboboxGroup>
+                <ComboboxItem value="new" asChild @select="onCreate" v-if="!existingMicrocosm">
+                    <article class="item new">
+                        <p>Create <span class="bold">{{ sanitizeMicrocosmIDTitle(inputValue) }}</span>
 
-                </ComboboxViewport>
-            </ComboboxContent>
-            <div v-if="!active" class="instruction-tray">
-                <div class="instruction">Press<span class="keycommand" style="padding-top: 0">↓</span>for more options
-                </div>
-                <!-- <div class="instruction"><span class="keycommand">↲</span>Create -->
-                <!-- </div> -->
+                        </p>
+                        <div class="instruction">Press<span class="keycommand">↲</span></div>
+
+                        <!-- <p>
+                            <small>{{ newMicrocosmID }}</small>
+                        </p> -->
+                    </article>
+                </ComboboxItem>
+
+            </ComboboxViewport>
+        </ComboboxContent>
+        <div v-if="!active" class="instruction-tray">
+            <div class="instruction">Press<span class="keycommand" style="padding-top: 0">↓</span>for more options
             </div>
+            <!-- <div class="instruction"><span class="keycommand">↲</span>Create -->
+            <!-- </div> -->
+        </div>
     </ComboboxRoot>
 </template>
 

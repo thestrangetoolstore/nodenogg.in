@@ -4,6 +4,34 @@
 @import '@vue-flow/core/dist/theme-default.css';
 /* @import './resizable.css'; */
 
+/* Munken Sans Font Definitions */
+@font-face {
+  font-family: 'Munken Sans';
+  src: url('/fonts/munken-sans/MunkenSansWeb-Regular.woff2') format('woff2'),
+       url('/fonts/munken-sans/MunkenSansWeb-Regular.woff') format('woff');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Munken Sans';
+  src: url('/fonts/munken-sans/MunkenSansWeb-Medium.woff2') format('woff2'),
+       url('/fonts/munken-sans/MunkenSansWeb-Medium.woff') format('woff');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Munken Sans';
+  src: url('/fonts/munken-sans/MunkenSansWeb-Bold.woff2') format('woff2'),
+       url('/fonts/munken-sans/MunkenSansWeb-Bold.woff') format('woff');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
 body {
   width: 100%;
   height: 100%;

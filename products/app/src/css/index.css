@@ -1,7 +1,7 @@
 @import './reset.css';
-@import './tokens/animation.css';
-@import './tokens/color.css';
-@import './tokens/sizes.css';
-@import './tokens/fonts.css';
+@import './animation.css';
+@import './color.css';
+@import './sizes.css';
+@import './fonts.css';
 @import './base.css';
 @import './typography.css';

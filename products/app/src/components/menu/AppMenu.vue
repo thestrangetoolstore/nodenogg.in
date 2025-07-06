@@ -12,6 +12,7 @@ import {
 import { useApp } from '@/state';
 import JoinMicrocosmDialog from './JoinMicrocosmDialog.vue';
 import Icon from '@/components/icon/Icon.vue';
+import Tooltip from '../Tooltip.vue';
 
 const app = useApp()
 const appMenu = ref('')
@@ -38,9 +39,11 @@ const handleExport = () => {
     <nav>
         <MenubarRoot v-model="appMenu" class="menubar-root">
             <MenubarMenu value="home">
-                <MenubarTrigger class="menubar-trigger home-trigger">
-                    <router-link to="/">
-                        Home
+                <MenubarTrigger as-child>
+                    <router-link to="/" class="menubar-trigger home-trigger">
+                        <Tooltip tooltip="Home" side="bottom" align="center" disableClosingTrigger>
+                            <Icon type="home" />
+                        </Tooltip>
                     </router-link>
                 </MenubarTrigger>
             </MenubarMenu>
@@ -96,14 +99,16 @@ nav {
 }
 
 :deep(.breadcrumb-separator) {
-    width: 2px;
+    width: 1px;
     height: 20px;
     background: var(--ui-70);
     transform: rotate(12deg);
+    margin: 0 var(--size-4);
 }
 
-:deep(.menubar-trigger) {
-    padding: 0 var(--size-8);
+:deep(.menubar-trigger),
+.home-trigger {
+    padding: 0;
     outline: none;
     user-select: none;
     height: var(--size-32);
@@ -113,11 +118,13 @@ nav {
     align-items: center;
     justify-content: space-between;
     gap: 2px;
+    text-decoration: none;
 }
 
 :deep(.menubar-trigger:hover),
 :deep(.menubar-trigger[data-highlighted]),
-:deep(.menubar-trigger[data-state='open']) {
+:deep(.menubar-trigger[data-state='open']),
+.home-trigger:hover {
     background-color: var(--ui-80);
 }
 
@@ -146,19 +153,13 @@ nav {
     background: var(--ui-80);
 }
 
-:deep(.menubar-separator) {
-    height: 1px;
-    background-color: var(--ui-80);
-    margin: 2px;
-}
-
 .microcosm-name {
     font-weight: 500;
     color: var(--ui-20);
 }
 
 .microcosm-trigger {
-    padding: 0 var(--size-6) 0 var(--size-8);
+    padding: var(--size-8) var(--size-4) var(--size-8) var(--size-8);
 }
 
 .microcosm-trigger .microcosm-name {
