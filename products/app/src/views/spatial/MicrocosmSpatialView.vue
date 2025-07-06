@@ -3,6 +3,7 @@ import { computed, ref } from 'vue'
 import { SpatialView, HTMLEntity } from '@nodenogg.in/spatial-view'
 import { useCurrentMicrocosm } from '@/state'
 import { EntitySchema, type Entity } from '@nodenogg.in/schema'
+import { client } from '@/state/app'
 import Editor from '@/components/editor/Editor.vue'
 import type { NodeChange } from '@vue-flow/core'
 import { useVueFlow } from '@vue-flow/core'
@@ -36,6 +37,14 @@ const { update, create, deleteEntity } = microcosm
 
 const { entities } = storeToRefs(microcosm)
 
+// Get current user identity
+const currentIdentity = client.identity.get()
+
+// Helper function to check if entity is owned by current user
+const isOwnedByCurrentUser = (entity: Entity) => {
+  return currentIdentity && entity.identity_id === currentIdentity.id
+}
+
 // Access vue-flow instance for coordinate transformation and interaction control
 const { screenToFlowCoordinate, panOnDrag, zoomOnScroll, zoomOnPinch } = useVueFlow()
 
@@ -65,7 +74,11 @@ const positionedNodes = computed(() => {
       style: {
         width: `${width}px`,
         height: `${height}px`
-      }
+      },
+      // Add property to indicate if entity is editable for the resizer
+      draggable: isOwnedByCurrentUser(entity),
+      selectable: true, // All entities can be selected
+      deletable: isOwnedByCurrentUser(entity)
     }
   })
 })
@@ -199,8 +212,14 @@ const handleCreateNode = async () => {
         <div @contextmenu="handleContextMenuTrigger" class="spatial-canvas">
           <SpatialView :view_id="view_id" :ui="ui" :nodes="positionedNodes" @nodes-change="handleNodeChange">
             <template #node-resizable="resizableNodeProps">
-              <HTMLEntity :entity="resizableNodeProps.data" :Editor="Editor" :onUpdate="update"
-                :is-selected="resizableNodeProps.isSelected" />
+              <!-- Use single HTMLEntity with editable prop -->
+              <HTMLEntity 
+                :entity="resizableNodeProps.data" 
+                :Editor="Editor" 
+                :onUpdate="update"
+                :is-selected="resizableNodeProps.isSelected"
+                :editable="isOwnedByCurrentUser(resizableNodeProps.data)"
+              />
             </template>
           </SpatialView>
         </div>
@@ -214,11 +233,14 @@ const handleCreateNode = async () => {
               <Icon type="heart" class="context-menu-icon" />
               <span>Add Reaction</span>
             </ContextMenuItem>
-            <ContextMenuSeparator class="context-menu-separator" />
-            <ContextMenuItem class="context-menu-item destructive" @click="handleDeleteEntity(contextMenuTarget)">
-              <Icon type="trash" class="context-menu-icon" />
-              <span>Delete</span>
-            </ContextMenuItem>
+            <!-- Only show delete option for entities owned by current user -->
+            <template v-if="isOwnedByCurrentUser(contextMenuTarget)">
+              <ContextMenuSeparator class="context-menu-separator" />
+              <ContextMenuItem class="context-menu-item destructive" @click="handleDeleteEntity(contextMenuTarget)">
+                <Icon type="trash" class="context-menu-icon" />
+                <span>Delete</span>
+              </ContextMenuItem>
+            </template>
           </template>
 
           <!-- Canvas-specific menu items -->

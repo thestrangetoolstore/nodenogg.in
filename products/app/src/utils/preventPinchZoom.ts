@@ -2,9 +2,9 @@
 export function preventPinchZoom() {
   // Prevent ctrl+wheel and cmd+wheel (pinch gesture on trackpad)
   document.addEventListener('wheel', (e) => {
-    if (e.ctrlKey || e.metaKey) {
-      e.preventDefault()
-    }
+    // if (e.ctrlKey || e.metaKey) {
+    //   e.preventDefault()
+    // }
   }, { passive: false })
 
   // // Prevent keyboard zoom shortcuts
@@ -17,14 +17,14 @@ export function preventPinchZoom() {
 
   // Prevent gesture events (for browsers that support them)
   document.addEventListener('gesturestart', (e) => {
-    e.preventDefault()
+    // e.preventDefault()
   }, { passive: false })
 
   document.addEventListener('gesturechange', (e) => {
-    e.preventDefault()
+    // e.preventDefault()
   }, { passive: false })
 
   document.addEventListener('gestureend', (e) => {
-    e.preventDefault()
+    // e.preventDefault()
   }, { passive: false })
 }

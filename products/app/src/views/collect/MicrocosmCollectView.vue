@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useCurrentMicrocosm } from '@/state'
+import { client, useCurrentMicrocosm } from '@/state'
 import SimpleNode from './CollectNode.vue'
 import { storeToRefs } from 'pinia'
 import ViewContainer from '@/components/ViewContainer.vue'
@@ -20,9 +20,13 @@ defineProps({
 // Use the unified entity operations API
 const microcosm = useCurrentMicrocosm()
 
+const identity = client.identity.get()
+
 const { entities } = storeToRefs(microcosm)
 
-const htmlEntites = computed(() => entities.value.filter(e => EntitySchema.utils.isType(e, 'html')))
+const htmlEntities = computed(() => entities.value.filter(e =>
+  EntitySchema.utils.isType(e, 'html') && identity?.id === e.identity_id
+))
 
 const { setEditingNode, isEditing, update, deleteEntity, create } = microcosm
 
@@ -45,7 +49,7 @@ const handleCreateEmoji = async () => {
 <template>
   <ViewContainer>
     <div class="entities">
-      <SimpleNode v-for="e in entities" v-bind:key="`entity/${e.id}`" :entity="e"
+      <SimpleNode v-for="e in htmlEntities" v-bind:key="`entity/${e.id}`" :entity="e"
         :onChange="content => update(e.id, { content })" :onDelete="() => deleteEntity(e)" :isEditing="isEditing(e.id)"
         @startEditing="setEditingNode(e.id)" @stopEditing="setEditingNode(null)" />
     </div>

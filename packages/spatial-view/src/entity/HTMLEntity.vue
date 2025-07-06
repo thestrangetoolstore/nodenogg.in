@@ -10,7 +10,11 @@ const props = defineProps<{
   Editor?: any;
   onUpdate?: (id: string, data: any) => void;
   isSelected?: boolean;
+  editable?: boolean;
 }>()
+
+// Default to editable if not specified
+const isEditable = computed(() => props.editable !== false)
 
 const { startEditing, stopEditing, isNodeEditing } = useSpatialSelection()
 const isEditing = computed(() => isNodeEditing.value(props.entity.id))
@@ -30,7 +34,9 @@ const handleCancel = () => {
 // Handler for double-clicking to edit
 const handleDoubleClick = (event: MouseEvent) => {
   event.stopPropagation()
-  startEditing(props.entity.id)
+  if (isEditable.value) {
+    startEditing(props.entity.id)
+  }
 }
 
 // Handler for single click (prevent propagation when editing)
@@ -41,7 +47,7 @@ const handleClick = (event: MouseEvent) => {
 }
 
 const handleKeydown = (event: KeyboardEvent) => {
-  if ((event.key === 'Enter' || event.key === ' ') && !isEditing.value) {
+  if ((event.key === 'Enter' || event.key === ' ') && !isEditing.value && isEditable.value) {
     event.preventDefault()
     startEditing(props.entity.id)
   }
@@ -68,18 +74,26 @@ const handleWheel = (event: WheelEvent) => {
 </script>
 
 <template>
-  <NodeResizer :min-width="50" :min-height="50" :node-id="entity.id" />
-  <div class="resizable-container" :class="{ 'is-selected': isSelected, 'is-editing': isEditing }" tabindex="0"
+  <!-- Only show NodeResizer for editable entities -->
+  <NodeResizer v-if="isEditable" :min-width="50" :min-height="50" :node-id="entity.id" />
+  <div class="resizable-container" :class="{ 
+    'is-selected': isSelected, 
+    'is-editing': isEditing,
+    'read-only': !isEditable
+  }" tabindex="0"
     @keydown="handleKeydown" @dblclick="handleDoubleClick" @click="handleClick" @mousedown="handleMouseDown"
     @wheel="handleWheel">
     <div class="content-wrapper">
       <component v-if="Editor" :is="Editor" :value="entity?.data.content" :onChange="handleContentChange"
-        :editable="isEditing" @cancel="handleCancel" />
+        :editable="isEditing && isEditable" @cancel="handleCancel" />
     </div>
 
-    <!-- <div class="screen-space-element">
-      {{ entity.id }}
-    </div> -->
+    <!-- Visual indicator for read-only entities -->
+    <div v-if="!isEditable" class="read-only-indicator">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z" fill="currentColor"/>
+      </svg>
+    </div>
   </div>
 </template>
 
@@ -119,6 +133,27 @@ const handleWheel = (event: WheelEvent) => {
   box-shadow: 0 0 0 4px rgba(var(--ui-primary-100-rgb), 0.2);
 }
 
+/* Read-only state */
+.resizable-container.read-only {
+  background: var(--ui-85);
+  opacity: 0.8;
+  border: 1px solid var(--ui-70);
+}
+
+.resizable-container.read-only:focus {
+  outline: 2px solid var(--ui-60);
+  outline-offset: 2px;
+}
+
+.resizable-container.read-only.is-selected {
+  outline: 2px solid var(--ui-60);
+  outline-offset: 2px;
+}
+
+.resizable-container.read-only .content-wrapper {
+  pointer-events: none; /* Prevent text selection in read-only mode */
+}
+
 /* Content wrapper to handle overflow */
 .content-wrapper {
   flex: 1;
@@ -133,19 +168,24 @@ const handleWheel = (event: WheelEvent) => {
   max-width: 100%;
 }
 
-/* This element will maintain a consistent size regardless of zoom level */
-.screen-space-element {
+/* Read-only indicator */
+.read-only-indicator {
   position: absolute;
-  bottom: 10px;
-  right: 10px;
-  padding: 5px 10px;
-  background-color: var(--ui-primary-100);
-  color: white;
-  border-radius: 4px;
-  font-size: 12px;
-
-  /* The key part: scale inversely to the zoom level to maintain size */
+  top: var(--size-8);
+  right: var(--size-8);
+  width: var(--size-16);
+  height: var(--size-16);
+  color: var(--ui-50);
+  opacity: 0.7;
   transform: scale(calc(1 / var(--zoom-value)));
-  transform-origin: bottom right;
+  transform-origin: top right;
+  pointer-events: none;
+}
+
+@media (prefers-color-scheme: dark) {
+  .resizable-container.read-only {
+    background: var(--ui-80);
+    border-color: var(--ui-60);
+  }
 }
 </style>

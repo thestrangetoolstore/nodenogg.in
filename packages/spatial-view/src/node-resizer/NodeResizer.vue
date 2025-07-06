@@ -164,7 +164,7 @@ export default {
   height: var(--size-8);
   /* border: 1px solid var(--ui-90); */
   /* border-radius: 1px; */
-  background-color: var(--ui-primary-100);
+  /* background-color: var(--ui-primary-100); */
   transform: translate(-50%, -50%) scale(calc(1 / var(--zoom-value)));
   z-index: 1;
 }
