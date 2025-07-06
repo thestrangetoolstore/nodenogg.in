@@ -22,7 +22,7 @@ const appRouter = useAppRouter()
 // Switch to a different view
 const switchView = (viewType: string) => {
     if (!viewType) return
-    
+
     router.push({
         path: route.path,
         query: {
@@ -49,10 +49,7 @@ const formatViewName = (name: string) => {
 <template>
     <ToolbarRoot class="floating-toolbar" v-if="!!microcosm">
         <!-- View switcher toggle group -->
-        <ToolbarToggleGroup 
-            type="single" 
-            v-model="currentViewType"
-            class="view-switcher">
+        <ToolbarToggleGroup type="single" v-model="currentViewType" class="view-switcher">
             <ToolbarToggleItem v-for="(_, viewType) in viewRegistry" :key="viewType" :value="viewType"
                 class="toolbar-toggle-item" :title="`Switch to ${formatViewName(viewType)} view`">
                 <Icon :type="viewType === 'collect' ? 'list' : 'grid'" />

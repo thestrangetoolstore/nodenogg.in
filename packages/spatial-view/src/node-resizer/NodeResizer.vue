@@ -170,7 +170,7 @@ export default {
 }
 
 .vue-flow__resize-control.handle.left {
-  left: 0;
+  /* outline: 5px solid green; */
   top: 50%;
 }
 .vue-flow__resize-control.handle.right {

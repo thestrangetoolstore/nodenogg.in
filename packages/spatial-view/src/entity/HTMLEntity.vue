@@ -7,7 +7,7 @@ import { useSpatialSelection } from '../composables/useSpatialSelection'
 
 const props = defineProps<{
   entity: EntityOfType<'html'>;
-  Editor?: any; // TODO: Type this properly when Editor component types are available
+  Editor?: any;
   onUpdate?: (id: string, data: any) => void;
   isSelected?: boolean;
 }>()
@@ -69,16 +69,9 @@ const handleWheel = (event: WheelEvent) => {
 
 <template>
   <NodeResizer :min-width="50" :min-height="50" :node-id="entity.id" />
-  <div 
-    class="resizable-container" 
-    :class="{ 'is-selected': isSelected, 'is-editing': isEditing }"
-    tabindex="0" 
-    @keydown="handleKeydown"
-    @dblclick="handleDoubleClick"
-    @click="handleClick"
-    @mousedown="handleMouseDown"
-    @wheel="handleWheel"
-  >
+  <div class="resizable-container" :class="{ 'is-selected': isSelected, 'is-editing': isEditing }" tabindex="0"
+    @keydown="handleKeydown" @dblclick="handleDoubleClick" @click="handleClick" @mousedown="handleMouseDown"
+    @wheel="handleWheel">
     <div class="content-wrapper">
       <component v-if="Editor" :is="Editor" :value="entity?.data.content" :onChange="handleContentChange"
         :editable="isEditing" @cancel="handleCancel" />

@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { provide, ref, computed } from 'vue'
-import { type Entity } from '@nodenogg.in/schema'
 import { useCurrentMicrocosm } from '@/state'
 import SimpleNode from './CollectNode.vue'
 import { storeToRefs } from 'pinia'
 import ViewContainer from '@/components/ViewContainer.vue'
+import { computed } from 'vue'
+import { EntitySchema } from '@nodenogg.in/schema'
 
 defineProps({
   view_id: {
@@ -20,6 +20,8 @@ defineProps({
 const microcosm = useCurrentMicrocosm()
 
 const { entities } = storeToRefs(microcosm)
+const htmlEntites = computed(() => entities.value.filter(e => EntitySchema.utils.isType(e, 'html')))
+
 const { setEditingNode, isEditing, update, deleteEntity, create, createEmoji } = microcosm
 
 const handleCreateEntity = async () => {
@@ -29,20 +31,16 @@ const handleCreateEntity = async () => {
 const handleCreateEmoji = async () => {
   await createEmoji(`❤️`, 0, 0)
 }
-
-// Reactive reference to track the container element
-const containerRef = ref<HTMLElement | null>(null)
 </script>
 
 <template>
-  <ViewContainer background>
-
+  <ViewContainer>
     <div class="actions">
       <button @click="handleCreateEntity" class="button">New node</button>
       <button @click="handleCreateEmoji" class="button">React</button>
     </div>
-    <div class="nodes">
-      <SimpleNode v-for="e in entities" v-bind:key="`node/${e.id}`" :entity="e"
+    <div class="entities">
+      <SimpleNode v-for="e in entities" v-bind:key="`entity/${e.id}`" :entity="e"
         :onChange="content => update(e.id, { content })" :onDelete="() => deleteEntity(e)" :isEditing="isEditing(e.id)"
         @startEditing="setEditingNode(e.id)" @stopEditing="setEditingNode(null)" />
     </div>
@@ -72,7 +70,7 @@ const containerRef = ref<HTMLElement | null>(null)
   z-index: 1;
 }
 
-.nodes {
+.entities {
   display: flex;
   flex-direction: column;
   justify-content: flex-start;

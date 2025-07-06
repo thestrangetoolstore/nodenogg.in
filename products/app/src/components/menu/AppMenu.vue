@@ -1,11 +1,8 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { useRoute } from 'vue-router';
 import {
-    MenubarCheckboxItem,
     MenubarContent,
     MenubarItem,
-    MenubarItemIndicator,
     MenubarMenu,
     MenubarPortal,
     MenubarRoot,
@@ -13,21 +10,26 @@ import {
     MenubarTrigger,
 } from 'reka-ui'
 import { useApp } from '@/state';
-import { paramToString } from '@/state'
 import JoinMicrocosmDialog from './JoinMicrocosmDialog.vue';
+import Icon from '@/components/icon/Icon.vue';
 
 const app = useApp()
-const route = useRoute()
-
-const isRoute = (params: string | string[], uri: string) => paramToString(params) === uri
-
-const menuOpen = ref(false)
-
 const appMenu = ref('')
 
-const onMicrocosmSelect = (e: Event) => {
-    e.stopPropagation()
-    if (menuOpen.value) e.preventDefault()
+// Microcosm menu actions
+const handleLeave = () => {
+    // TODO: Implement leave functionality
+    console.log('Leave microcosm')
+}
+
+const handleDeleteData = () => {
+    // TODO: Implement delete data functionality
+    console.log('Delete my data')
+}
+
+const handleExport = () => {
+    // TODO: Implement export functionality
+    console.log('Export microcosm')
 }
 
 </script>
@@ -35,40 +37,47 @@ const onMicrocosmSelect = (e: Event) => {
 <template>
     <nav>
         <MenubarRoot v-model="appMenu" class="menubar-root">
-            <router-link to="/" class="home-button">
-                Home
-            </router-link>
-            <div v-if="app.activeMicrocosm" class="microcosm-info">
-                <span class="separator">/</span>
-                <span class="microcosm-name">{{ app.activeMicrocosm.id }}</span>
-            </div>
+            <MenubarMenu value="home">
+                <MenubarTrigger class="menubar-trigger home-trigger">
+                    <router-link to="/">
+                        Home
+                    </router-link>
+                </MenubarTrigger>
+            </MenubarMenu>
+
+            <template v-if="app.activeMicrocosm">
+                <MenubarSeparator class="breadcrumb-separator" />
+                <MenubarMenu value="microcosm">
+                    <MenubarTrigger class="menubar-trigger microcosm-trigger">
+                        <span class="microcosm-name">{{ app.activeMicrocosm.id }}</span>
+                        <Icon type="ellipsis" class="dropdown-icon" />
+                    </MenubarTrigger>
+                    <MenubarPortal>
+                        <MenubarContent class="menubar-content" align="start" :side-offset="5" :align-offset="-3">
+                            <MenubarItem class="menubar-item" @click="handleExport">
+                                Export
+                            </MenubarItem>
+                            <MenubarSeparator />
+                            <MenubarItem class="menubar-item" @click="handleDeleteData">
+                                Delete my data
+                            </MenubarItem>
+                            <MenubarItem class="menubar-item warning" @click="handleLeave">
+                                Leave
+                            </MenubarItem>
+                        </MenubarContent>
+                    </MenubarPortal>
+                </MenubarMenu>
+            </template>
         </MenubarRoot>
         <JoinMicrocosmDialog />
     </nav>
 </template>
 
 <style scoped>
-.home-button {
-    padding: var(--size-8);
-}
-
-.home-button:hover {
-    background: var(--ui-primary-100);
-    color: var(--ui-100);
-}
-
-/* .slashed::after {
-    content: '/';
-    position: absolute;
-    right: calc(-1 * var(--size-4));
-} */
-.slashed {
-    border-right: 1px solid rgba(0, 0, 0, 0.2);
-}
-
 nav {
     display: flex;
     align-items: center;
+    justify-content: space-between;
     padding: var(--size-4);
     gap: var(--size-2);
     width: 100%;
@@ -77,7 +86,6 @@ nav {
 @media (prefers-color-scheme: dark) {
     nav {
         background: var(--ui-90);
-
     }
 }
 
@@ -87,14 +95,11 @@ nav {
     gap: var(--size-2);
 }
 
-:deep(.menubar-label) {
-    display: flex;
-    align-items: center;
-}
-
-:deep(.title) {
-    font-size: 1.1em;
-    font-weight: 500;
+:deep(.breadcrumb-separator) {
+    width: 2px;
+    height: 20px;
+    background: var(--ui-70);
+    transform: rotate(12deg);
 }
 
 :deep(.menubar-trigger) {
@@ -110,87 +115,35 @@ nav {
     gap: 2px;
 }
 
-:deep(.small) {
-    display: block;
-    /* font-size: 0.8em; */
-    /* letter-spacing: 0.05em; */
-    /* font-weight: 600; */
-    /* color: var(--ui-60); */
-    /* text-transform: uppercase; */
-}
-
 :deep(.menubar-trigger:hover),
 :deep(.menubar-trigger[data-highlighted]),
 :deep(.menubar-trigger[data-state='open']) {
     background-color: var(--ui-80);
 }
 
-:deep(.menubar-content:not(.fit)) {
-    min-width: 200px;
-}
-
 :deep(.menubar-content) {
+    min-width: 200px;
     max-height: calc(100vh - 64px);
     overflow-y: scroll;
     background: var(--ui-95);
     box-shadow: var(--ui-container-shadow);
     border-radius: calc(var(--ui-radius));
     padding: var(--size-4);
-    gap: var(--size-2);
 }
 
-:deep(.menubar-label) {
-    height: var(--size-32);
-    padding: 0 var(--size-8);
-    user-select: none;
-    font-size: 0.8em;
-}
-
-:deep(.menubar-item),
-:deep(.menubar-sub-trigger),
-:deep(.menubar-checkbox-item),
-:deep(.menubar-radio-item) {
+:deep(.menubar-item) {
     cursor: pointer;
     all: unset;
-    cursor: pointer;
     height: var(--size-32);
     border-radius: 4px;
     display: flex;
     align-items: center;
-    position: relative;
     padding: 0 var(--size-8);
     user-select: none;
 }
 
-:deep(.menubar-item.inset),
-:deep(.menubar-sub-trigger.inset),
-:deep(.menubar-checkbox-item.inset),
-:deep(.menubar-radio-item.inset) {
-    padding-left: var(--size-24);
-}
-
-:deep(.menubar-item[data-highlighted]),
-:deep(.menubar-sub-trigger[data-highlighted]),
-:deep(.menubar-checkbox-item[data-highlighted]),
-:deep(.menubar-radio-item[data-highlighted]) {
+:deep(.menubar-item[data-highlighted]) {
     background: var(--ui-80);
-    /* background-image: linear-gradient(135deg, var(--grass-9) 0%, var(--grass-10) 100%); */
-}
-
-:deep(.menubar-item-indicator[data-state='checked']) {
-    background: red;
-}
-
-:deep(.menubar-item-indicator) {
-    position: absolute;
-    left: var(--size-8);
-    width: var(--size-8);
-    height: var(--size-8);
-    border-radius: var(--size-4);
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    background: currentColor;
 }
 
 :deep(.menubar-separator) {
@@ -199,56 +152,38 @@ nav {
     margin: 2px;
 }
 
-:deep(.RightSlot) {
-    margin-left: auto;
-    padding-left: var(--size-24);
-}
-
-div.indicator {
-    width: var(--size-4);
-    height: var(--size-4);
-    border-radius: 50%;
-    background: var(--ui-50);
-    margin-left: 0;
-    margin-bottom: var(--size-8);
-}
-
-div.indicator.connected {
-    background: var(--ui-green);
-}
-
-aside.status {
-    border-radius: var(--size-24);
-    height: var(--size-24);
-    min-width: var(--size-24);
-    padding: 0 var(--size-8);
-    align-items: center;
-    justify-content: center;
-    display: flex;
-    font-size: 0.8em;
-    font-weight: bold;
-    margin: 0 var(--size-4);
-    background: var(--ui-100);
-}
-
-aside.status>p {
-    margin-left: 4px;
-}
-
-/* Microcosm info styles */
-.microcosm-info {
-    display: flex;
-    align-items: center;
-    gap: var(--size-4);
-}
-
-.separator {
-    color: var(--ui-60);
-    font-weight: 300;
-}
-
 .microcosm-name {
     font-weight: 500;
     color: var(--ui-20);
+}
+
+.microcosm-trigger {
+    padding: 0 var(--size-6) 0 var(--size-8);
+}
+
+.microcosm-trigger .microcosm-name {
+    margin-right: var(--size-4);
+}
+
+.dropdown-icon {
+    width: var(--size-24);
+    height: var(--size-24);
+    opacity: 0.7;
+    transition: opacity 0.2s ease;
+}
+
+.microcosm-trigger:hover .dropdown-icon {
+    opacity: 1;
+}
+
+/* Warning style for destructive actions */
+:deep(.menubar-item.warning) {
+    color: var(--ui-red);
+}
+
+:deep(.menubar-item.warning:hover),
+:deep(.menubar-item.warning[data-highlighted]) {
+    background: var(--ui-red);
+    color: var(--ui-100);
 }
 </style>
