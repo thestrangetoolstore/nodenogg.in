@@ -58,13 +58,13 @@ const { isType } = EntitySchema.utils
             <ContextMenuItem value="delete" title="Delete" @click="onDelete" />
         </template>
     </ContextMenu>
-
 </template>
 
 <style scoped>
 .node {
     position: relative;
     width: 100%;
+    max-width: calc(256 * var(--size-2));
     min-height: calc(var(--size-2) * 100);
     background: var(--ui-80);
     color: var(--ui-0);

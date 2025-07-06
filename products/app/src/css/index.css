@@ -5,8 +5,3 @@
 @import './tokens/fonts.css';
 @import './base.css';
 @import './typography.css';
-
-#app {
-  margin: 0 auto;
-  padding: 0;
-}

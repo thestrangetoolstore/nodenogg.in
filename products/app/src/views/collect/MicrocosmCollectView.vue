@@ -4,6 +4,7 @@ import { type Entity } from '@nodenogg.in/schema'
 import { useCurrentMicrocosm } from '@/state'
 import SimpleNode from './CollectNode.vue'
 import { storeToRefs } from 'pinia'
+import ViewContainer from '@/components/ViewContainer.vue'
 
 defineProps({
   view_id: {
@@ -34,7 +35,7 @@ const containerRef = ref<HTMLElement | null>(null)
 </script>
 
 <template>
-  <div class="collect-container">
+  <ViewContainer background>
 
     <div class="actions">
       <button @click="handleCreateEntity" class="button">New node</button>
@@ -45,7 +46,7 @@ const containerRef = ref<HTMLElement | null>(null)
         :onChange="content => update(e.id, { content })" :onDelete="() => deleteEntity(e)" :isEditing="isEditing(e.id)"
         @startEditing="setEditingNode(e.id)" @stopEditing="setEditingNode(null)" />
     </div>
-  </div>
+  </ViewContainer>
 </template>
 
 <style scoped>
@@ -75,7 +76,7 @@ const containerRef = ref<HTMLElement | null>(null)
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  align-items: flex-start;
+  align-items: center;
   position: absolute;
   gap: 1em;
   width: 100%;
@@ -84,15 +85,5 @@ const containerRef = ref<HTMLElement | null>(null)
   top: 0;
   left: 0;
   overflow-y: auto;
-}
-
-.collect-container {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  border-radius: var(--size-8);
-  overflow: hidden;
-  background: hsla(var(--mono-base-hue), 8%, 90%, 0.03);
-  box-shadow: 0 0 0 1px hsla(var(--mono-base-hue), 8%, 90%, 0.07);
 }
 </style>

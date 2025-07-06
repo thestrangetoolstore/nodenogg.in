@@ -6,6 +6,7 @@ import { app as nodenoggin } from './state/app'
 import App from './App.vue'
 import router from './router'
 import pkg from '../package.json'
+import { preventPinchZoom } from './utils/preventPinchZoom'
 
 const app = createApp(App)
 
@@ -16,5 +17,8 @@ console.log(pkg.version)
 
 app.use(createPinia())
 app.use(router)
+
+// Initialize pinch zoom prevention
+preventPinchZoom()
 
 app.mount('#app')

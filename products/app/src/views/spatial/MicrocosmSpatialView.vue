@@ -6,6 +6,7 @@ import { EntitySchema } from '@nodenogg.in/schema'
 import Editor from '@/components/editor/Editor.vue'
 import type { NodeChange } from '@vue-flow/core'
 import { storeToRefs } from 'pinia'
+import ViewContainer from '@/components/ViewContainer.vue'
 
 defineProps({
   view_id: {
@@ -73,23 +74,12 @@ const handleNodeChange = async (changes: NodeChange[]) => {
 </script>
 
 <template>
-  <div class="spatial-container">
+  <ViewContainer>
     <SpatialView :view_id="view_id" :ui="ui" :nodes="positionedNodes" @nodes-change="handleNodeChange">
       <template #node-resizable="resizableNodeProps">
         <HTMLEntity :entity="resizableNodeProps.data" :Editor="Editor" :onUpdate="update"
           :is-selected="resizableNodeProps.isSelected" />
       </template>
     </SpatialView>
-  </div>
+  </ViewContainer>
 </template>
-
-<style scoped>
-.spatial-container {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  border-radius: var(--size-8);
-  overflow: hidden;
-  box-shadow: 0 0 0 1px hsla(var(--mono-base-hue), 8%, 90%, 0.07);
-}
-</style>

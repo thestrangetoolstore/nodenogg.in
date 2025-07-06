@@ -24,9 +24,10 @@ const handleConfirm = (microcosm_id: MicrocosmID) => {
 </script>
 
 <template>
-    <Tooltip tooltip="New microcosm" command="m" side="bottom" align="start" disableClosingTrigger :delay="200">
+    <Tooltip tooltip="New microcosm" command="m" side="bottom" align="center" disableClosingTrigger :delay="200">
         <Button class="menu-button" @click="() => app.showCommandMenu = true">
             <Icon type="plus" :size="32" />
+            New
         </Button>
     </Tooltip>
     <Dialog :onConfirm="handleConfirm" v-model:open="app.showCommandMenu" title="Add microcosm"

@@ -1,15 +1,13 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import {
-    MenubarContent,
-    MenubarItem,
-    MenubarLabel,
-    MenubarMenu,
-    MenubarPortal,
-    MenubarRoot,
-    MenubarSeparator,
-    MenubarTrigger,
+    ToolbarRoot,
+    ToolbarButton,
+    ToolbarSeparator,
+    ToolbarToggleGroup,
+    ToolbarToggleItem,
+    ToolbarLink
 } from 'reka-ui'
 import { useApp, useCurrentMicrocosm, useAppRouter } from '@/state';
 import { clamp } from '@figureland/kit/math/number';
@@ -17,20 +15,10 @@ import Icon from '@/components/icon/Icon.vue';
 import { type ViewType, viewRegistry } from '@/views';
 
 const microcosm = useCurrentMicrocosm()
-const app = useApp()
 const router = useRouter()
 const route = useRoute()
 const appRouter = useAppRouter()
 
-const peerCount = computed(() =>
-    clamp(microcosm.identities.filter((identity) => identity.joined).length - 1, 0)
-)
-
-const pluralize = (count: number, singular: string, plural = `${singular}s`): string =>
-    `${count} ${count === 1 ? singular : plural}`
-
-const microcosmMenu = ref('')
-const viewMenu = ref('')
 
 // Get current view type
 const currentViewType = computed(() => {
@@ -53,449 +41,138 @@ const formatViewName = (name: string) => {
     return name.charAt(0).toUpperCase() + name.slice(1)
 }
 
+
 </script>
 
 <template>
-    <nav>
-        <MenubarRoot v-model="microcosmMenu" class="menubar-root" v-if="!!microcosm">
-            <!-- Microcosm menu -->
-            <MenubarMenu value="file">
-                <MenubarTrigger class="menubar-trigger title">
-                    {{ microcosm.id }}
-                    <div role="presentation" :class="{
-                        indicator: true,
-                        connected: microcosm.status.connected
-                    }" />
-                    <Icon type="ellipsis" />
-                </MenubarTrigger>
-                <MenubarPortal>
-                    <MenubarContent class="menubar-content" align="start" :side-offset="5" :align-offset="-3">
-                        <MenubarLabel class="menubar-label">
-                            {{ app.device.online ? 'Online' : 'Offline' }}:
-                            <span v-if="microcosm.status.connected">
-                                Connected with {{ pluralize(peerCount, 'other') }}
-                            </span>
-                            <span v-else>
-                                Not connected
-                            </span>
-                        </MenubarLabel>
-                        <MenubarSeparator class="menubar-separator" />
-                        <MenubarItem class="menubar-item">
-                            Duplicate
-                        </MenubarItem>
-                        <MenubarItem class="menubar-item">
-                            Save
-                            <div class="right-slot">
-                                cmd+S
-                            </div>
-                        </MenubarItem>
-                        <MenubarItem class="menubar-item">
-                            Copy link
-                        </MenubarItem>
-                        <MenubarItem class="menubar-item warning">
-                            Leave
-                        </MenubarItem>
-                    </MenubarContent>
-                </MenubarPortal>
-            </MenubarMenu>
+    <ToolbarRoot class="floating-toolbar" v-if="!!microcosm">
+        <!-- View switcher toggle group -->
+        <ToolbarToggleGroup type="single" :value="currentViewType"
+            @update:value="(value) => value && switchView(value as ViewType)" class="view-switcher">
+            <ToolbarToggleItem v-for="(_, viewType) in viewRegistry" :key="viewType" :value="viewType"
+                class="toolbar-toggle-item" :title="`Switch to ${formatViewName(viewType)} view`">
+                <Icon :type="viewType === 'collect' ? 'list' : 'grid'" />
+                <span>{{ formatViewName(viewType) }}</span>
+            </ToolbarToggleItem>
+        </ToolbarToggleGroup>
 
-            <!-- View type switcher menu -->
-            <MenubarMenu value="view">
-                <MenubarTrigger class="menubar-trigger">
-                    {{ formatViewName(currentViewType) }}
-                    <Icon type="chevron" />
-                </MenubarTrigger>
-                <MenubarPortal>
-                    <MenubarContent class="menubar-content fit" align="start" :side-offset="5" :align-offset="-3">
-                        <MenubarLabel class="menubar-label">
-                            Switch View
-                        </MenubarLabel>
-                        <MenubarSeparator class="menubar-separator" />
-                        <MenubarItem v-for="(_, viewType) in viewRegistry" :key="viewType" class="menubar-item"
-                            :class="{ 'with-indicator': viewType === currentViewType }"
-                            @click="switchView(viewType as ViewType)">
-                            <div v-if="viewType === currentViewType" class="menubar-item-indicator" />
-                            {{ formatViewName(viewType) }}
-                        </MenubarItem>
-                    </MenubarContent>
-                </MenubarPortal>
-            </MenubarMenu>
-        </MenubarRoot>
-    </nav>
+        <!-- Separator -->
+        <ToolbarSeparator class="toolbar-separator" />
+
+        <!-- Additional toolbar actions -->
+        <div class="toolbar-actions">
+        </div>
+    </ToolbarRoot>
 </template>
 
 <style scoped>
-nav {
-    position: absolute;
-    z-index: 200;
-    inset: 0;
-    margin-inline: auto;
-    top: var(--size-8);
-    width: fit-content;
-    height: fit-content;
+/* Floating toolbar styles */
+.floating-toolbar {
+    position: fixed;
+    bottom: var(--size-24);
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 300;
     display: flex;
     align-items: center;
+    gap: var(--size-8);
+    padding: var(--size-6);
     background: var(--ui-95);
-    box-shadow: var(--ui-container-shadow);
-    border-radius: calc(var(--ui-radius));
-    /* padding: var(--size-4); */
-    gap: var(--size-2);
+    border: 1px solid var(--ui-80);
+    border-radius: var(--ui-radius);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    padding: var(--size-16);
 }
 
 @media (prefers-color-scheme: dark) {
-    nav {
+    .floating-toolbar {
         background: var(--ui-90);
-
+        border-color: var(--ui-70);
     }
 }
 
-.menubar-root {
+/* View switcher toggle group */
+.view-switcher {
     display: flex;
-    align-items: center;
     gap: var(--size-2);
-}
-
-:deep(.menubar-label) {
-    display: flex;
-    align-items: center;
-}
-
-:deep(.title) {
-    font-size: 1.1em;
-    font-weight: 500;
-}
-
-:deep(.menubar-trigger) {
-    padding-left: var(--size-8);
-    outline: none;
-    user-select: none;
-    height: var(--size-32);
-    border-radius: var(--ui-radius);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 2px;
-}
-
-:deep(.small) {
-    display: block;
-    /* font-size: 0.8em; */
-    /* letter-spacing: 0.05em; */
-    /* font-weight: 600; */
-    /* color: var(--ui-60); */
-    /* text-transform: uppercase; */
-}
-
-:deep(.menubar-trigger:hover),
-:deep(.menubar-trigger[data-highlighted]),
-:deep(.menubar-trigger[data-state='open']) {
-    background-color: var(--ui-80);
-}
-
-:deep(.menubar-content:not(.fit)) {
-    min-width: 200px;
-}
-
-:deep(.menubar-content) {
-    background-color: var(--ui-95);
-    border-radius: var(--ui-radius);
-    padding: var(--size-2);
-    gap: var(--size-2);
-    box-shadow: var(--ui-container-shadow);
-    max-height: calc(100vh - 64px);
-    overflow-y: scroll;
-}
-
-:deep(.menubar-label) {
-    height: var(--size-32);
-    padding: 0 var(--size-8);
-    user-select: none;
-    font-size: 0.8em;
-}
-
-:deep(.menubar-item),
-:deep(.menubar-sub-trigger),
-:deep(.menubar-checkbox-item),
-:deep(.menubar-radio-item) {
-    cursor: pointer;
-    all: unset;
-    height: var(--size-32);
-    border-radius: 4px;
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    position: relative;
-    padding: 0 var(--size-8);
-    user-select: none;
-}
-
-:deep(.warning) {
-    color: var(--ui-orange);
-}
-
-:deep(.menubar-item.inset),
-:deep(.menubar-sub-trigger.inset),
-:deep(.menubar-checkbox-item.inset),
-:deep(.menubar-radio-item.inset) {
-    padding-left: var(--size-24);
-}
-
-:deep(.menubar-item[data-highlighted]),
-:deep(.menubar-sub-trigger[data-highlighted]),
-:deep(.menubar-checkbox-item[data-highlighted]),
-:deep(.menubar-radio-item[data-highlighted]) {
-    background: var(--ui-80);
-    /* background-image: linear-gradient(135deg, var(--grass-9) 0%, var(--grass-10) 100%); */
-}
-
-:deep(.warning[data-highlighted]) {
-    color: var(--ui-mono-0);
-    background: var(--ui-orange);
-}
-
-:deep(.menubar-item.with-indicator) {
-    padding-left: var(--size-24);
-}
-
-:deep(.menubar-item-indicator) {
-    position: absolute;
-    left: var(--size-8);
-    width: var(--size-8);
-    height: var(--size-8);
-    border-radius: var(--size-4);
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    background: currentColor;
-}
-
-:deep(.menubar-separator) {
-    height: 1px;
-    background-color: var(--ui-80);
-    margin: 2px;
-}
-
-:deep(.right-slot) {
-    margin-left: auto;
-}
-
-div.indicator {
-    width: var(--size-4);
-    height: var(--size-4);
-    border-radius: 50%;
-    background: var(--ui-50);
-    margin-left: 0;
-    margin-bottom: var(--size-8);
-}
-
-div.indicator.connected {
-    background: var(--ui-green);
-}
-
-aside.status {
-    border-radius: var(--size-24);
-    height: var(--size-24);
-    min-width: var(--size-24);
-    padding: 0 var(--size-8);
-    align-items: center;
-    justify-content: center;
-    display: flex;
-    font-size: 0.8em;
-    font-weight: bold;
-    margin: 0 var(--size-4);
     background: var(--ui-100);
+    padding: var(--size-2);
+    border-radius: calc(var(--ui-radius) - 2px);
 }
 
-aside.status>p {
-    margin-left: 4px;
-}
-</style>
-
-<style scoped>
-nav {
-    position: absolute;
-    z-index: 200;
-    inset: 0;
-    margin-inline: auto;
-    top: var(--size-8);
-    width: fit-content;
-    height: fit-content;
+/* Toolbar toggle items */
+.toolbar-toggle-item {
     display: flex;
     align-items: center;
+    gap: var(--size-6);
+    padding: var(--size-6) var(--size-12);
+    border: none;
+    background: transparent;
+    color: var(--ui-40);
+    font-size: 0.875rem;
+    font-weight: 500;
+    border-radius: calc(var(--ui-radius) - 4px);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    user-select: none;
+}
+
+.toolbar-toggle-item:hover {
     background: var(--ui-95);
-    box-shadow: var(--ui-container-shadow);
-    border-radius: calc(var(--ui-radius));
-    /* padding: var(--size-4); */
-    gap: var(--size-2);
+    color: var(--ui-20);
 }
 
-@media (prefers-color-scheme: dark) {
-    nav {
-        background: var(--ui-90);
-
-    }
+.toolbar-toggle-item[data-state="on"] {
+    background: var(--ui-primary-100);
+    color: var(--ui-100);
 }
 
-.menubar-root {
-    display: flex;
-    align-items: center;
-    gap: var(--size-2);
+.toolbar-toggle-item[data-state="on"]:hover {
+    background: var(--ui-primary-90);
 }
 
-:deep(.menubar-label) {
-    display: flex;
-    align-items: center;
-}
-
-:deep(.title) {
-    font-size: 1.1em;
-    font-weight: 500;
-}
-
-:deep(.menubar-trigger) {
-    padding-left: var(--size-8);
-    outline: none;
-    user-select: none;
-    height: var(--size-32);
-    border-radius: var(--ui-radius);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 2px;
-}
-
-:deep(.small) {
-    display: block;
-    /* font-size: 0.8em; */
-    /* letter-spacing: 0.05em; */
-    /* font-weight: 600; */
-    /* color: var(--ui-60); */
-    /* text-transform: uppercase; */
-}
-
-:deep(.menubar-trigger:hover),
-:deep(.menubar-trigger[data-highlighted]),
-:deep(.menubar-trigger[data-state='open']) {
-    background-color: var(--ui-80);
-}
-
-:deep(.menubar-content:not(.fit)) {
-    min-width: 200px;
-}
-
-:deep(.menubar-content) {
-    background-color: var(--ui-95);
-    border-radius: var(--ui-radius);
-    padding: var(--size-2);
-    gap: var(--size-2);
-    box-shadow: var(--ui-container-shadow);
-    max-height: calc(100vh - 64px);
-    overflow-y: scroll;
-}
-
-:deep(.menubar-label) {
-    height: var(--size-32);
-    padding: 0 var(--size-8);
-    user-select: none;
-    font-size: 0.8em;
-}
-
-:deep(.menubar-item),
-:deep(.menubar-sub-trigger),
-:deep(.menubar-checkbox-item),
-:deep(.menubar-radio-item) {
-    cursor: pointer;
-    all: unset;
-    height: var(--size-32);
-    border-radius: 4px;
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    position: relative;
-    padding: 0 var(--size-8);
-    user-select: none;
-}
-
-:deep(.warning) {
-    color: var(--ui-orange);
-}
-
-:deep(.menubar-item.inset),
-:deep(.menubar-sub-trigger.inset),
-:deep(.menubar-checkbox-item.inset),
-:deep(.menubar-radio-item.inset) {
-    padding-left: var(--size-24);
-}
-
-:deep(.menubar-item[data-highlighted]),
-:deep(.menubar-sub-trigger[data-highlighted]),
-:deep(.menubar-checkbox-item[data-highlighted]),
-:deep(.menubar-radio-item[data-highlighted]) {
+/* Toolbar separator */
+.toolbar-separator {
+    width: 1px;
+    height: 20px;
     background: var(--ui-80);
-    /* background-image: linear-gradient(135deg, var(--grass-9) 0%, var(--grass-10) 100%); */
+    margin: 0 var(--size-4);
 }
 
-:deep(.warning[data-highlighted]) {
-    color: var(--ui-mono-0);
-    background: var(--ui-orange);
-}
-
-
-
-:deep(.menubar-item-indicator[data-state='checked']) {
-    background: red;
-}
-
-:deep(.menubar-item-indicator) {
-    position: absolute;
-    left: var(--size-8);
-    width: var(--size-8);
-    height: var(--size-8);
-    border-radius: var(--size-4);
-    display: inline-flex;
+/* Toolbar actions */
+.toolbar-actions {
+    display: flex;
     align-items: center;
-    justify-content: center;
-    background: currentColor;
+    gap: var(--size-12);
 }
 
-:deep(.menubar-separator) {
-    height: 1px;
-    background-color: var(--ui-80);
-    margin: 2px;
+/* Connection status */
+.connection-status {
+    display: flex;
+    align-items: center;
+    gap: var(--size-6);
+    padding: var(--size-6) var(--size-12);
+    background: var(--ui-100);
+    border-radius: calc(var(--ui-radius) - 2px);
+    cursor: default;
 }
 
-:deep(.right-slot) {
-    margin-left: auto;
-}
-
-div.indicator {
-    width: var(--size-4);
-    height: var(--size-4);
+.status-dot {
+    width: var(--size-6);
+    height: var(--size-6);
     border-radius: 50%;
     background: var(--ui-50);
-    margin-left: 0;
-    margin-bottom: var(--size-8);
+    transition: background 0.3s ease;
 }
 
-div.indicator.connected {
+.status-dot.connected {
     background: var(--ui-green);
+    box-shadow: 0 0 0 2px rgba(var(--ui-green-rgb), 0.2);
 }
 
-aside.status {
-    border-radius: var(--size-24);
-    height: var(--size-24);
-    min-width: var(--size-24);
-    padding: 0 var(--size-8);
-    align-items: center;
-    justify-content: center;
-    display: flex;
-    font-size: 0.8em;
-    font-weight: bold;
-    margin: 0 var(--size-4);
-    background: var(--ui-100);
-}
-
-aside.status>p {
-    margin-left: 4px;
+.status-text {
+    font-size: 0.75rem;
+    color: var(--ui-40);
+    font-weight: 500;
 }
 </style>

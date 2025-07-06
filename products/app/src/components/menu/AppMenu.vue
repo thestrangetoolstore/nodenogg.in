@@ -38,6 +38,10 @@ const onMicrocosmSelect = (e: Event) => {
             <router-link to="/" class="home-button">
                 Home
             </router-link>
+            <div v-if="app.activeMicrocosm" class="microcosm-info">
+                <span class="separator">/</span>
+                <span class="microcosm-name">{{ app.activeMicrocosm.id }}</span>
+            </div>
         </MenubarRoot>
         <JoinMicrocosmDialog />
     </nav>
@@ -229,5 +233,22 @@ aside.status {
 
 aside.status>p {
     margin-left: 4px;
+}
+
+/* Microcosm info styles */
+.microcosm-info {
+    display: flex;
+    align-items: center;
+    gap: var(--size-4);
+}
+
+.separator {
+    color: var(--ui-60);
+    font-weight: 300;
+}
+
+.microcosm-name {
+    font-weight: 500;
+    color: var(--ui-20);
 }
 </style>
