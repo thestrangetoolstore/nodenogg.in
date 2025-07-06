@@ -56,7 +56,7 @@ const handleCreateEmoji = async () => {
 
     <template #actions>
       <ActionButton icon="plus" label="New node" @click="handleCreateEntity" />
-      <ActionButton icon="heart" label="React" @click="handleCreateEmoji" />
+      <!-- <ActionButton icon="heart" label="React" @click="handleCreateEmoji" /> -->
     </template>
   </ViewContainer>
 </template>
