@@ -3,16 +3,13 @@ import { computed } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import {
     ToolbarRoot,
-    ToolbarButton,
     ToolbarSeparator,
     ToolbarToggleGroup,
     ToolbarToggleItem,
-    ToolbarLink
 } from 'reka-ui'
-import { useApp, useCurrentMicrocosm, useAppRouter } from '@/state';
-import { clamp } from '@figureland/kit/math/number';
+import { useCurrentMicrocosm, useAppRouter } from '@/state';
 import Icon from '@/components/icon/Icon.vue';
-import { type ViewType, viewRegistry } from '@/views';
+import { viewRegistry } from '@/views';
 
 const microcosm = useCurrentMicrocosm()
 const router = useRouter()

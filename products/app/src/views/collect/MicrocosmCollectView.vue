@@ -20,6 +20,7 @@ defineProps({
 const microcosm = useCurrentMicrocosm()
 
 const { entities } = storeToRefs(microcosm)
+
 const htmlEntites = computed(() => entities.value.filter(e => EntitySchema.utils.isType(e, 'html')))
 
 const { setEditingNode, isEditing, update, deleteEntity, create, createEmoji } = microcosm
