@@ -32,7 +32,7 @@ defineProps({
 
 // Use the unified entity operations API
 const microcosm = useCurrentMicrocosm()
-const { update, create, createEmoji, deleteEntity } = microcosm
+const { update, create, deleteEntity } = microcosm
 
 const { entities } = storeToRefs(microcosm)
 
@@ -102,7 +102,7 @@ const originalInteractions = ref({
 // Handle context menu open state changes
 const handleContextMenuOpenChange = (open: boolean) => {
   contextMenuOpen.value = open
-  
+
   if (open) {
     // Store current interaction settings and disable them
     originalInteractions.value = {
@@ -110,7 +110,7 @@ const handleContextMenuOpenChange = (open: boolean) => {
       zoomOnScroll: zoomOnScroll.value,
       zoomOnPinch: zoomOnPinch.value
     }
-    
+
     // Disable interactions while context menu is open
     panOnDrag.value = false
     zoomOnScroll.value = false
@@ -120,7 +120,7 @@ const handleContextMenuOpenChange = (open: boolean) => {
     panOnDrag.value = originalInteractions.value.panOnDrag
     zoomOnScroll.value = originalInteractions.value.zoomOnScroll
     zoomOnPinch.value = originalInteractions.value.zoomOnPinch
-    
+
     // Reset target
     contextMenuTarget.value = null
   }
@@ -130,32 +130,32 @@ const handleContextMenuOpenChange = (open: boolean) => {
 const handleContextMenuTrigger = (event: MouseEvent) => {
   // Get the target element
   const target = event.target as HTMLElement
-  
+
   // Try to find if we're clicking on a node
   const nodeElement = target.closest('.vue-flow__node')
   let targetEntity: Entity | null = null
-  
+
   if (nodeElement) {
     const nodeId = nodeElement.getAttribute('data-id')
     if (nodeId) {
       targetEntity = entities.value.find(e => e.id === nodeId) || null
     }
   }
-  
+
   // Convert screen coordinates to flow coordinates and store
   const flowPosition = screenToFlowCoordinate({
     x: event.clientX,
     y: event.clientY
   })
-  
+
   contextMenuTarget.value = targetEntity
   contextMenuPosition.value = flowPosition
 }
 
 // Context menu actions
 const handleAddReactionToEntity = (entity: Entity) => {
-  if (entity.data.x !== undefined && entity.data.y !== undefined) {
-    createEmoji('❤️', entity.data.x + 50, entity.data.y - 30)
+  if (EntitySchema.utils.isType(entity, 'html')) {
+    create({ type: 'emoji', content: '❤️', x: entity.data.x + 50, y: entity.data.y - 30 })
   }
 }
 
@@ -174,9 +174,9 @@ const handleCreateNodeAtPosition = () => {
   })
 }
 
-const handleCreateEmojiAtPosition = () => {
-  createEmoji('❤️', contextMenuPosition.value.x, contextMenuPosition.value.y)
-}
+const handleCreateEmojiAtPosition = () =>
+  create({ type: 'emoji', content: '❤️', x: contextMenuPosition.value.x, y: contextMenuPosition.value.y })
+
 
 // Action handlers for spatial view
 const handleCreateNode = async () => {
@@ -190,9 +190,6 @@ const handleCreateNode = async () => {
   })
 }
 
-const handleCreateEmoji = async () => {
-  await createEmoji(`❤️`, randomInt(-400, 400), randomInt(-400, 400))
-}
 </script>
 
 <template>
@@ -208,7 +205,7 @@ const handleCreateEmoji = async () => {
           </SpatialView>
         </div>
       </ContextMenuTrigger>
-      
+
       <ContextMenuPortal>
         <ContextMenuContent class="context-menu-content" :side-offset="2">
           <!-- Entity-specific menu items -->
@@ -223,7 +220,7 @@ const handleCreateEmoji = async () => {
               <span>Delete</span>
             </ContextMenuItem>
           </template>
-          
+
           <!-- Canvas-specific menu items -->
           <template v-else>
             <ContextMenuItem class="context-menu-item" @click="handleCreateNodeAtPosition">
@@ -238,10 +235,9 @@ const handleCreateEmoji = async () => {
         </ContextMenuContent>
       </ContextMenuPortal>
     </ContextMenuRoot>
-    
+
     <template #actions>
       <ActionButton icon="plus" label="New node" @click="handleCreateNode" />
-      <ActionButton icon="heart" label="React" @click="handleCreateEmoji" />
     </template>
   </ViewContainer>
 </template>

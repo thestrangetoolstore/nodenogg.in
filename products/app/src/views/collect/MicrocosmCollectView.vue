@@ -24,14 +24,21 @@ const { entities } = storeToRefs(microcosm)
 
 const htmlEntites = computed(() => entities.value.filter(e => EntitySchema.utils.isType(e, 'html')))
 
-const { setEditingNode, isEditing, update, deleteEntity, create, createEmoji } = microcosm
+const { setEditingNode, isEditing, update, deleteEntity, create } = microcosm
 
 const handleCreateEntity = async () => {
-  await create()
+  await create({
+    type: 'html',
+    x: 0,
+    y: 0,
+    width: 300,
+    height: 200,
+    content: ''
+  })
 }
 
 const handleCreateEmoji = async () => {
-  await createEmoji(`❤️`, 0, 0)
+  await create({ type: 'emoji', x: 0, y: 0, content: `❤️` })
 }
 </script>
 
@@ -42,7 +49,7 @@ const handleCreateEmoji = async () => {
         :onChange="content => update(e.id, { content })" :onDelete="() => deleteEntity(e)" :isEditing="isEditing(e.id)"
         @startEditing="setEditingNode(e.id)" @stopEditing="setEditingNode(null)" />
     </div>
-    
+
     <template #actions>
       <ActionButton icon="plus" label="New node" @click="handleCreateEntity" />
       <ActionButton icon="heart" label="React" @click="handleCreateEmoji" />

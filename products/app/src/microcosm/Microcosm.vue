@@ -2,7 +2,6 @@
 import { computed, provide, type PropType } from 'vue'
 import type { MicrocosmID } from '@nodenogg.in/schema'
 import MicrocosmContainer from './MicrocosmContainer.vue'
-import MicrocosmNav from './MicrocosmNav.vue'
 import {
   MICROCOSM_DATA_INJECTION_KEY,
   useApp,
@@ -40,7 +39,6 @@ const ActiveViewComponent = computed(() => {
 
 <template>
   <MicrocosmContainer v-if="microcosm.status.ready && app.ready && app.identity">
-    <MicrocosmNav v-if="ui && app.state.showUI" />
     <component :is="ActiveViewComponent" :ui="ui" :view_id="view_id" />
   </MicrocosmContainer>
 </template>

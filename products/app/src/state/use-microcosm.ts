@@ -68,19 +68,9 @@ export const useMicrocosm = async (id: MicrocosmID) => {
       }
     }
 
-    // Create a new entity
-    const create = async () => {
-      // Get current microcosm when the function is called
-
+    const create = async (data: Entity['data']) => {
       if (microcosm) {
-        const result = await microcosm.create({
-          type: 'html',
-          x: randomInt(-400, 400),
-          y: randomInt(-400, 400),
-          width: 200,
-          height: 200,
-          content: ''
-        })
+        const result = await microcosm.create(data)
 
         if (result && result.id) {
           editingNodeId.value = result.id
@@ -90,14 +80,6 @@ export const useMicrocosm = async (id: MicrocosmID) => {
 
       return null
     }
-
-    const createEmoji = (content: string, x: number, y: number) =>
-      microcosm.create({
-        type: 'emoji',
-        content,
-        x,
-        y
-      })
 
     const status = vue(microcosm.state)
     const identities: Identity[] = []
@@ -118,7 +100,6 @@ export const useMicrocosm = async (id: MicrocosmID) => {
       isEditing,
       update,
       deleteEntity,
-      createEmoji,
       create
     }
   })()
