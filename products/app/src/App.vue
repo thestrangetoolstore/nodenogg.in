@@ -9,8 +9,18 @@ const app = useApp()
 <template>
   <TooltipProvider>
     <AppMenu v-if="app.state.showUI" />
-    <Suspense>
-      <RouterView />
-    </Suspense>
+    <div class="view-container">
+      <Suspense>
+        <RouterView />
+      </Suspense>
+    </div>
   </TooltipProvider>
 </template>
+
+<style scoped>
+.view-container {
+  width: 100%;
+  height: 100%;
+  padding: var(--size-16);
+}
+</style>

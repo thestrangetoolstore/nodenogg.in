@@ -63,20 +63,11 @@ const onMicrocosmSelect = (e: Event) => {
 }
 
 nav {
-    position: absolute;
-    z-index: 200;
-    inset: 0;
-    top: var(--size-8);
-    left: var(--size-8);
-    width: fit-content;
-    height: fit-content;
     display: flex;
     align-items: center;
-    background: var(--ui-95);
-    box-shadow: var(--ui-container-shadow);
-    border-radius: calc(var(--ui-radius));
     padding: var(--size-4);
     gap: var(--size-2);
+    width: 100%;
 }
 
 @media (prefers-color-scheme: dark) {

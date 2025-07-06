@@ -25,8 +25,15 @@ const { entities } = storeToRefs(microcosm)
 
 // Compute positioned nodes for the spatial view
 const positionedNodes = computed(() => {
-  return entities.value.filter(e => EntitySchema.utils.isType(e, 'html')).map((entity) => {
-    const { width, height, x, y } = entity.data
+  return entities.value.filter(e =>
+    EntitySchema.utils.isType(e, 'html') || EntitySchema.utils.isType(e, 'emoji')
+  ).map((entity) => {
+    const { x, y } = entity.data
+
+    const isEmoji = EntitySchema.utils.isType(entity, 'emoji')
+    const width = isEmoji ? 50 : entity.data.width
+    const height = isEmoji ? 50 : entity.data.height
+
     return {
       id: entity.id,
       type: 'resizable',
@@ -66,11 +73,23 @@ const handleNodeChange = async (changes: NodeChange[]) => {
 </script>
 
 <template>
-  <!-- <div :style="`position: fixed; z-index: 500; font-size: 10px;`">{{ positionedNodes }}</div> -->
-  <SpatialView :view_id="view_id" :ui="ui" :nodes="positionedNodes" @nodes-change="handleNodeChange">
-    <template #node-resizable="resizableNodeProps">
-      <HTMLEntity :entity="resizableNodeProps.data" :Editor="Editor" :onUpdate="update"
-        :is-selected="resizableNodeProps.isSelected" />
-    </template>
-  </SpatialView>
+  <div class="spatial-container">
+    <SpatialView :view_id="view_id" :ui="ui" :nodes="positionedNodes" @nodes-change="handleNodeChange">
+      <template #node-resizable="resizableNodeProps">
+        <HTMLEntity :entity="resizableNodeProps.data" :Editor="Editor" :onUpdate="update"
+          :is-selected="resizableNodeProps.isSelected" />
+      </template>
+    </SpatialView>
+  </div>
 </template>
+
+<style scoped>
+.spatial-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: var(--size-8);
+  overflow: hidden;
+  box-shadow: 0 0 0 1px hsla(var(--mono-base-hue), 8%, 90%, 0.07);
+}
+</style>

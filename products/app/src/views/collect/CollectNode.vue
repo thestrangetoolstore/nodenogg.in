@@ -50,6 +50,9 @@ const { isType } = EntitySchema.utils
             <Editor :value="entity.data.content" :onChange="onChange" :editable="isEditing" @click="onStartEditing"
                 @cancel="onStopEditing" />
         </div>
+        <div class="emoji" v-if="isType(entity, 'emoji')">
+            {{ entity.data.content }}
+        </div>
 
         <template v-slot:menu>
             <ContextMenuItem value="delete" title="Delete" @click="onDelete" />

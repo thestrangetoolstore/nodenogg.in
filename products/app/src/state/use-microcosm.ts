@@ -91,6 +91,14 @@ export const useMicrocosm = async (id: MicrocosmID) => {
       return null
     }
 
+    const createEmoji = (content: string, x: number, y: number) =>
+      microcosm.create({
+        type: 'emoji',
+        content,
+        x,
+        y
+      })
+
     const status = vue(microcosm.state)
     const identities: Identity[] = []
 
@@ -110,6 +118,7 @@ export const useMicrocosm = async (id: MicrocosmID) => {
       isEditing,
       update,
       deleteEntity,
+      createEmoji,
       create
     }
   })()

@@ -84,9 +84,9 @@ const handleWheel = (event: WheelEvent) => {
         :editable="isEditing" @cancel="handleCancel" />
     </div>
 
-    <div class="screen-space-element">
+    <!-- <div class="screen-space-element">
       {{ entity.id }}
-    </div>
+    </div> -->
   </div>
 </template>
 

@@ -19,10 +19,14 @@ defineProps({
 const microcosm = useCurrentMicrocosm()
 
 const { entities } = storeToRefs(microcosm)
-const { setEditingNode, isEditing, update, deleteEntity, create } = microcosm
+const { setEditingNode, isEditing, update, deleteEntity, create, createEmoji } = microcosm
 
 const handleCreateEntity = async () => {
   await create()
+}
+
+const handleCreateEmoji = async () => {
+  await createEmoji(`❤️`, 0, 0)
 }
 
 // Reactive reference to track the container element
@@ -30,9 +34,11 @@ const containerRef = ref<HTMLElement | null>(null)
 </script>
 
 <template>
-  <div class="container" ref="containerRef">
+  <div class="collect-container">
+
     <div class="actions">
       <button @click="handleCreateEntity" class="button">New node</button>
+      <button @click="handleCreateEmoji" class="button">React</button>
     </div>
     <div class="nodes">
       <SimpleNode v-for="e in entities" v-bind:key="`node/${e.id}`" :entity="e"
@@ -57,8 +63,12 @@ const containerRef = ref<HTMLElement | null>(null)
 }
 
 .actions {
-  padding: var(--size-12) 0;
+  padding: var(--size-12);
   gap: var(--size-4);
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1;
 }
 
 .nodes {
@@ -66,18 +76,23 @@ const containerRef = ref<HTMLElement | null>(null)
   flex-direction: column;
   justify-content: flex-start;
   align-items: flex-start;
+  position: absolute;
   gap: 1em;
-  max-width: 600px;
-  margin: 0 auto;
+  width: 100%;
   height: 100%;
+  padding: var(--size-56) var(--size-12) var(--size-12) var(--size-12);
+  top: 0;
+  left: 0;
   overflow-y: auto;
 }
 
-.container {
+.collect-container {
+  position: relative;
   width: 100%;
   height: 100%;
-  position: relative;
-  padding: 2em;
-  padding-top: 6em;
+  border-radius: var(--size-8);
+  overflow: hidden;
+  background: hsla(var(--mono-base-hue), 8%, 90%, 0.03);
+  box-shadow: 0 0 0 1px hsla(var(--mono-base-hue), 8%, 90%, 0.07);
 }
 </style>

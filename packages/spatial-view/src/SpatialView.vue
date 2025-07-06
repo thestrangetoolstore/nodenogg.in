@@ -4,13 +4,13 @@ import { VueFlow, useVueFlow, type NodeChange } from '@vue-flow/core'
 import { Background } from '@vue-flow/background'
 import { MiniMap } from '@vue-flow/minimap'
 
-import type { MicrocosmSpatialViewEmits, PositionedNode } from './types'
+import type { MicrocosmSpatialViewEmits, VueFlowEntity } from './types'
 import HTMLEntity from './entity/HTMLEntity.vue'
 import { useSpatialSelection } from './composables/useSpatialSelection'
 
 const props = withDefaults(defineProps<{
   view_id: string;
-  nodes: PositionedNode[];
+  nodes: VueFlowEntity[];
   ui?: boolean;
   minimap?: boolean
 }>(), {
@@ -74,33 +74,20 @@ const elementsSelectable = computed(() => !isEditing.value)
 </script>
 
 <template>
-  <div class="container" ref="canvasContainer">
-    <VueFlow 
-      ref="vueFlowRef"
-      :nodes="nodes" 
-      class="pinia-flow" 
-      @nodes-change="handleNodeChange" 
-      @node-click="handleNodeClick"
-      @pane-click="handlePaneClick"
-      :pan-on-drag="panOnDrag"
-      :pan-on-scroll="panOnDrag"
-      :zoom-on-scroll="zoomOnScroll"
-      :zoom-on-pinch="zoomOnPinch"
-      :zoom-on-double-click="zoomOnDoubleClick"
-      :prevent-scrolling="preventScrolling"
-      :nodes-draggable="nodesDraggable"
-      :nodes-connectable="nodesConnectable"
-      :elements-selectable="elementsSelectable"
-    >
-      <Background variant="lines" patternColor="var(--ui-80)" />
-      <MiniMap v-if="minimap" pannable zoomable class="mini-map" title="Mini map" />
-      <template #node-resizable="resizableNodeProps">
-        <slot name="node-resizable" v-bind="{ ...resizableNodeProps, isSelected: selectedNodeId === resizableNodeProps.id }">
-          <HTMLEntity :entity="resizableNodeProps.data" :is-selected="selectedNodeId === resizableNodeProps.id" />
-        </slot>
-      </template>
-    </VueFlow>
-  </div>
+  <VueFlow ref="vueFlowRef" :nodes="nodes" class="pinia-flow" @nodes-change="handleNodeChange"
+    @node-click="handleNodeClick" @pane-click="handlePaneClick" :pan-on-drag="panOnDrag" :pan-on-scroll="panOnDrag"
+    :zoom-on-scroll="zoomOnScroll" :zoom-on-pinch="zoomOnPinch" :zoom-on-double-click="zoomOnDoubleClick"
+    :prevent-scrolling="preventScrolling" :nodes-draggable="nodesDraggable" :nodes-connectable="nodesConnectable"
+    :elements-selectable="elementsSelectable">
+    <Background variant="lines" patternColor="var(--ui-80)" />
+    <MiniMap v-if="minimap" pannable zoomable class="mini-map" title="Mini map" />
+    <template #node-resizable="resizableNodeProps">
+      <slot name="node-resizable"
+        v-bind="{ ...resizableNodeProps, isSelected: selectedNodeId === resizableNodeProps.id }">
+        <HTMLEntity :entity="resizableNodeProps.data" :is-selected="selectedNodeId === resizableNodeProps.id" />
+      </slot>
+    </template>
+  </VueFlow>
 </template>
 
 <style scoped>
@@ -149,13 +136,5 @@ const elementsSelectable = computed(() => !isEditing.value)
 .large {
   font-size: 14em;
   line-height: 0.95em;
-}
-
-.container {
-  width: 100%;
-  height: 100%;
-  position: relative;
-  padding: 2em;
-  padding-top: 6em;
 }
 </style>

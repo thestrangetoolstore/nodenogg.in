@@ -1,10 +1,10 @@
 import type { EntityOfType } from "@nodenogg.in/schema";
 import type { NodeChange } from "@vue-flow/core";
 
-export interface PositionedNode {
+export interface VueFlowEntity {
   id: string;
   type: string;
-  data: EntityOfType<"html">;
+  data: EntityOfType<"html"> | EntityOfType<"emoji">;
   position: {
     x: number;
     y: number;
@@ -22,7 +22,7 @@ export interface PositionedNode {
 export interface MicrocosmSpatialViewProps {
   view_id: string;
   ui?: boolean;
-  nodes: PositionedNode[];
+  nodes: VueFlowEntity[];
 }
 
 export interface MicrocosmSpatialViewEmits {
