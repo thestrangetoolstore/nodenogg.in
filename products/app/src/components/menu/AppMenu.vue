@@ -22,7 +22,7 @@ import { useRouter, useRoute } from 'vue-router'
 import { useApp, useAppRouter } from '@/state';
 import { client } from '@/state/app';
 import { exportAndDownloadMicrocosm, deleteAllUserEntities } from '@/utils/export';
-import { viewRegistry } from '@/views';
+import { viewRegistry, getViewDefinition } from '@/views';
 import JoinMicrocosmDialog from './JoinMicrocosmDialog.vue';
 import Icon from '@/components/icon/Icon.vue';
 import Tooltip from '../Tooltip.vue';
@@ -53,10 +53,8 @@ const currentViewType = computed({
     set: (value: string) => switchView(value)
 })
 
-// Capitalize first letter of view name for display
-const formatViewName = (name: string) => {
-    return name.charAt(0).toUpperCase() + name.slice(1)
-}
+// Get view display information
+const currentViewDefinition = computed(() => getViewDefinition(currentViewType.value))
 
 // Microcosm menu actions
 const handleLeave = () => {
@@ -130,60 +128,77 @@ const handleExport = async () => {
 
 <template>
     <nav>
-        <MenubarRoot v-model="appMenu" class="menubar-root">
-            <MenubarMenu value="home">
-                <MenubarTrigger as-child>
-                    <router-link to="/" class="menubar-trigger home-trigger">
-                        <Tooltip tooltip="Home" side="bottom" align="center" disableClosingTrigger>
-                            <Icon type="home" />
-                        </Tooltip>
-                    </router-link>
-                </MenubarTrigger>
-            </MenubarMenu>
-
-            <template v-if="app.activeMicrocosm">
-                <MenubarSeparator class="breadcrumb-separator" />
-                <MenubarMenu value="microcosm">
-                    <MenubarTrigger class="menubar-trigger microcosm-trigger">
-                        <span class="microcosm-name">{{ app.activeMicrocosm.id }}</span>
-                        <Icon type="ellipsis" class="dropdown-icon" />
+        <!-- Left Region: Breadcrumb -->
+        <div class="nav-region nav-left">
+            <MenubarRoot v-model="appMenu" class="breadcrumb-menubar">
+                <MenubarMenu value="home">
+                    <MenubarTrigger as-child>
+                        <router-link to="/" class="menubar-trigger home-trigger">
+                            <Tooltip tooltip="Home" side="bottom" align="center" disableClosingTrigger>
+                                <Icon type="home" />
+                            </Tooltip>
+                        </router-link>
                     </MenubarTrigger>
-                    <MenubarPortal>
-                        <MenubarContent class="menubar-content" align="start" :side-offset="5" :align-offset="-3">
-                            <MenubarItem class="menubar-item" @click="handleExport">
-                                Export to JSON
-                            </MenubarItem>
-                            <MenubarSeparator />
-                            <MenubarItem class="menubar-item" @click="handleDeleteData">
-                                Delete my data
-                            </MenubarItem>
-                        </MenubarContent>
-                    </MenubarPortal>
                 </MenubarMenu>
-                
-                <MenubarSeparator class="breadcrumb-separator" />
+
+                <template v-if="app.activeMicrocosm">
+                    <MenubarSeparator class="breadcrumb-separator" />
+                    <span class="microcosm-name-text">{{ app.activeMicrocosm.id }}</span>
+                </template>
+            </MenubarRoot>
+        </div>
+
+        <!-- Center Region: View Switcher -->
+        <div v-if="app.activeMicrocosm" class="nav-region nav-center">
+            <MenubarRoot v-model="appMenu" class="view-menubar">
                 <MenubarMenu value="view">
                     <MenubarTrigger class="menubar-trigger view-trigger">
-                        <Icon :type="currentViewType === 'collect' ? 'list' : 'grid'" />
-                        <span class="view-name">{{ formatViewName(currentViewType) }}</span>
+                        <Icon :type="currentViewDefinition.icon" />
+                        <span class="view-name">{{ currentViewDefinition.title }} view</span>
                     </MenubarTrigger>
                     <MenubarPortal>
-                        <MenubarContent class="menubar-content" align="start" :side-offset="5" :align-offset="-3">
-                            <MenubarItem 
-                                v-for="(_, viewType) in viewRegistry" 
-                                :key="viewType"
-                                class="menubar-item view-item"
-                                :class="{ active: currentViewType === viewType }"
-                                @click="switchView(viewType)"
-                            >
-                                <Icon :type="viewType === 'collect' ? 'list' : 'grid'" />
-                                <span>{{ formatViewName(viewType) }}</span>
+                        <MenubarContent class="menubar-content" align="center" :side-offset="5">
+                            <MenubarItem v-for="(viewDef, viewType) in viewRegistry" :key="viewType"
+                                class="menubar-item view-item" :class="{ active: currentViewType === viewType }"
+                                @click="switchView(viewType)">
+                                <Icon :type="viewDef.icon" />
+                                <div class="view-content">
+                                    <div class="view-title">{{ viewDef.title }} view</div>
+                                    <div class="view-description">{{ viewDef.description }}</div>
+                                </div>
                             </MenubarItem>
                         </MenubarContent>
                     </MenubarPortal>
                 </MenubarMenu>
-            </template>
-        </MenubarRoot>
+            </MenubarRoot>
+        </div>
+
+        <!-- Right Region: Options -->
+        <div v-if="app.activeMicrocosm" class="nav-region nav-right">
+            <MenubarRoot v-model="appMenu" class="options-menubar">
+                <MenubarMenu value="options">
+                    <MenubarTrigger class="menubar-trigger options-trigger">
+                        <Tooltip tooltip="Options" side="bottom" align="center" disableClosingTrigger>
+                            Options
+                            <Icon type="ellipsis" />
+                        </Tooltip>
+                    </MenubarTrigger>
+                    <MenubarPortal>
+                        <MenubarContent class="menubar-content" align="end" :side-offset="5" :align-offset="-3">
+                            <MenubarItem class="menubar-item" @click="handleExport">
+                                <Icon type="download" />
+                                <span>Export to JSON</span>
+                            </MenubarItem>
+                            <MenubarSeparator />
+                            <MenubarItem class="menubar-item warning" @click="handleDeleteData">
+                                <Icon type="trash" />
+                                <span>Delete my data</span>
+                            </MenubarItem>
+                        </MenubarContent>
+                    </MenubarPortal>
+                </MenubarMenu>
+            </MenubarRoot>
+        </div>
         <JoinMicrocosmDialog />
 
         <!-- Delete Data Confirmation Dialog -->
@@ -219,7 +234,6 @@ nav {
     align-items: center;
     justify-content: space-between;
     padding: var(--size-4);
-    gap: var(--size-2);
     width: 100%;
 }
 
@@ -229,7 +243,31 @@ nav {
     }
 }
 
-.menubar-root {
+/* Three-region layout */
+.nav-region {
+    display: flex;
+    align-items: center;
+}
+
+.nav-left {
+    justify-content: flex-start;
+    flex: 1;
+}
+
+.nav-center {
+    justify-content: center;
+    flex: 0 0 auto;
+}
+
+.nav-right {
+    justify-content: flex-end;
+    flex: 1;
+}
+
+/* Menubar styling for each region */
+.breadcrumb-menubar,
+.view-menubar,
+.options-menubar {
     display: flex;
     align-items: center;
     gap: var(--size-2);
@@ -282,6 +320,7 @@ nav {
     border-radius: 4px;
     display: flex;
     align-items: center;
+    gap: var(--size-8);
     padding: 0 var(--size-8);
     user-select: none;
 }
@@ -290,28 +329,19 @@ nav {
     background: var(--ui-80);
 }
 
-.microcosm-name {
+/* Microcosm name in breadcrumb */
+.microcosm-name-text {
     font-weight: 500;
     color: var(--ui-20);
+    padding: 0 var(--size-8);
+    height: var(--size-32);
+    display: flex;
+    align-items: center;
 }
 
-.microcosm-trigger {
-    padding: var(--size-8) var(--size-4) var(--size-8) var(--size-8);
-}
-
-.microcosm-trigger .microcosm-name {
-    margin-right: var(--size-4);
-}
-
-.dropdown-icon {
-    width: var(--size-24);
-    height: var(--size-24);
-    opacity: 0.7;
-    transition: opacity 0.2s ease;
-}
-
-.microcosm-trigger:hover .dropdown-icon {
-    opacity: 1;
+/* Options trigger specific styles */
+.options-trigger {
+    padding: 0 0 0 var(--size-8);
 }
 
 /* Warning style for destructive actions */
@@ -412,8 +442,8 @@ nav {
 
 /* View trigger styles */
 .view-trigger {
-    padding: 0 var(--size-8);
-    gap: var(--size-6);
+    padding: 0 var(--size-8) 0 var(--size-4);
+    gap: var(--size-4);
 }
 
 .view-name {
@@ -424,11 +454,39 @@ nav {
 /* View menu item styles */
 .view-item {
     gap: var(--size-8);
+    align-items: flex-start;
+    padding: var(--size-12);
+}
+
+.view-content {
+    display: flex;
+    flex-direction: column;
+    gap: var(--size-2);
+}
+
+.view-title {
+    font-weight: 500;
+    color: var(--ui-20);
+    line-height: 1.2;
+}
+
+.view-description {
+    font-size: 0.875rem;
+    color: var(--ui-50);
+    line-height: 1.3;
 }
 
 .view-item.active {
     background: var(--ui-primary-100);
     color: var(--ui-100);
+}
+
+.view-item.active .view-title {
+    color: var(--ui-100);
+}
+
+.view-item.active .view-description {
+    color: var(--ui-90);
 }
 
 .view-item.active:hover {
