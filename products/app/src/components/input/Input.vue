@@ -57,7 +57,7 @@ onMounted(() => {
   width: 100%;
   height: var(--size-40);
   border-radius: var(--ui-radius);
-  background: var(--ui-primary-80);
+  background: var(--ui-primary-20);
   color: var(--ui-primary-100);
   outline: initial;
   caret-color: var(--ui-primary-100);

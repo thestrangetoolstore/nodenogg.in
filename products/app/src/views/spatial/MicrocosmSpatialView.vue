@@ -45,7 +45,7 @@ const isOwnedByCurrentUser = (entity: Entity) => {
 }
 
 // Access vue-flow instance for coordinate transformation and interaction control
-const { screenToFlowCoordinate, panOnDrag, zoomOnScroll, zoomOnPinch, getViewport, dimensions } = useVueFlow()
+const { screenToFlowCoordinate, panOnDrag, zoomOnScroll, zoomOnPinch, project, dimensions } = useVueFlow()
 
 // Compute positioned nodes for the spatial view
 const positionedNodes = computed(() => {
@@ -192,19 +192,24 @@ const handleCreateEmojiAtPosition = () =>
 
 // Action handlers for spatial view
 const handleCreateNode = async () => {
-  // Get the current viewport to calculate center position
-  const viewport = getViewport()
+  // Get the viewport dimensions
   const viewportDimensions = dimensions.value
-
-  // Calculate the center of the viewport in flow coordinates
-  const centerX = -viewport.x + (viewportDimensions.width / 2) / viewport.zoom
-  const centerY = -viewport.y + (viewportDimensions.height / 2) / viewport.zoom
-
+  
+  // Calculate the center of the viewport in screen coordinates
+  const centerScreenX = viewportDimensions.width / 2
+  const centerScreenY = viewportDimensions.height / 2
+  
+  // Convert screen coordinates to flow coordinates using project
+  const flowPosition = project({
+    x: centerScreenX,
+    y: centerScreenY
+  })
+  
   // Create node at viewport center
   await create({
     type: 'html',
-    x: centerX - 100, // Subtract half the width to center the node
-    y: centerY - 100, // Subtract half the height to center the node
+    x: flowPosition.x - 100, // Subtract half the width to center the node
+    y: flowPosition.y - 100, // Subtract half the height to center the node
     width: 200,
     height: 200,
     content: ''

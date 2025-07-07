@@ -85,7 +85,7 @@ const filter = (list: (string[]), term: string) =>
                         <p>Create <span class="bold">{{ sanitizeMicrocosmIDTitle(inputValue) }}</span>
 
                         </p>
-                        <div class="instruction">Press<span class="keycommand">↲</span></div>
+                        <div class="instruction">Press<span class="keycommand">enter</span></div>
 
                         <!-- <p>
                             <small>{{ newMicrocosmID }}</small>
@@ -95,12 +95,10 @@ const filter = (list: (string[]), term: string) =>
 
             </ComboboxViewport>
         </ComboboxContent>
-        <div v-if="!active" class="instruction-tray">
+        <!-- <div v-if="!active" class="instruction-tray">
             <div class="instruction">Press<span class="keycommand" style="padding-top: 0">↓</span>for more options
             </div>
-            <!-- <div class="instruction"><span class="keycommand">↲</span>Create -->
-            <!-- </div> -->
-        </div>
+        </div> -->
     </ComboboxRoot>
 </template>
 
@@ -163,7 +161,6 @@ const filter = (list: (string[]), term: string) =>
 
 .keycommand {
     padding: var(--size-2) var(--size-4) var(--size-2) var(--size-4);
-    font-size: 0.85em;
     line-height: 0.85em;
     margin: 0 var(--size-4);
     position: relative;
