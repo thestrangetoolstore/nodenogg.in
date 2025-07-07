@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref, watch, computed } from 'vue'
+import { onMounted, ref, watch, computed, nextTick } from 'vue'
 import { VueFlow, useVueFlow, type NodeChange } from '@vue-flow/core'
 import { Background } from '@vue-flow/background'
 import { MiniMap } from '@vue-flow/minimap'
@@ -15,6 +15,7 @@ const props = withDefaults(defineProps<{
   zoomControls?: boolean;
   HTMLEntity?: any;
   currentUserIdentityId?: string;
+  onEmojiCreate?: (emoji: string, entity: any) => void;
 }>(), {
   ui: false,
   minimap: false,
@@ -42,20 +43,29 @@ const handleFitView = () => {
 }
 
 
-// Reactive reference to track the canvas element
-const canvasContainer = ref<HTMLElement | null>(null)
+// Reactive reference to track the wrapper DOM element
+const vueflowWrapper = ref<HTMLElement | null>(null)
+// Reactive reference for VueFlow instance
+const vueflowInstance = ref(null)
 
 const setCSSVariables = (newZoom: string | number) => {
-  if (canvasContainer.value) {
-    // canvasContainer.value.style.setProperty('--zoom-value', String(newZoom))
+  if (vueflowWrapper.value && vueflowWrapper.value.style) {
+    vueflowWrapper.value.style.setProperty('--zoom-value', String(newZoom))
+  } else {
+    // Try again in the next tick if element isn't ready
+    nextTick(() => {
+      if (vueflowWrapper.value && vueflowWrapper.value.style) {
+        vueflowWrapper.value.style.setProperty('--zoom-value', String(newZoom))
+      }
+    })
   }
-
 }
 // Watch for zoom changes and update CSS variable
 watch(() => viewport.value.zoom, setCSSVariables)
 
-onMounted(() => {
-  setCSSVariables(1.)
+onMounted(async () => {
+  await nextTick()
+  setCSSVariables(viewport.value.zoom)
 })
 
 // This will capture ALL node changes: position (drag), dimensions (resize), etc.
@@ -92,7 +102,8 @@ const elementsSelectable = computed(() => !isEditing.value)
 </script>
 
 <template>
-  <VueFlow vueFlowRef="canvasContainer" :nodes="nodes" class="pinia-flow" @nodes-change="handleNodeChange"
+  <div ref="vueflowWrapper" class="vueflow-container">
+    <VueFlow vueFlowRef="vueflowInstance" :nodes="nodes" class="pinia-flow" @nodes-change="handleNodeChange"
     @node-click="handleNodeClick" @pane-click="handlePaneClick" :pan-on-drag="panOnDrag" :pan-on-scroll="panOnDrag"
     :zoom-on-scroll="zoomOnScroll" :zoom-on-pinch="zoomOnPinch" :zoom-on-double-click="zoomOnDoubleClick"
     :prevent-scrolling="preventScrolling" :nodes-draggable="nodesDraggable" :nodes-connectable="nodesConnectable"
@@ -132,7 +143,7 @@ const elementsSelectable = computed(() => !isEditing.value)
         <component v-if="HTMLEntity" :is="HTMLEntity" :entity="resizableNodeProps.data"
           :is-selected="selectedNodeId === resizableNodeProps.id" :is-editing="isNodeEditing(resizableNodeProps.id)"
           :on-start-editing="startEditing" :on-stop-editing="stopEditing"
-          :current-user-identity-id="currentUserIdentityId" v-bind="$attrs" />
+          :current-user-identity-id="currentUserIdentityId" :on-emoji-create="onEmojiCreate" v-bind="$attrs" />
       </slot>
     </template>
     <template #node-emoji="emojiNodeProps">
@@ -141,9 +152,16 @@ const elementsSelectable = computed(() => !isEditing.value)
       </slot>
     </template>
   </VueFlow>
+  </div>
 </template>
 
 <style scoped>
+.vueflow-container {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
 .mini-map {
   position: absolute;
   bottom: 0;

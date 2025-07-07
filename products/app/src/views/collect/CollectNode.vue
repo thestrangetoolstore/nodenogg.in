@@ -79,8 +79,8 @@ const { isType } = EntitySchema.utils
 }
 
 .node:focus {
-    outline: 2px solid var(--ui-primary-100);
-    outline-offset: 2px;
+    /* outline: 2px solid var(--ui-primary-100);
+    outline-offset: 2px; */
 }
 
 .node.is-editing {

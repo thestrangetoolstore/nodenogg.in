@@ -10,6 +10,7 @@ import {
 } from 'reka-ui'
 import Icon from '@/components/icon/Icon.vue'
 import ColorSelector from '@/components/color-selector/ColorSelector.vue'
+import EmojiSelector from '@/components/emoji-selector/EmojiSelector.vue'
 import type { EntityOfType } from '@nodenogg.in/schema'
 import { getColor } from '@/utils/color'
 import { NodeResizer } from '@nodenogg.in/spatial-view'
@@ -20,6 +21,7 @@ const props = defineProps<{
   onUpdate?: (id: string, data: any) => void
   onDelete?: (id: string) => void
   onDuplicate?: (id: string) => void
+  onEmojiCreate?: (emoji: string, entity: EntityOfType<'html'>) => void
   isSelected?: boolean
   editable?: boolean
   isEditing?: boolean
@@ -118,6 +120,13 @@ const handleDuplicate = () => {
     props.onDuplicate(newEntity)
   }
 }
+
+// Handler for emoji selection
+const handleEmojiSelect = (emoji: string) => {
+  if (props.onEmojiCreate && props.entity) {
+    props.onEmojiCreate(emoji, props.entity)
+  }
+}
 </script>
 
 <template>
@@ -159,6 +168,10 @@ const handleDuplicate = () => {
                 <ColorSelector :value="entity.data.backgroundColor" :onUpdate="handleColorChange" />
               </DropdownMenuItem>
               <DropdownMenuSeparator class="dropdown-menu-separator" />
+              <DropdownMenuItem class="dropdown-menu-item emoji-selector-item">
+                <EmojiSelector :onEmojiSelect="handleEmojiSelect" />
+              </DropdownMenuItem>
+              <DropdownMenuSeparator class="dropdown-menu-separator" />
               <DropdownMenuItem class="dropdown-menu-item" @click="handleDuplicate">
                 Duplicate
               </DropdownMenuItem>
@@ -168,6 +181,10 @@ const handleDuplicate = () => {
             </template>
             <template v-else>
               <!-- Non-owner actions: limited -->
+              <DropdownMenuItem class="dropdown-menu-item emoji-selector-item">
+                <EmojiSelector :onEmojiSelect="handleEmojiSelect" />
+              </DropdownMenuItem>
+              <DropdownMenuSeparator class="dropdown-menu-separator" />
               <DropdownMenuItem class="dropdown-menu-item" @click="handleDuplicate">
                 Duplicate
               </DropdownMenuItem>
@@ -216,7 +233,7 @@ const handleDuplicate = () => {
 }
 
 .resizable-container.read-only {
-
+  opacity: 0.8;
 }
 
 .resizable-container.read-only:focus {
@@ -348,5 +365,14 @@ const handleDuplicate = () => {
 
 .info-item[data-disabled] {
   opacity: 0.8;
+}
+
+/* Emoji selector styles */
+.emoji-selector-item {
+  padding: var(--size-4) !important;
+}
+
+.emoji-selector-item:hover {
+  background: transparent !important;
 }
 </style>

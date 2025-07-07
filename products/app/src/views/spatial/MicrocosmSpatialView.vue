@@ -242,6 +242,36 @@ const handleCreateNode = async () => {
   })
 }
 
+// Handler for emoji creation from HTMLEntity dropdown
+const handleEmojiCreateFromEntity = (emoji: string, entity: Entity) => {
+  if (EntitySchema.utils.isType(entity, 'html')) {
+    // Generate random position around the entity
+    const entityWidth = entity.data.width || 200
+    const entityHeight = entity.data.height || 200
+    const entityCenterX = entity.data.x + entityWidth / 2
+    const entityCenterY = entity.data.y + entityHeight / 2
+    
+    // Random angle around the entity (0 to 2π)
+    const angle = Math.random() * 2 * Math.PI
+    
+    // Random distance from edge of entity (50-100 pixels outside)
+    const minDistance = Math.max(entityWidth, entityHeight) / 2 + 50
+    const maxDistance = Math.max(entityWidth, entityHeight) / 2 + 100
+    const distance = minDistance + Math.random() * (maxDistance - minDistance)
+    
+    // Calculate position using polar coordinates
+    const emojiX = entityCenterX + Math.cos(angle) * distance - 25 // -25 to center the 50px emoji
+    const emojiY = entityCenterY + Math.sin(angle) * distance - 25
+    
+    create({
+      type: 'emoji',
+      content: emoji,
+      x: emojiX,
+      y: emojiY
+    })
+  }
+}
+
 </script>
 
 <template>
@@ -249,7 +279,8 @@ const handleCreateNode = async () => {
     <div class="spatial-canvas">
       <SpatialView :view_id="view_id" :ui="ui" :nodes="positionedNodes" :HTMLEntity="HTMLEntity" :Editor="Editor"
         :onUpdate="update" :onDelete="deleteEntity" :onDuplicate="create" :editable="true"
-        :current-user-identity-id="currentIdentity?.id" :zoom-controls="true" @nodes-change="handleNodeChange">
+        :current-user-identity-id="currentIdentity?.id" :zoom-controls="true" 
+        :on-emoji-create="handleEmojiCreateFromEntity" @nodes-change="handleNodeChange">
         <template #node-resizable="resizableNodeProps">
           <!-- HTML entities with resizable handles will now use the app's HTMLEntity -->
         </template>

@@ -92,44 +92,17 @@ export default {
 
 <template>
   <template v-if="isVisible">
-    <ResizeControl
-      v-for="c of lineControls"
-      :key="c"
-      :class="lineClassName"
-      :style="lineStyle"
-      :node-id="nodeId"
-      :position="c"
-      :variant="ResizeControlVariant.Line"
-      :keep-aspect-ratio="keepAspectRatio"
-      :color="color"
-      :min-width="minWidth"
-      :min-height="minHeight"
-      :max-width="maxWidth"
-      :max-height="maxHeight"
-      :should-resize="shouldResize"
-      @resize-start="emits('resizeStart', $event)"
-      @resize="emits('resize', $event)"
-      @resize-end="emits('resizeEnd', $event)"
-    />
+    <ResizeControl v-for="c of lineControls" :key="c" :class="lineClassName" :style="lineStyle" :node-id="nodeId"
+      :position="c" :variant="ResizeControlVariant.Line" :keep-aspect-ratio="keepAspectRatio" :color="color"
+      :min-width="minWidth" :min-height="minHeight" :max-width="maxWidth" :max-height="maxHeight"
+      :should-resize="shouldResize" @resize-start="emits('resizeStart', $event)" @resize="emits('resize', $event)"
+      @resize-end="emits('resizeEnd', $event)" />
 
-    <ResizeControl
-      v-for="c of handleControls"
-      :key="c"
-      :class="handleClassName"
-      :style="handleStyle"
-      :node-id="nodeId"
-      :position="c"
-      :color="color"
-      :min-width="minWidth"
-      :min-height="minHeight"
-      :max-width="maxWidth"
-      :max-height="maxHeight"
-      :should-resize="shouldResize"
-      :keep-aspect-ratio="keepAspectRatio"
-      @resize-start="emits('resizeStart', $event)"
-      @resize="emits('resize', $event)"
-      @resize-end="emits('resizeEnd', $event)"
-    />
+    <ResizeControl v-for="c of handleControls" :key="c" :class="handleClassName" :style="handleStyle" :node-id="nodeId"
+      :position="c" :color="color" :min-width="minWidth" :min-height="minHeight" :max-width="maxWidth"
+      :max-height="maxHeight" :should-resize="shouldResize" :keep-aspect-ratio="keepAspectRatio"
+      @resize-start="emits('resizeStart', $event)" @resize="emits('resize', $event)"
+      @resize-end="emits('resizeEnd', $event)" />
   </template>
 </template>
 
@@ -166,6 +139,8 @@ export default {
   /* border-radius: 1px; */
   background-color: var(--ui-0);
   transform: translate(-50%, -50%) scale(1.0);
+  /* transform: translate(-50%, -50%) scale(calc(1 / var(--zoom-value))); */
+
   z-index: 1;
 }
 
@@ -173,27 +148,34 @@ export default {
   /* outline: 5px solid green; */
   top: 50%;
 }
+
 .vue-flow__resize-control.handle.right {
   left: 100%;
   top: 50%;
 }
+
 .vue-flow__resize-control.handle.top {
   left: 50%;
   top: 0;
 }
+
 .vue-flow__resize-control.handle.bottom {
   left: 50%;
   top: 100%;
 }
+
 .vue-flow__resize-control.handle.top.left {
   left: 0;
 }
+
 .vue-flow__resize-control.handle.bottom.left {
   left: 0;
 }
+
 .vue-flow__resize-control.handle.top.right {
   left: 100%;
 }
+
 .vue-flow__resize-control.handle.bottom.right {
   left: 100%;
 }
@@ -217,6 +199,7 @@ export default {
   left: 0;
   border-left-width: 1px;
 }
+
 .vue-flow__resize-control.line.right {
   left: 100%;
   border-right-width: 1px;
@@ -234,6 +217,7 @@ export default {
   top: 0;
   border-top-width: 1px;
 }
+
 .vue-flow__resize-control.line.bottom {
   border-bottom-width: 1px;
   top: 100%;
