@@ -1,4 +1,4 @@
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { app, client } from '@/state'
 import { defineStore } from 'pinia'
 import { vue } from '@figureland/kit/state/vue'
@@ -17,6 +17,15 @@ export const useApp = defineStore('app', () => {
     command: toggleCommandMenu
   })
 
+  // Get the active microcosm reference
+  const activeMicrocosm = computed(() => {
+    const activeId = active.value
+    if (activeId) {
+      return microcosms.value.find(m => m.id === activeId)
+    }
+    return null
+  })
+
   return {
     identity: vue(client.identity),
     // pointer: vue<Pointer>(app.pointer),
@@ -28,6 +37,7 @@ export const useApp = defineStore('app', () => {
     toggleMenu: () => app.ui.key('menuOpen').set((m) => !m),
     showCommandMenu,
     active,
+    activeMicrocosm,
     microcosms
   }
 })

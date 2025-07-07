@@ -4,7 +4,7 @@
   "description": "Monorepo for Nodenoggin app and server",
   "type": "module",
   "scripts": {
-    "dev": "pnpm --parallel --stream dev",
+    "dev": "VITE_SYNC_SERVER_ENDPOINT=ws://localhost:8787/sync pnpm --parallel --stream dev",
     "dev:app": "VITE_SYNC_SERVER_ENDPOINT=ws://localhost:8787/sync pnpm --filter nodenogg.in dev",
     "dev:server": "pnpm --filter @nodenogg.in/yjs-sync-server dev",
     "build": "pnpm --filter @* build",
@@ -26,16 +26,16 @@
   "devDependencies": {
     "@commitlint/cli": "^19.8.1",
     "@commitlint/config-conventional": "^19.8.1",
-    "@types/node": "^22.15.21",
+    "@types/node": "^22.16.0",
     "husky": "^9.1.7",
     "lint-staged": "^15.5.2",
-    "tsx": "^4.19.2",
+    "tsx": "^4.20.3",
     "vitepress": "^1.6.3",
-    "vue": "^3.5.14"
+    "vue": "^3.5.17"
   },
   "pnpm": {
     "overrides": {
-      "esbuild": ">=0.25.0"
+      "esbuild": ">=0.25.6"
     }
   }
 }

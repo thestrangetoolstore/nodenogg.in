@@ -205,13 +205,13 @@ export class IndexedDBPersistence extends Observable<string> {
   }
 }
 
-export const createIndexedDBPersistence = (): PersistenceFactory => async (microcosm_uuid, doc) => {
+export const createIndexedDBPersistence = (): PersistenceFactory => async (microcosm_id, doc) => {
   try {
-    return new IndexedDBPersistence(microcosm_uuid, doc)
+    return new IndexedDBPersistence(microcosm_id, doc)
   } catch (error) {
     throw new NNError({
       name: 'createIndexedDBPersistence',
-      message: `Could not create IndexedDBPersistence for ${microcosm_uuid}`,
+      message: `Could not create IndexedDBPersistence for ${microcosm_id}`,
       level: 'warn',
       error
     })

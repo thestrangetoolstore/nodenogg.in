@@ -9,7 +9,7 @@ import { isString } from '@figureland/kit/tools'
 import {
   Entity,
   Identity,
-  IdentityUUID,
+  IdentityID,
   EntityLocation,
   EntitySchema,
   IdentitySchema,
@@ -38,7 +38,7 @@ export class YMicrocosmDoc {
 
   private persistence!: Persistence[]
   private providers!: Provider[]
-  private identity_id!: IdentityUUID
+  private identity_id!: IdentityID
   private undoStore: UndoManager
   private collection: YCollection
   private providerFactories?: ProviderFactory[]
@@ -56,7 +56,7 @@ export class YMicrocosmDoc {
     await this.createProviders()
   }
 
-  public identify = async (identity_id: IdentityUUID) => {
+  public identify = async (identity_id: IdentityID) => {
     if (!this.identity_id || this.identity_id !== identity_id) {
       this.identity_id = identity_id
       this.undoStore?.destroy()
@@ -74,7 +74,7 @@ export class YMicrocosmDoc {
   }
 
   public getEntity = async (
-    entityLocation: { identity_id: IdentityUUID; entity_id: string } | EntityLocation
+    entityLocation: { identity_id: IdentityID; entity_id: string } | EntityLocation
   ): Promise<Entity | undefined> => {
     try {
       const parsed = isString(entityLocation)
@@ -93,7 +93,7 @@ export class YMicrocosmDoc {
     }
   }
 
-  public getYCollection = (identity_id: IdentityUUID): YCollection =>
+  public getYCollection = (identity_id: IdentityID): YCollection =>
     this.yDoc.getMap<SignedEntity>(identity_id)
 
   /**
@@ -136,8 +136,8 @@ export class YMicrocosmDoc {
           name: 'YMicrocosmAPI'
         })
       }
-      const payload = await this.sign(EntitySchema.api.create(data))
-      this.collection.set(payload.content.uuid, payload)
+      const payload = await this.sign(EntitySchema.api.create(this.identity_id, data))
+      this.collection.set(payload.content.id, payload)
       return payload.content
     } catch (error) {
       throw new NNError({
@@ -176,14 +176,14 @@ export class YMicrocosmDoc {
   }
 
   private createPersistence = async (createPersistenceFn: PersistenceFactory) => {
-    const { uuid } = this.config
+    const { id } = this.config
     try {
-      const persistence = await createPersistenceFn(uuid, this.yDoc)
+      const persistence = await createPersistenceFn(id, this.yDoc)
       return persistence
     } catch (error) {
       throw new NNError({
         name: 'YMicrocosmDoc',
-        message: `Could not create persistence for ${uuid}`,
+        message: `Could not create persistence for ${id}`,
         level: 'fail',
         error
       })
@@ -191,15 +191,15 @@ export class YMicrocosmDoc {
   }
 
   private createProvider = async (createProviderFn: ProviderFactory) => {
-    const { uuid, password } = this.config
+    const { id, password } = this.config
 
     try {
-      const provider = await createProviderFn(uuid, this.yDoc, password)
+      const provider = await createProviderFn(id, this.yDoc, password)
       return provider
     } catch (error) {
       throw new NNError({
         name: 'YMicrocosmDoc',
-        message: `Could not create provider for ${uuid}`,
+        message: `Could not create provider for ${id}`,
         level: 'warn',
         error
       })
@@ -373,12 +373,12 @@ export class YMicrocosmDoc {
 }
 
 const filterByIdentityID = (array: Identity[]): Identity[] => {
-  const uniqueMap = new Map<IdentityUUID, Identity>()
+  const uniqueMap = new Map<IdentityID, Identity>()
 
   array.forEach((item) => {
-    //   const existingItem = uniqueMap.get(item.uuid)
+    //   const existingItem = uniqueMap.get(item.id)
     //   if (!existingItem || item.timestamp > existingItem.timestamp) {
-    uniqueMap.set(item.uuid, item)
+    uniqueMap.set(item.id, item)
     //   }
   })
 

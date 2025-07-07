@@ -1,8 +1,8 @@
 import { type State, state, store, map, events } from '@figureland/kit/state'
-import type { Entity, EntityDataType, EntityPointer, IdentityUUID } from '@nodenogg.in/schema'
+import type { Entity, EntityDataType, EntityPointer, IdentityID } from '@nodenogg.in/schema'
 
 export type MicrocosmAPIConfig = {
-  uuid: string
+  id: string
   view?: string
   password?: string
 }
@@ -24,10 +24,10 @@ export abstract class MicrocosmAPI<Config extends MicrocosmAPIConfig = Microcosm
   public readonly entities = this.store.use(map<string, Entity>())
   public readonly data = this.store.use(events<Record<string, Entity | undefined>>())
 
-  public readonly uuid: string
+  public readonly id: string
   public readonly state: State<MicrocosmAPIState> = this.use(state(defaultAPIState))
   constructor(config: Config) {
-    this.uuid = config.uuid
+    this.id = config.id
     this.store.use(() => {
       this.entities.instance().clear()
     })
@@ -63,7 +63,7 @@ export abstract class MicrocosmAPI<Config extends MicrocosmAPIConfig = Microcosm
 
   abstract getEntities(): AsyncGenerator<string>
 
-  abstract getCollections(): AsyncGenerator<IdentityUUID>
+  abstract getCollections(): AsyncGenerator<IdentityID>
 
-  abstract getCollection(identity_id: IdentityUUID): AsyncGenerator<string>
+  abstract getCollection(identity_id: IdentityID): AsyncGenerator<string>
 }

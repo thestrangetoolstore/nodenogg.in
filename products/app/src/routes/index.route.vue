@@ -1,62 +1,82 @@
 <script setup lang="ts">
+import { ref, computed, onMounted } from 'vue'
 import { useApp } from '@/state'
-import { MicrocosmSchema } from '@nodenogg.in/schema';
+import Select from '@/components/select/Select.vue'
+import SelectItem from '@/components/select/SelectItem.vue'
+import MicrocosmCard from '@/components/MicrocosmCard.vue'
 
 const app = useApp()
+
+// Sort mode: 'name' or 'lastAccessed'
+const sortMode = ref<'name' | 'lastAccessed'>('lastAccessed')
+
+// Load preferences from localStorage
+onMounted(() => {
+  const savedSortMode = localStorage.getItem('microcosm-sort-mode')
+
+  if (savedSortMode === 'name' || savedSortMode === 'lastAccessed') {
+    sortMode.value = savedSortMode
+  }
+})
+
+// Watch for sort mode changes to save to localStorage
+import { watch } from 'vue'
+import JoinMicrocosmDialog from '@/components/menu/JoinMicrocosmDialog.vue'
+watch(sortMode, (newMode) => {
+  localStorage.setItem('microcosm-sort-mode', newMode)
+})
+
+// Sorted microcosms
+const sortedMicrocosms = computed(() => {
+  const microcosms = [...app.microcosms]
+
+  if (sortMode.value === 'name') {
+    return microcosms.sort((a, b) => a.id.localeCompare(b.id))
+  } else {
+    return microcosms.sort((a, b) => b.lastAccessed - a.lastAccessed)
+  }
+})
 </script>
 
 <template>
-  <main class="microcosm-list">
-    <router-link v-for=" {uuid} of app.microcosms" :class="{ link: true, ui: true, 'microcosm-card': true }" :to="{
-      name: 'microcosm',
-      params: {
-        microcosm_uuid: uuid
-      }
-    }">
-      <span>{{ MicrocosmSchema.utils.parseMicrocosmUUID(uuid) }}</span>
-    </router-link>
+  <main class="homepage">
+    <!-- Controls -->
+    <div class="controls">
+      <JoinMicrocosmDialog />
+      <!-- <Select v-model="sortMode" placeholder="Sort by" label="Sort microcosms">
+        <SelectItem text="Last accessed" value="lastAccessed" />
+        <SelectItem text="Name" value="name" />
+      </Select> -->
+    </div>
+
+    <!-- Grid view -->
+    <div class="microcosm-grid">
+      <MicrocosmCard v-for="microcosm of sortedMicrocosms" :key="microcosm.id" :microcosm="microcosm" />
+    </div>
   </main>
 </template>
 
 <style scoped>
-img {
-  max-width: 100%;
-}
-
-.microcosm-list {
-  padding: 4rem 1rem 1rem 1rem;
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  gap: 1rem;
-  justify-content: flex-start;
-  min-height: min-content;
+.homepage {
+  padding: var(--size-4) var(--size-4) var(--size-8) var(--size-4);
   width: 100%;
   height: auto;
-  align-content: flex-start;
 }
 
-.microcosm-card {
+/* Controls */
+.controls {
   display: flex;
-  flex-direction: column;
-  align-items: start;
-  justify-content: start;
-  border: 1px solid #ccc;
-  border-radius: 0.5rem;
-  padding: 1rem;
-  margin: 0;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--size-16);
+}
+
+
+/* Grid view */
+.microcosm-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: var(--size-8);
   width: 100%;
-  max-width: 300px;
-  aspect-ratio: 2/1 !important;
-  color: inherit;
-}
-
-.microcosm-card:hover {
-  background-color: var(--ui-80);
-}
-
-.microcosm-card:focus {
-  outline: 3px solid var(--ui-primary-100);
-  background-color: var(--ui-primary-20);
 }
 </style>

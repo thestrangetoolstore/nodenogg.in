@@ -1,9 +1,14 @@
 <script setup lang="ts">
-import { provide, ref, computed } from 'vue'
-import { type Entity } from '@nodenogg.in/schema'
-import { useCurrentMicrocosm } from '@/state'
-import SimpleNode from './CollectNode.vue'
+import { client, useCurrentMicrocosm } from '@/state'
+import CollectNode from './CollectNode.vue'
 import { storeToRefs } from 'pinia'
+import ViewContainer from '@/components/ViewContainer.vue'
+import ActionButton from '@/components/ActionButton.vue'
+import { computed } from 'vue'
+import { EntitySchema, type Entity } from '@nodenogg.in/schema'
+
+// Utility function to generate random position offset
+const getRandomOffset = () => Math.floor(Math.random() * 1000) - 500 // Range: -500 to 500
 
 defineProps({
   view_id: {
@@ -18,74 +23,70 @@ defineProps({
 // Use the unified entity operations API
 const microcosm = useCurrentMicrocosm()
 
-const { entities } = storeToRefs(microcosm)
-const { setEditingNode, isEditing, update, deleteEntity, create } = microcosm
+const identity = client.identity.get()
 
+const { entities } = storeToRefs(microcosm)
+
+const htmlEntities = computed(() => entities.value.filter(e =>
+  EntitySchema.utils.isType(e, 'html') && identity?.id === e.identity_id
+))
+
+const { setEditingNode, isEditing, update, deleteEntity, create, duplicateEntity } = microcosm
 
 const handleCreateEntity = async () => {
-  await create()
+  await create({
+    type: 'html',
+    x: getRandomOffset(),
+    y: getRandomOffset(),
+    width: 300,
+    height: 200,
+    content: ''
+  })
 }
 
-// Reactive reference to track the container element
-const containerRef = ref<HTMLElement | null>(null)
+const handleDuplicateEntity = async (e: Entity) => {
+  await duplicateEntity(e)
+}
+
+const handleCreateEmoji = async () => {
+  await create({
+    type: 'emoji',
+    x: getRandomOffset(),
+    y: getRandomOffset(),
+    content: `❤️`
+  })
+}
 </script>
 
 <template>
-  <div class="container" ref="containerRef">
-    <div class="actions">
-      <button @click="handleCreateEntity" class="button">New node</button>
+  <ViewContainer>
+    <div class="entities">
+      <CollectNode v-for="e in htmlEntities" v-bind:key="`entity/${e.id}`" :entity="e" :onChange="u => update(e.id, u)"
+        :onDelete="() => deleteEntity(e)" :isEditing="isEditing(e.id)" :onDuplicate="() => handleDuplicateEntity(e)"
+        @startEditing="setEditingNode(e.id)" @stopEditing="setEditingNode(null)" />
+
+      <!-- <h2 v-if="htmlEntities.length === 0">You haven't added anything to this microcosm yet.</h2> -->
     </div>
-    <div class="nodes">
-      <SimpleNode 
-        v-for="e in entities" 
-        v-bind:key="`node/${e.uuid}`" 
-        :entity="e"
-        :onChange="html => update(e, html)" 
-        :onDelete="() => deleteEntity(e)"
-        :isEditing="isEditing(e.uuid)" 
-        @startEditing="setEditingNode(e.uuid)"
-        @stopEditing="setEditingNode(null)" 
-      />
-    </div>
-  </div>
+
+    <template #actions>
+      <ActionButton icon="new" label="Add" @click="handleCreateEntity" />
+    </template>
+  </ViewContainer>
 </template>
 
 <style scoped>
-.button {
-  cursor: pointer;
-  background: var(--ui-95);
-  box-shadow: var(--ui-container-shadow);
-  border-radius: calc(var(--ui-radius));
-  padding: var(--size-8);
-}
-
-.button:hover {
-  background: var(--ui-primary-100);
-  color: var(--ui-100);
-}
-
-.actions {
-  padding: var(--size-12) 0;
-  gap: var(--size-4);
-}
-
-.nodes {
+.entities {
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  align-items: flex-start;
+  align-items: center;
+  position: absolute;
   gap: 1em;
-  max-width: 600px;
-  margin: 0 auto;
-  height: 100%;
-  overflow-y: auto;
-}
-
-.container {
   width: 100%;
   height: 100%;
-  position: relative;
-  padding: 2em;
-  padding-top: 6em;
+  padding: var(--size-12);
+  top: 0;
+  left: 0;
+  overflow-y: auto;
 }
 </style>

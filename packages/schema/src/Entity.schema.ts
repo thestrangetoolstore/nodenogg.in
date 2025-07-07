@@ -3,21 +3,22 @@ import { createVersionedSchema, type InferVersionedSchema } from '@figureland/ve
 import { clone as c } from '@figureland/kit/tools/clone'
 import { createTimestamp, isString } from './utils'
 import { createUUID, isValidUUID } from './uuid'
-import { IdentitySchema, type IdentityUUID } from './Identity.schema'
+import { identityID, IdentitySchema, type IdentityID } from './Identity.schema'
 import { freeze } from '@figureland/kit/tools/object'
 
-export const isValidEntityUUID = (input: unknown): input is string =>
+export const isValidEntityID = (input: unknown): input is string =>
   isString(input) && input.startsWith('e') && input.length === 17 && isValidUUID(input)
 
-export const createEntityUUID = (): string => createUUID('e')
+export const createEntityID = (): string => createUUID('e')
 
-const entityUUID = custom<string>(isValidEntityUUID)
+const entityID = custom<string>(isValidEntityID)
 
 const schema = createVersionedSchema({
   base: {},
   versions: {
     '1': {
-      uuid: entityUUID,
+      id: entityID,
+      identity_id: identityID,
       lastEdited: number(),
       created: number(),
       data: variant('type', [
@@ -32,24 +33,26 @@ const schema = createVersionedSchema({
         }),
         object({
           type: literal('connection'),
-          from: optional(entityUUID),
-          to: optional(entityUUID)
+          from: optional(entityID),
+          to: optional(entityID)
         }),
         object({
           type: literal('emoji'),
           content: string(),
-          entity: optional(entityUUID)
+          x: number(),
+          y: number()
         })
       ])
     }
   }
 })
 
-const create = (data: Entity['data']) => {
+const create = (identity_id: IdentityID, data: Entity['data']) => {
   try {
     const timestamp = createTimestamp()
     return schema.parse({
-      uuid: createEntityUUID(),
+      id: createEntityID(),
+      identity_id,
       lastEdited: timestamp,
       created: timestamp,
       version: schema.latest,
@@ -60,9 +63,9 @@ const create = (data: Entity['data']) => {
   }
 }
 
-const clone = (entity: Entity) => create(c(entity.data))
+const clone = (identity_id: IdentityID, entity: Entity) => create(identity_id, c(entity.data))
 
-const update = (entity: Entity, data: Partial<Omit<Entity['data'], 'type'>>) => {
+const update = (entity: Entity, data: EntityUpdate) => {
   try {
     return schema.parse({
       ...entity,
@@ -77,41 +80,43 @@ const update = (entity: Entity, data: Partial<Omit<Entity['data'], 'type'>>) => 
   }
 }
 
-export type Entity = InferVersionedSchema<typeof schema>
+export type EntityUpdate = Partial<Entity['data']>
 
-export type EntityOfType<T extends Entity['data']['type']> = Entity & {
-  data: Extract<Entity['data'], { type: T }>
-}
+export type Entity = InferVersionedSchema<typeof schema>
 
 export type EntityDataType = Entity['data']['type']
 
-export type EntityLocation = `${IdentityUUID}/${string}`
+export type EntityOfType<T extends EntityDataType> = Entity & {
+  data: Extract<Entity['data'], { type: T }>
+}
+
+export type EntityLocation = `${IdentityID}/${string}`
 
 export type EntityPointer =
   | {
       entity_id: string
-      identity_id: IdentityUUID
+      identity_id: IdentityID
     }
   | EntityLocation
 
-export const getEntityLocation = (identity_id: IdentityUUID, entity_id: string): EntityLocation =>
+export const getEntityLocation = (identity_id: IdentityID, entity_id: string): EntityLocation =>
   `${identity_id}/${entity_id}`
 
 export const parseEntityLocation = (
   location: EntityLocation
-): { identity_id: IdentityUUID; entity_id: string } | undefined => {
+): { identity_id: IdentityID; entity_id: string } | undefined => {
   if (!isString(location)) {
     return undefined
   }
 
   const [identity_id, entity_id] = location.split('/')
 
-  if (!IdentitySchema.utils.isValidIdentityUUID(identity_id) || !isValidEntityUUID(entity_id)) {
+  if (!IdentitySchema.utils.isValidIdentityID(identity_id) || !isValidEntityID(entity_id)) {
     return undefined
   }
 
   return {
-    identity_id: identity_id as IdentityUUID,
+    identity_id: identity_id as IdentityID,
     entity_id
   }
 }
@@ -126,8 +131,8 @@ export const EntitySchema = freeze({
   utils: {
     getEntityLocation,
     parseEntityLocation,
-    isValidEntityUUID,
-    createEntityUUID,
+    isValidEntityID,
+    createEntityID,
     isType
   },
   api: {

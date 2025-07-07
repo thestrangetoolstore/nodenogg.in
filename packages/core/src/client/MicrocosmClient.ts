@@ -1,7 +1,7 @@
 import { state, persist, store } from '@figureland/kit/state'
 import { sortMapToArray } from '@figureland/kit/tools/map'
 import { storage } from '@figureland/kit/state/local-storage'
-import { MicrocosmSchema, type MicrocosmUUID } from '@nodenogg.in/schema'
+import { MicrocosmSchema, type MicrocosmID } from '@nodenogg.in/schema'
 
 import { getPersistenceName } from '../app/App'
 import { isMap } from '@figureland/kit/tools/guards'
@@ -9,18 +9,18 @@ import { createIdentitySession } from '../identity/identity'
 import { createTimestamp } from '@figureland/kit/tools/time'
 import { MicrocosmAPI, MicrocosmAPIFactory } from '..'
 
-const { isValidMicrocosmUUID } = MicrocosmSchema.utils
+const { isValidMicrocosmID } = MicrocosmSchema.utils
 
 export type MicrocosmReference = {
-  uuid: MicrocosmUUID
+  id: MicrocosmID
   lastAccessed: number
   password?: string
 }
 
-type MicrocosmMap = Map<MicrocosmUUID, MicrocosmReference>
+type MicrocosmMap = Map<MicrocosmID, MicrocosmReference>
 
 export type MicrocosmEntryRequest = {
-  uuid: MicrocosmUUID
+  id: MicrocosmID
   password?: string
 }
 
@@ -29,15 +29,13 @@ export class MicrocosmClient<M extends MicrocosmAPI = MicrocosmAPI> {
   private use = this.store.use
   readonly identity = this.use(createIdentitySession())
 
-  private microcosms = new Map<MicrocosmUUID, M>()
+  private microcosms = new Map<MicrocosmID, M>()
   private state = this.use(state<MicrocosmMap>(new Map()))
-  public active = this.use(state<MicrocosmUUID | undefined>(undefined))
+  public active = this.use(state<MicrocosmID | undefined>(undefined))
   public ready = this.use(state(false))
-  private ongoingRegistrations = new Map<MicrocosmUUID, Promise<M>>()
+  private ongoingRegistrations = new Map<MicrocosmID, Promise<M>>()
   public references = this.use(
-    state((get) =>
-      sortMapToArray(get(this.state), 'uuid').filter((m) => isValidMicrocosmUUID(m.uuid))
-    )
+    state((get) => sortMapToArray(get(this.state), 'id').filter((m) => isValidMicrocosmID(m.id)))
   )
 
   constructor(
@@ -58,51 +56,51 @@ export class MicrocosmClient<M extends MicrocosmAPI = MicrocosmAPI> {
     this.ready.set(true)
   }
 
-  private removeReference = (uuid: MicrocosmUUID) => {
+  private removeReference = (id: MicrocosmID) => {
     this.state.mutate((microcosms) => {
-      microcosms.delete(uuid)
+      microcosms.delete(id)
     })
   }
 
-  private registerReference = ({ uuid, password }: MicrocosmEntryRequest): MicrocosmReference => {
-    const existing = this.state.get().get(uuid)
+  private registerReference = ({ id, password }: MicrocosmEntryRequest): MicrocosmReference => {
+    const existing = this.state.get().get(id)
     const updatedReference = {
-      uuid,
+      id,
       lastAccessed: createTimestamp(),
       password: password || existing?.password
     }
     this.state.mutate((microcosms) => {
-      microcosms.set(uuid, updatedReference)
+      microcosms.set(id, updatedReference)
     })
     return updatedReference
   }
 
-  public isActive = (uuid: MicrocosmUUID) =>
-    this.store.unique(uuid, () => state((get) => get(this.active) === uuid))
+  public isActive = (id: MicrocosmID) =>
+    this.store.unique(id, () => state((get) => get(this.active) === id))
 
-  public setActive = (uuid: MicrocosmUUID) => this.active.set(uuid)
+  public setActive = (id: MicrocosmID) => this.active.set(id)
 
   public register = async (config: MicrocosmEntryRequest): Promise<M> => {
-    if (!isValidMicrocosmUUID(config.uuid)) {
-      throw new Error(`Invalid microcosm ID: ${config.uuid}`)
+    if (!isValidMicrocosmID(config.id)) {
+      throw new Error(`Invalid microcosm ID: ${config.id}`)
     }
 
     const promise = this.performRegistration(config).finally(() => {
-      this.ongoingRegistrations.delete(config.uuid)
+      this.ongoingRegistrations.delete(config.id)
     })
 
-    this.ongoingRegistrations.set(config.uuid, promise)
+    this.ongoingRegistrations.set(config.id, promise)
 
     return promise
   }
 
   private performRegistration = async (config: MicrocosmEntryRequest): Promise<M> => {
     const reference = this.registerReference(config)
-    this.setActive(config.uuid)
+    this.setActive(config.id)
 
     // const timer = this.config.telemetry?.time({
     //   name: 'microcosms',
-    //   message: `Retrieving microcosm ${config.microcosm_uuid}`,
+    //   message: `Retrieving microcosm ${config.microcosm_id}`,
     //   level: 'info'
     // })
     if (this.microcosms.size > 5) {
@@ -113,24 +111,24 @@ export class MicrocosmClient<M extends MicrocosmAPI = MicrocosmAPI> {
       // })
     }
 
-    if (this.microcosms.has(config.uuid)) {
+    if (this.microcosms.has(config.id)) {
       // timer?.finish()
-      return this.microcosms.get(config.uuid) as M
+      return this.microcosms.get(config.id) as M
     }
 
     const microcosm = await this.config.api(reference)
 
-    this.microcosms.set(config.uuid, microcosm)
+    this.microcosms.set(config.id, microcosm)
     // timer?.finish()
     return microcosm
   }
 
-  public remove = async (uuid: MicrocosmUUID) => {
-    const microcosm = this.microcosms.get(uuid)
+  public remove = async (id: MicrocosmID) => {
+    const microcosm = this.microcosms.get(id)
     if (microcosm) {
       microcosm.dispose()
-      this.removeReference(uuid)
-      this.microcosms.delete(uuid)
+      this.removeReference(id)
+      this.microcosms.delete(id)
     }
   }
 

@@ -10,7 +10,7 @@ body {
   max-height: 100vh;
   color: var(--ui-0);
   font-optical-sizing: auto;
-  font-family: 'Sono', monospace;
+  font-family: 'Munken Sans', 'Sono', monospace;
   font-size: 14px;
   box-sizing: border-box;
   background: var(--ui-95);
@@ -23,9 +23,26 @@ body {
   }
 }
 
+html {
+  height: 100%;
+  overflow: hidden;
+  /* Prevent iOS Safari bounce/rubber band scrolling */
+  overscroll-behavior: none;
+  /* Prevent text selection on iOS */
+  -webkit-user-select: none;
+  user-select: none;
+  /* Prevent callout on iOS */
+  -webkit-touch-callout: none;
+  /* Prevent pinch zoom on trackpad */
+  touch-action: none;
+}
+
 html,
 body {
   overscroll-behavior-x: contain;
+  overscroll-behavior-y: none;
+  /* Prevent iOS zoom on double tap */
+  touch-action: manipulation;
 }
 
 *,
@@ -33,11 +50,77 @@ body {
 *::after {
   box-sizing: border-box;
   margin: 0;
+  /* Prevent text selection unless explicitly enabled */
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+/* Allow text selection for input elements and content areas */
+input,
+textarea,
+[contenteditable],
+.selectable-text {
+  -webkit-user-select: auto;
+  user-select: auto;
 }
 
 #app {
   width: 100%;
   height: 100vh;
+  height: 100dvh; /* Dynamic viewport height for mobile browsers */
   overflow: hidden;
   display: flex;
+  flex-direction: column;
+  /* Prevent touch events from causing zoom/scroll */
+  touch-action: none;
+  /* Prevent iOS webkit transforms */
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+  padding: var(--size-8) var(--size-16) var(--size-16) var(--size-16);
+}
+
+/* Mobile-specific touch behavior */
+@media (max-width: 768px) {
+  body {
+    /* Prevent iOS Safari address bar from affecting layout */
+    -webkit-overflow-scrolling: touch;
+  }
+
+  #app {
+    padding: 0;
+  }
+
+  /* Allow touch manipulation for specific interactive elements */
+  button,
+  [role='button'],
+  .draggable,
+  .vue-flow__node,
+  .resizable-container {
+    touch-action: manipulation;
+  }
+
+  /* Prevent zoom on input focus */
+  input,
+  textarea,
+  select {
+    font-size: 16px; /* Prevents zoom on iOS */
+  }
+}
+
+/* Ensure Vue Flow components respect touch settings */
+.vue-flow {
+  touch-action: none;
+}
+
+.vue-flow__node {
+  touch-action: manipulation;
+}
+
+.vue-flow__handle {
+  touch-action: none;
+}
+
+/* Floating toolbar touch handling */
+.floating-toolbar {
+  touch-action: manipulation;
 }

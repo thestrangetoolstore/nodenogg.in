@@ -6,7 +6,7 @@ export interface Persistence {
 }
 
 export type PersistenceFactory<P extends Persistence = Persistence> = (
-  uuid: string,
+  id: string,
   doc: Doc
 ) => Promise<P>
 

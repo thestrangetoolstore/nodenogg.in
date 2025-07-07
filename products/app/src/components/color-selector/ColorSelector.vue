@@ -1,10 +1,8 @@
-<template>
-  hello
-</template>
-<!-- <script setup lang="ts">
+<script setup lang="ts">
+import { cardColors, getColor } from '@/utils/color'
 import { ToggleGroupItem, ToggleGroupRoot } from 'reka-ui'
 import { type PropType } from 'vue'
-import { cardColors, getCardColor } from '@nodenogg.in/app'
+
 
 const props = defineProps({
   onUpdate: {
@@ -25,7 +23,7 @@ const handleUpdate = (color: string | string[]) =>
   <div>
     <ToggleGroupRoot :model-value="value" @update:modelValue="handleUpdate" class="ui toggle-group">
       <ToggleGroupItem v-for="color in cardColors" :value="color" :aria-label="`Change color to ${color}`"
-        class="toggle-group-item" v-bind:key="`color${color}`" :style="`background-color: ${getCardColor(50, color)};`">
+        class="toggle-group-item" v-bind:key="`color${color}`" :style="`background-color: ${getColor(color)};`">
       </ToggleGroupItem>
     </ToggleGroupRoot>
   </div>
@@ -40,7 +38,7 @@ button {
   display: flex;
   flex-wrap: wrap;
   flex-direction: row;
-  padding: var(--size-8) var(--size-8);
+  /* padding: var(--size-8) var(--size-8); */
   overflow-x: scroll;
   width: 100%;
   color: var(--ui-0);
@@ -48,19 +46,6 @@ button {
   border-radius: var(--ui-radius);
 }
 
-.toggle-group:hover {
-  background: var(--ui-90);
-}
-
-@media (prefers-color-scheme: dark) {
-  .toggle-group {
-    /* background-color: var(--ui-90); */
-  }
-
-  .toggle-group:hover {
-    background: var(--ui-80);
-  }
-}
 
 .toggle-group-item {
   flex-shrink: 0;
@@ -69,15 +54,12 @@ button {
   height: var(--size-24);
   width: var(--size-24);
   border-radius: var(--size-24);
+  box-shadow: var(--ui-shadow-25);
   line-height: 1;
   align-items: center;
   justify-content: center;
   transform: scale(0.75);
   position: relative;
-}
-
-.toggle-group-item:hover {
-  box-shadow: var(--ui-shadow-10);
 }
 
 .toggle-group-item[data-state='on'] {
@@ -88,4 +70,4 @@ button {
 .toggle-group-item:focus {
   box-shadow: var(--ui-shadow-100);
 }
-</style> -->
+</style>

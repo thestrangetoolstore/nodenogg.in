@@ -1,14 +1,14 @@
 import { createVersionedSchema, type InferVersionedSchema } from '@figureland/versioned-schema'
 import { freeze } from '@figureland/kit/tools/object'
 import { custom } from 'valibot'
-import { createUUID, isValidUUID } from './uuid'
+import { createUUID } from './uuid'
 import { isString } from './utils'
 
 const DEFAULT_NAME = 'untitled'
 
-const sanitizeMicrocosmUUIDTitle = (input?: string): string => {
+const sanitizeMicrocosmIDTitle = (input?: string): string => {
   if (input) {
-    if (isValidMicrocosmUUID(input)) {
+    if (isValidMicrocosmID(input)) {
       return input
     } else {
       return (input as string).toLowerCase().replace(/[^a-z0-9]/g, '')
@@ -18,30 +18,30 @@ const sanitizeMicrocosmUUIDTitle = (input?: string): string => {
   }
 }
 
-const createMicrocosmUUID = (input?: string): MicrocosmUUID => {
-  if (isValidMicrocosmUUID(input)) return input
-  // const sanitizedInput = sanitizeMicrocosmUUIDTitle(input)
-  // const uuid = createUUID()
-  return createUUID()
-  // return `${sanitizedInput}_${uuid}`.slice(0, MAX_LENGTH) as MicrocosmUUID
+const createMicrocosmID = (input?: string): MicrocosmID => {
+  if (isValidMicrocosmID(input)) return input
+  if (!input) {
+    return createUUID()
+  }
+  return sanitizeMicrocosmIDTitle(input)
 }
 
-export const parseMicrocosmUUID = (uuid: string) => {
-  if (!isValidMicrocosmUUID(uuid)) {
+export const parseMicrocosmID = (id: string) => {
+  if (!isValidMicrocosmID(id)) {
     throw new Error()
   }
-  return uuid
+  return id
 }
 
-export const isValidMicrocosmUUID = (input: unknown): input is MicrocosmUUID =>
-  // isString(input) && /^[0-9A-Za-z]+\_[0-9A-Za-z]+$/i.test(input)
-  isString(input) && isValidUUID(input) && input.length > 2
+export const isValidMicrocosmID = (input: unknown): input is MicrocosmID =>
+  isString(input) && /^[0-9A-Za-z]+$/i.test(input)
+// isString(input) && input.length > 2
 
-export type MicrocosmUUID = string
+export type MicrocosmID = string
 
 const schema = createVersionedSchema({
   base: {
-    uuid: custom<string>(isValidMicrocosmUUID)
+    id: custom<string>(isValidMicrocosmID)
   },
   versions: {
     '1': {}
@@ -53,9 +53,9 @@ export type Microcosm = InferVersionedSchema<typeof schema>
 export const MicrocosmSchema = freeze({
   schema,
   utils: {
-    createMicrocosmUUID,
-    isValidMicrocosmUUID,
-    parseMicrocosmUUID,
-    sanitizeMicrocosmUUIDTitle
+    createMicrocosmID,
+    isValidMicrocosmID,
+    parseMicrocosmID,
+    sanitizeMicrocosmIDTitle
   }
 })

@@ -8,6 +8,10 @@ const props = defineProps({
     type: String,
     default: ''
   },
+  modelValue: {
+    type: String,
+    default: ''
+  },
   autoFocus: {
     type: Boolean
   },
@@ -29,11 +33,25 @@ const props = defineProps({
   },
   large: {
     type: Boolean
+  },
+  placeholder: {
+    type: String,
+    default: ''
   }
 })
+
+const emit = defineEmits<{
+  'update:modelValue': [value: string]
+}>()
+
 defineOptions({
-  inheritAttrs: true
+  inheritAttrs: false
 })
+
+const handleInput = (event: Event) => {
+  const target = event.target as HTMLInputElement
+  emit('update:modelValue', target.value)
+}
 
 onMounted(() => {
   if (props.autoFocus) {
@@ -45,9 +63,20 @@ onMounted(() => {
 </script>
 <template>
   <label v-if="label" class="label" :for="label">{{ label }}</label>
-  <input ref="element" :name="label" type="text" v-bind="$attrs" :class="{ base: true, [props.class]: true, large }"
-    :autocapitalize="autocapitalize" :spellcheck="spellcheck" :autocomplete="autocomplete" data-lpignore="true"
-    data-form-type="other" />
+  <input 
+    ref="element" 
+    :name="label" 
+    type="text" 
+    :value="modelValue"
+    :placeholder="placeholder"
+    :class="{ base: true, [props.class]: true, large }"
+    :autocapitalize="autocapitalize" 
+    :spellcheck="spellcheck" 
+    :autocomplete="autocomplete" 
+    data-lpignore="true"
+    data-form-type="other"
+    @input="handleInput"
+    v-bind="$attrs" />
 </template>
 
 <style scoped>
@@ -64,7 +93,8 @@ onMounted(() => {
 }
 
 .base.large {
-  font-size: 1.2em;
+  font-size: 1.5em;
+  padding: var(--size-24) var(--size-16);
 }
 
 .base::selection {

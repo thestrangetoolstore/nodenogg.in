@@ -6,7 +6,7 @@ import { createYMapListener, getYCollectionChanges } from './yjs-utils'
 import {
   IdentitySchema,
   EntitySchema,
-  type IdentityUUID,
+  type IdentityID,
   type EntityLocation,
   type Entity,
   type Identity,
@@ -52,7 +52,7 @@ export class YMicrocosmAPI extends MicrocosmAPI {
     )
   }
 
-  public identify = async (identity_id: IdentityUUID) => {
+  public identify = async (identity_id: IdentityID) => {
     await this.doc.identify(identity_id)
   }
 
@@ -62,17 +62,17 @@ export class YMicrocosmAPI extends MicrocosmAPI {
     this.setLoaded()
   }
 
-  public async *getCollections(): AsyncGenerator<IdentityUUID> {
+  public async *getCollections(): AsyncGenerator<IdentityID> {
     for (const identity_id of this.doc.identities.keys()) {
-      if (IdentitySchema.utils.isValidIdentityUUID(identity_id)) {
+      if (IdentitySchema.utils.isValidIdentityID(identity_id)) {
         yield identity_id
       }
     }
   }
 
-  public async *getCollection(identity_id: IdentityUUID): AsyncGenerator<string> {
+  public async *getCollection(identity_id: IdentityID): AsyncGenerator<string> {
     for (const entity_id of this.doc.getYCollection(identity_id).keys()) {
-      if (EntitySchema.utils.isValidEntityUUID(entity_id)) {
+      if (EntitySchema.utils.isValidEntityID(entity_id)) {
         yield entity_id
       }
     }
@@ -98,7 +98,7 @@ export class YMicrocosmAPI extends MicrocosmAPI {
     )
   }
 
-  private createInitialEntities = async (identity_id: IdentityUUID) => {
+  private createInitialEntities = async (identity_id: IdentityID) => {
     for await (const entity_id of this.getCollection(identity_id)) {
       const e = await this.doc.getEntity({
         identity_id,
@@ -110,7 +110,7 @@ export class YMicrocosmAPI extends MicrocosmAPI {
     }
   }
 
-  private createCollectionListener = async (identity_id: IdentityUUID) =>
+  private createCollectionListener = async (identity_id: IdentityID) =>
     this.store.unique(identity_id, () => {
       this.createInitialEntities(identity_id)
 
@@ -156,12 +156,12 @@ export class YMicrocosmAPI extends MicrocosmAPI {
   /**
    * Updates one or more {@link Entity}s
    */
-  public update = async (updates: [EntityPointer, Partial<Omit<Entity['data'], 'type'>>][]) => {
+  public update = async (updates: [string, Partial<Omit<Entity['data'], 'type'>>][]) => {
     this.doc.yDoc.transact(() => {
       for (const [e, update] of updates) {
-        const parsed = isString(e) ? EntitySchema.utils.parseEntityLocation(e) : e
+        const parsed = EntitySchema.utils.isValidEntityID(e)
         if (parsed) {
-          this.doc.update(parsed.entity_id, update)
+          this.doc.update(e, update)
         }
       }
     })
@@ -188,7 +188,7 @@ export class YMicrocosmAPI extends MicrocosmAPI {
   public join = (identity: Identity) => {
     // this.telemetry?.log({
     //   name: 'MicrocosmAPI',
-    //   message: `Joined ${this.uuid} (${identity.IdentityUUID}:${identity.nickname || ''})`,
+    //   message: `Joined ${this.id} (${identity.IdentityID}:${identity.nickname || ''})`,
     //   level: 'info'
     // })
 
@@ -200,7 +200,7 @@ export class YMicrocosmAPI extends MicrocosmAPI {
   public leave = (identity: Identity) => {
     // this.telemetry?.log({
     //   name: 'MicrocosmAPI',
-    //   message: `Left ${this.uuid} (${identity.IdentityUUID}:${identity.nickname || ''})`,
+    //   message: `Left ${this.id} (${identity.IdentityID}:${identity.nickname || ''})`,
     //   level: 'info'
     // })
 
