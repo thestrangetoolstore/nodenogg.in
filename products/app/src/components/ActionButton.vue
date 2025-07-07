@@ -23,12 +23,12 @@ defineEmits<{
 .action-button {
   display: flex;
   align-items: center;
-  /* gap: var(--size-); */
+  gap: var(--size-4);
   background: var(--ui-100);
   border-radius: var(--size-24);
   box-shadow: var(--ui-shadow-10);
   color: var(--ui-30);
-  padding-left: var(--size-4);
+  padding-left: var(--size-8);
   cursor: pointer;
   transition: all 0.2s ease;
   user-select: none;

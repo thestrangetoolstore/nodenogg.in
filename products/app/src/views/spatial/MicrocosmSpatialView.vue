@@ -263,7 +263,7 @@ const handleCreateNode = async () => {
     </ContextMenuRoot>
 
     <template #actions>
-      <ActionButton icon="new" label="New node" @click="handleCreateNode" />
+      <ActionButton icon="new" label="Add" @click="handleCreateNode" />
     </template>
   </ViewContainer>
 </template>
