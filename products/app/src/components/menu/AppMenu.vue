@@ -237,6 +237,13 @@ nav {
     width: 100%;
 }
 
+@media (max-width: 768px) {
+    nav {
+        padding: var(--size-8);
+    }
+}
+
+
 @media (prefers-color-scheme: dark) {
     nav {
         background: var(--ui-90);

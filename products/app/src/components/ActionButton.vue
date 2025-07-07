@@ -38,7 +38,6 @@ defineEmits<{
 .action-button:hover:not(.disabled) {
   background: var(--ui-primary-100);
   color: var(--ui-100);
-  border-color: var(--ui-primary-100);
 }
 
 .action-button.disabled {
@@ -58,8 +57,7 @@ defineEmits<{
 
 @media (prefers-color-scheme: dark) {
   .action-button {
-    background: var(--ui-85);
-    border-color: var(--ui-70);
+    background: var(--ui-90);
     color: var(--ui-20);
   }
 }

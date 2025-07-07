@@ -86,6 +86,10 @@ textarea,
     -webkit-overflow-scrolling: touch;
   }
 
+  #app {
+    padding: 0;
+  }
+
   /* Allow touch manipulation for specific interactive elements */
   button,
   [role='button'],

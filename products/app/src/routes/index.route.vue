@@ -43,10 +43,10 @@ const sortedMicrocosms = computed(() => {
     <!-- Controls -->
     <div class="controls">
       <JoinMicrocosmDialog />
-      <Select v-model="sortMode" placeholder="Sort by" label="Sort microcosms">
+      <!-- <Select v-model="sortMode" placeholder="Sort by" label="Sort microcosms">
         <SelectItem text="Last accessed" value="lastAccessed" />
         <SelectItem text="Name" value="name" />
-      </Select>
+      </Select> -->
     </div>
 
     <!-- Grid view -->

@@ -34,6 +34,14 @@ withDefaults(defineProps<{
     flex-direction: column;
 }
 
+@media (max-width: 768px) {
+    .container {
+        padding: var(--size-8);
+        border-radius: 0;
+    }
+}
+
+
 .outline {
     box-shadow: var(--ui-shadow-10);
 }
@@ -57,10 +65,11 @@ withDefaults(defineProps<{
     border-radius: var(--size-64); */
 }
 
+
 @media (prefers-color-scheme: dark) {
     .floating-actions-toolbar {
-        background: var(--ui-90);
-        border-color: var(--ui-70);
+        /* background: var(--ui-90);
+        border-color: var(--ui-70); */
     }
 }
 </style>

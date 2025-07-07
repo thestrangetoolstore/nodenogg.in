@@ -76,14 +76,9 @@ export const useMicrocosm = async (id: MicrocosmID) => {
     const status = vue(microcosm.state)
     const identities: Identity[] = []
 
-    const getUser = (identityID: string) => {
-      return undefined
-    }
-
     return {
       id,
       api: microcosm,
-      getUser,
       status,
       identities,
       entities,
