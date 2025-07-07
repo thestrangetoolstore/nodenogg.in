@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { watch, ref } from 'vue'
 import {
     DropdownMenuRoot,
     DropdownMenuTrigger,
@@ -10,11 +9,12 @@ import {
 } from 'reka-ui'
 import Editor from '@/components/editor/Editor.vue'
 import Icon from '@/components/icon/Icon.vue'
-import { EntitySchema, type Entity } from '@nodenogg.in/schema'
+import { EntitySchema, type Entity, type EntityUpdate } from '@nodenogg.in/schema'
 import ColorSelector from '@/components/color-selector/ColorSelector.vue'
+import { getColor } from '@/utils/color'
 
-const props = defineProps<{
-    onChange: (html: string) => void
+defineProps<{
+    onChange: (update: EntityUpdate) => void
     onDelete: () => void
     onDuplicate: () => void
     entity: Entity
@@ -23,40 +23,24 @@ const props = defineProps<{
 
 const emit = defineEmits(['startEditing', 'stopEditing'])
 
-// Handle when editor should activate
 const onStartEditing = () => {
     emit('startEditing')
 }
 
-// Handle when editor loses focus
 const onStopEditing = () => {
     emit('stopEditing')
 }
 
-// Handle keyboard events
-const handleKeydown = (event: KeyboardEvent) => {
-    // Handle Space or Enter key to enter edit mode
-    // if (event.key === 'Enter' || event.key === ' ') {
-    //     event.preventDefault()
-    //     onStartEditing()
-    // }
-}
-
-// Watch for changes in isEditing prop
-watch(() => props.isEditing, (newValue) => {
-    if (!newValue) {
-        // Handle cleanup when editing stops
-    }
-})
 
 const { isType } = EntitySchema.utils
 
 </script>
 
 <template>
-    <div class="node" v-if="isType(entity, 'html')" :class="{ 'is-editing': isEditing }" tabindex="0">
-        <Editor :value="entity.data.content" :onChange="onChange" :editable="isEditing" @click="onStartEditing"
-            @cancel="onStopEditing" />
+    <div class="node" :style="`background-color: ${getColor(entity.data.backgroundColor || 'yellow')}`"
+        v-if="isType(entity, 'html')" :class="{ 'is-editing': isEditing }" tabindex="0">
+        <Editor :value="entity.data.content" :onChange="content => onChange({ content })" :editable="isEditing"
+            @click="onStartEditing" @cancel="onStopEditing" />
         <DropdownMenuRoot :modal="true">
             <DropdownMenuTrigger class="node-menu-trigger">
                 <Icon type="ellipsis" />
@@ -64,7 +48,8 @@ const { isType } = EntitySchema.utils
             <DropdownMenuPortal>
                 <DropdownMenuContent class="dropdown-menu-content" :side-offset="5" :align="'end'">
                     <DropdownMenuItem class="dropdown-menu-item">
-                        <ColorSelector />
+                        <ColorSelector :value="entity.data.backgroundColor"
+                            :onUpdate="backgroundColor => onChange({ backgroundColor })" />
                     </DropdownMenuItem>
                     <DropdownMenuSeparator class="dropdown-menu-separator" />
                     <DropdownMenuItem class="dropdown-menu-item" @click="onDuplicate">

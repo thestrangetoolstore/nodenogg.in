@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { client, useCurrentMicrocosm } from '@/state'
-import SimpleNode from './CollectNode.vue'
+import CollectNode from './CollectNode.vue'
 import { storeToRefs } from 'pinia'
 import ViewContainer from '@/components/ViewContainer.vue'
 import ActionButton from '@/components/ActionButton.vue'
@@ -61,10 +61,9 @@ const handleCreateEmoji = async () => {
 <template>
   <ViewContainer>
     <div class="entities">
-      <SimpleNode v-for="e in htmlEntities" v-bind:key="`entity/${e.id}`" :entity="e"
-        :onChange="content => update(e.id, { content })" :onDelete="() => deleteEntity(e)" :isEditing="isEditing(e.id)"
-        :onDuplicate="() => handleDuplicateEntity(e)" @startEditing="setEditingNode(e.id)"
-        @stopEditing="setEditingNode(null)" />
+      <CollectNode v-for="e in htmlEntities" v-bind:key="`entity/${e.id}`" :entity="e" :onChange="u => update(e.id, u)"
+        :onDelete="() => deleteEntity(e)" :isEditing="isEditing(e.id)" :onDuplicate="() => handleDuplicateEntity(e)"
+        @startEditing="setEditingNode(e.id)" @stopEditing="setEditingNode(null)" />
 
       <!-- <h2 v-if="htmlEntities.length === 0">You haven't added anything to this microcosm yet.</h2> -->
     </div>
