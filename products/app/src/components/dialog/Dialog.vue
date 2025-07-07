@@ -59,7 +59,7 @@ defineSlots<{ trigger: any, content: any, tray: any }>()
 <style scoped>
 .overlay {
   background: var(--ui-100);
-  opacity: 0.4;
+  opacity: 0.75;
   position: fixed;
   inset: 0;
   z-index: 999;

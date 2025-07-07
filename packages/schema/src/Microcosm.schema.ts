@@ -1,7 +1,7 @@
 import { createVersionedSchema, type InferVersionedSchema } from '@figureland/versioned-schema'
 import { freeze } from '@figureland/kit/tools/object'
 import { custom } from 'valibot'
-import { createUUID, isValidUUID } from './uuid'
+import { createUUID } from './uuid'
 import { isString } from './utils'
 
 const DEFAULT_NAME = 'untitled'
@@ -34,8 +34,8 @@ export const parseMicrocosmID = (id: string) => {
 }
 
 export const isValidMicrocosmID = (input: unknown): input is MicrocosmID =>
-  // isString(input) && /^[0-9A-Za-z]+\_[0-9A-Za-z]+$/i.test(input)
-  isString(input) && isValidUUID(input) && input.length > 2
+  isString(input) && /^[0-9A-Za-z]+$/i.test(input)
+// isString(input) && input.length > 2
 
 export type MicrocosmID = string
 

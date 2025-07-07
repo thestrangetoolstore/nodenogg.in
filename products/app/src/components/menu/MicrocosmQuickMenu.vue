@@ -30,75 +30,83 @@ const props = defineProps({
     }
 })
 
+const selectedValue = ref<string | null>(null)
+const searchTerm = ref<string>('')
+const open = ref(false)
 
-const inputValue = ref<string>('')
-const newMicrocosmID = computed(() => createMicrocosmID(inputValue.value))
-const active = ref(false)
+const newMicrocosmID = computed(() => createMicrocosmID(searchTerm.value))
 
-watch(inputValue, () => {
-    if (!active.value) {
-        active.value = !!inputValue.value
-    }
+const inputIsValidMicrocosmID = computed(() => {
+    return isValidMicrocosmID(searchTerm.value)
 })
-
-const inputIsValidMicrocosmID = computed(() => isValidMicrocosmID(inputValue.value))
 
 const existingMicrocosm = computed(() =>
     inputIsValidMicrocosmID.value
-    && !!props.options.find(microcosm => microcosm.id === inputValue.value)
+    && !!props.options.find(microcosm => microcosm.id === searchTerm.value)
 )
 
+const showCreateOption = computed(() =>
+    true
+)
+
+const filteredOptions = computed(() => {
+    if (!searchTerm.value) return props.options.slice(0, props.limit)
+
+    return props.options.filter(option =>
+        parseMicrocosmID(option.id).toLowerCase().includes(searchTerm.value.toLowerCase())
+    ).slice(0, props.limit)
+})
 
 const onCreate = () => {
-    props.onCreate(newMicrocosmID.value)
+    const id = createMicrocosmID(searchTerm.value)
+    props.onCreate(id)
+    selectedValue.value = id
+    searchTerm.value = ''
+    open.value = false
 }
 
-const filter = (list: (string[]), term: string) =>
-    list.filter((option) => {
-        return option === 'new' || option.toLocaleLowerCase().startsWith(term.toLocaleLowerCase())
-    })
+const onSelectMicrocosm = (microcosmId: string) => {
+    props.onSelect(microcosmId)
+    selectedValue.value = microcosmId
+    open.value = false
+}
+
+// Display value function for the input
+const displayValue = (value: string | null) => {
+    if (!value) return ''
+    const microcosm = props.options.find(m => m.id === value)
+    return microcosm ? parseMicrocosmID(microcosm.id) : value
+}
 
 </script>
 
 <template>
-    <ComboboxRoot v-model:searchTerm="inputValue" :filter-function="filter">
-
+    <ComboboxRoot v-model="selectedValue" v-model:searchTerm="searchTerm" v-model:open="open"
+        :display-value="displayValue">
         <ComboboxInput asChild>
-            <Input large :placeholder="placeholder" autoFocus v-on:keyup="(e) => {
-            }" />
+            <Input large :placeholder="placeholder" autoFocus />
         </ComboboxInput>
         <ComboboxContent>
             <ComboboxViewport class="viewport">
-                <ComboboxGroup>
+                <ComboboxGroup v-if="filteredOptions.length > 0">
                     <ComboboxLabel class="group-label">Recent microcosms</ComboboxLabel>
-                    <ComboboxItem v-for="(m) in options" :key="m.id" :value="m.id" asChild
-                        @select.prevent="() => onSelect(m.id)">
+                    <ComboboxItem v-for="(m) in filteredOptions" :key="m.id" :value="m.id" asChild
+                        @select="onSelectMicrocosm(m.id)">
                         <article class="item">
-                            <span>{{ parseMicrocosmID(m.id) }}</span> <span class="secondary">{{
-                                getTimeSince(m.lastAccessed)
-                                }}</span>
+                            <span>{{ parseMicrocosmID(m.id) }}</span>
+                            <span class="secondary">{{ getTimeSince(m.lastAccessed) }}</span>
                         </article>
                     </ComboboxItem>
                 </ComboboxGroup>
-                <ComboboxItem value="new" asChild @select="onCreate" v-if="!existingMicrocosm">
+
+                <ComboboxItem v-if="showCreateOption" value="__create__" asChild @select="onCreate">
                     <article class="item new">
-                        <p>Create <span class="bold">{{ sanitizeMicrocosmIDTitle(inputValue) }}</span>
-
-                        </p>
+                        <p>Create <span class="bold">{{ sanitizeMicrocosmIDTitle(searchTerm) }}</span></p>
                         <div class="instruction">Press<span class="keycommand">enter</span></div>
-
-                        <!-- <p>
-                            <small>{{ newMicrocosmID }}</small>
-                        </p> -->
                     </article>
                 </ComboboxItem>
-
             </ComboboxViewport>
         </ComboboxContent>
-        <!-- <div v-if="!active" class="instruction-tray">
-            <div class="instruction">Press<span class="keycommand" style="padding-top: 0">↓</span>for more options
-            </div>
-        </div> -->
     </ComboboxRoot>
 </template>
 
