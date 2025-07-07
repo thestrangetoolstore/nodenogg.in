@@ -20,10 +20,10 @@ const sanitizeMicrocosmIDTitle = (input?: string): string => {
 
 const createMicrocosmID = (input?: string): MicrocosmID => {
   if (isValidMicrocosmID(input)) return input
-  // const sanitizedInput = sanitizeMicrocosmIDTitle(input)
-  // const id = createUUID()
-  return createUUID()
-  // return `${sanitizedInput}_${id}`.slice(0, MAX_LENGTH) as MicrocosmID
+  if (!input) {
+    return createUUID()
+  }
+  return sanitizeMicrocosmIDTitle(input)
 }
 
 export const parseMicrocosmID = (id: string) => {
