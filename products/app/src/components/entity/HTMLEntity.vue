@@ -181,8 +181,8 @@ const handleDuplicate = () => {
 
 <style scoped>
 .resizable-container {
-  box-shadow: var(--ui-shadow-10);
-  color: var(--ui-0);
+  /* box-shadow: var(--ui-shadow-10); */
+  color: var(--ui-mono-0);
   border-radius: var(--ui-radius);
   width: 100%;
   height: 100%;
@@ -198,37 +198,35 @@ const handleDuplicate = () => {
 }
 
 .resizable-container:focus {
-  outline: 2px solid var(--ui-primary-100);
-  outline-offset: 2px;
+  /* outline: 2px solid var(--ui-primary-100); */
+  /* outline-offset: 2px; */
 }
 
 /* Selection state */
 .resizable-container.is-selected {
-  outline: 2px solid var(--ui-primary-100);
-  outline-offset: 2px;
+  /* outline: 2px solid var(--ui-primary-100); */
+  /* outline-offset: 2px; */
 }
 
 /* Editing state */
 .resizable-container.is-editing {
-  outline: 3px solid var(--ui-primary-100);
-  outline-offset: 2px;
+  /* outline: 3px solid var(--ui-primary-100); */
+  /* outline-offset: 2px; */
   box-shadow: 0 0 0 4px rgba(var(--ui-primary-100-rgb), 0.2);
 }
 
-/* Read-only state */
 .resizable-container.read-only {
-  opacity: 0.7;
-  border: 1px dashed var(--ui-60);
+
 }
 
 .resizable-container.read-only:focus {
-  outline: 2px solid var(--ui-60);
-  outline-offset: 2px;
+  /* outline: 2px solid var(--ui-60); */
+  /* outline-offset: 2px; */
 }
 
 .resizable-container.read-only.is-selected {
-  outline: 2px solid var(--ui-60);
-  outline-offset: 2px;
+  /* outline: 2px solid var(--ui-60); */
+  /* outline-offset: 2px; */
 }
 
 .resizable-container.read-only .content-wrapper {

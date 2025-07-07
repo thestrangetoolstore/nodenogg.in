@@ -127,7 +127,7 @@ watch(() => props.editable, (newValue) => {
 }
 
 .wrapper.is-active {
-  border-color: var(--ui-primary-100);
+  border-color: var(--ui-0);
 }
 
 .tiptap-wrapper {
