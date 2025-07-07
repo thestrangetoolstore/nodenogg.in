@@ -287,7 +287,12 @@ const handleEmojiCreateFromEntity = (emoji: string, entity: Entity) => {
 
         <template #node-emoji="emojiNodeProps">
           <!-- Emoji entities without resizable handles -->
-          <EmojiEntity :entity="emojiNodeProps.data" :is-selected="emojiNodeProps.isSelected" />
+          <EmojiEntity 
+            :entity="emojiNodeProps.data" 
+            :is-selected="emojiNodeProps.isSelected"
+            :current-user-identity-id="currentIdentity?.id"
+            :on-delete="deleteEntity" 
+          />
         </template>
       </SpatialView>
       
