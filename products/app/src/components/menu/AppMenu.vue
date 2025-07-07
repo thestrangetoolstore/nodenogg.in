@@ -307,7 +307,7 @@ nav {
     min-width: 200px;
     max-height: calc(100vh - 64px);
     overflow-y: scroll;
-    background: var(--ui-95);
+    background: var(--ui-90);
     box-shadow: var(--ui-container-shadow);
     border-radius: calc(var(--ui-radius));
     padding: var(--size-4);
@@ -368,7 +368,7 @@ nav {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    background: var(--ui-95);
+    background: var(--ui-90);
     border-radius: calc(var(--ui-radius));
     box-shadow: var(--ui-container-shadow);
     padding: var(--size-24);
