@@ -5,7 +5,7 @@ import { storeToRefs } from 'pinia'
 import ViewContainer from '@/components/ViewContainer.vue'
 import ActionButton from '@/components/ActionButton.vue'
 import { computed } from 'vue'
-import { EntitySchema } from '@nodenogg.in/schema'
+import { EntitySchema, type Entity } from '@nodenogg.in/schema'
 
 // Utility function to generate random position offset
 const getRandomOffset = () => Math.floor(Math.random() * 1000) - 500 // Range: -500 to 500
@@ -31,7 +31,7 @@ const htmlEntities = computed(() => entities.value.filter(e =>
   EntitySchema.utils.isType(e, 'html') && identity?.id === e.identity_id
 ))
 
-const { setEditingNode, isEditing, update, deleteEntity, create } = microcosm
+const { setEditingNode, isEditing, update, deleteEntity, create, duplicateEntity } = microcosm
 
 const handleCreateEntity = async () => {
   await create({
@@ -44,12 +44,16 @@ const handleCreateEntity = async () => {
   })
 }
 
+const handleDuplicateEntity = async (e: Entity) => {
+  await duplicateEntity(e)
+}
+
 const handleCreateEmoji = async () => {
-  await create({ 
-    type: 'emoji', 
-    x: getRandomOffset(), 
-    y: getRandomOffset(), 
-    content: `❤️` 
+  await create({
+    type: 'emoji',
+    x: getRandomOffset(),
+    y: getRandomOffset(),
+    content: `❤️`
   })
 }
 </script>
@@ -59,7 +63,10 @@ const handleCreateEmoji = async () => {
     <div class="entities">
       <SimpleNode v-for="e in htmlEntities" v-bind:key="`entity/${e.id}`" :entity="e"
         :onChange="content => update(e.id, { content })" :onDelete="() => deleteEntity(e)" :isEditing="isEditing(e.id)"
-        @startEditing="setEditingNode(e.id)" @stopEditing="setEditingNode(null)" />
+        :onDuplicate="() => handleDuplicateEntity(e)" @startEditing="setEditingNode(e.id)"
+        @stopEditing="setEditingNode(null)" />
+
+      <!-- <h2 v-if="htmlEntities.length === 0">You haven't added anything to this microcosm yet.</h2> -->
     </div>
 
     <template #actions>

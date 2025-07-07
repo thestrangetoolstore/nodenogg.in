@@ -73,6 +73,8 @@ export const useMicrocosm = async (id: MicrocosmID) => {
       return null
     }
 
+    const duplicateEntity = async (entity: Entity) => create(entity.data)
+
     const status = vue(microcosm.state)
     const identities: Identity[] = []
 
@@ -87,6 +89,7 @@ export const useMicrocosm = async (id: MicrocosmID) => {
       isEditing,
       update,
       deleteEntity,
+      duplicateEntity,
       create
     }
   })()

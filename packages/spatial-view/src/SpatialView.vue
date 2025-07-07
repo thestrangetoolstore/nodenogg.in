@@ -87,7 +87,7 @@ const elementsSelectable = computed(() => !isEditing.value)
         <HTMLEntity :entity="resizableNodeProps.data" :is-selected="selectedNodeId === resizableNodeProps.id" />
       </slot>
     </template>
-    
+    your
     <template #node-emoji="emojiNodeProps">
       <slot name="node-emoji"
         v-bind="{ ...emojiNodeProps, isSelected: selectedNodeId === emojiNodeProps.id }">
