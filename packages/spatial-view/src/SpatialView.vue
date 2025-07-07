@@ -5,14 +5,14 @@ import { Background } from '@vue-flow/background'
 import { MiniMap } from '@vue-flow/minimap'
 
 import type { MicrocosmSpatialViewEmits, VueFlowEntity } from './types'
-import HTMLEntity from './entity/HTMLEntity.vue'
 import { useSpatialSelection } from './composables/useSpatialSelection'
 
 const props = withDefaults(defineProps<{
   view_id: string;
   nodes: VueFlowEntity[];
   ui?: boolean;
-  minimap?: boolean
+  minimap?: boolean;
+  HTMLEntity?: any;
 }>(), {
   ui: false,
   minimap: false
@@ -21,17 +21,15 @@ const props = withDefaults(defineProps<{
 const emit = defineEmits<MicrocosmSpatialViewEmits>()
 
 const { onNodesChange, viewport } = useVueFlow()
-const { selectedNodeId, isEditing, selectNode, clearSelection } = useSpatialSelection()
+const { selectedNodeId, isEditing, selectNode, clearSelection, startEditing, stopEditing, isNodeEditing } = useSpatialSelection()
 
-// Create a ref for VueFlow instance
-const vueFlowRef = ref()
 
 // Reactive reference to track the canvas element
 const canvasContainer = ref<HTMLElement | null>(null)
 
 const setCSSVariables = (newZoom: string | number) => {
   if (canvasContainer.value) {
-    canvasContainer.value.style.setProperty('--zoom-value', String(newZoom))
+    // canvasContainer.value.style.setProperty('--zoom-value', String(newZoom))
   }
 
 }
@@ -74,7 +72,7 @@ const elementsSelectable = computed(() => !isEditing.value)
 </script>
 
 <template>
-  <VueFlow ref="vueFlowRef" :nodes="nodes" class="pinia-flow" @nodes-change="handleNodeChange"
+  <VueFlow vueFlowRef="canvasContainer" :nodes="nodes" class="pinia-flow" @nodes-change="handleNodeChange"
     @node-click="handleNodeClick" @pane-click="handlePaneClick" :pan-on-drag="panOnDrag" :pan-on-scroll="panOnDrag"
     :zoom-on-scroll="zoomOnScroll" :zoom-on-pinch="zoomOnPinch" :zoom-on-double-click="zoomOnDoubleClick"
     :prevent-scrolling="preventScrolling" :nodes-draggable="nodesDraggable" :nodes-connectable="nodesConnectable"
@@ -84,13 +82,19 @@ const elementsSelectable = computed(() => !isEditing.value)
     <template #node-resizable="resizableNodeProps">
       <slot name="node-resizable"
         v-bind="{ ...resizableNodeProps, isSelected: selectedNodeId === resizableNodeProps.id }">
-        <HTMLEntity :entity="resizableNodeProps.data" :is-selected="selectedNodeId === resizableNodeProps.id" />
+        <component 
+          v-if="HTMLEntity" 
+          :is="HTMLEntity" 
+          :entity="resizableNodeProps.data" 
+          :is-selected="selectedNodeId === resizableNodeProps.id"
+          :is-editing="isNodeEditing(resizableNodeProps.id)"
+          :on-start-editing="startEditing"
+          :on-stop-editing="stopEditing"
+          v-bind="$attrs" />
       </slot>
     </template>
-    your
     <template #node-emoji="emojiNodeProps">
-      <slot name="node-emoji"
-        v-bind="{ ...emojiNodeProps, isSelected: selectedNodeId === emojiNodeProps.id }">
+      <slot name="node-emoji" v-bind="{ ...emojiNodeProps, isSelected: selectedNodeId === emojiNodeProps.id }">
         <!-- Default emoji rendering can go here if needed -->
       </slot>
     </template>

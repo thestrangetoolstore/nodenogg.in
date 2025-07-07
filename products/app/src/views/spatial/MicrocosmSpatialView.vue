@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
-import { SpatialView, HTMLEntity, EmojiEntity } from '@nodenogg.in/spatial-view'
+import { SpatialView, EmojiEntity } from '@nodenogg.in/spatial-view'
+import HTMLEntity from '@/components/entity/HTMLEntity.vue'
 import { useCurrentMicrocosm } from '@/state'
 import { EntitySchema, type Entity } from '@nodenogg.in/schema'
 import { client } from '@/state/app'
@@ -247,12 +248,19 @@ const handleCreateNode = async () => {
     <ContextMenuRoot :modal="true" @update:open="handleContextMenuOpenChange">
       <ContextMenuTrigger as-child>
         <div @contextmenu="handleContextMenuTrigger" class="spatial-canvas">
-          <SpatialView :view_id="view_id" :ui="ui" :nodes="positionedNodes" @nodes-change="handleNodeChange">
+          <SpatialView 
+            :view_id="view_id" 
+            :ui="ui" 
+            :nodes="positionedNodes" 
+            :HTMLEntity="HTMLEntity"
+            :Editor="Editor"
+            :onUpdate="update"
+            :onDelete="deleteEntity"
+            :onDuplicate="create"
+            :editable="true"
+            @nodes-change="handleNodeChange">
             <template #node-resizable="resizableNodeProps">
-              <!-- HTML entities with resizable handles -->
-              <HTMLEntity :entity="resizableNodeProps.data" :Editor="Editor" :onUpdate="update"
-                :is-selected="resizableNodeProps.isSelected"
-                :editable="isOwnedByCurrentUser(resizableNodeProps.data)" />
+              <!-- HTML entities with resizable handles will now use the app's HTMLEntity -->
             </template>
 
             <template #node-emoji="emojiNodeProps">
