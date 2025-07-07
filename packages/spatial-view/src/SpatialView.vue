@@ -12,17 +12,34 @@ const props = withDefaults(defineProps<{
   nodes: VueFlowEntity[];
   ui?: boolean;
   minimap?: boolean;
+  zoomControls?: boolean;
   HTMLEntity?: any;
   currentUserIdentityId?: string;
 }>(), {
   ui: false,
-  minimap: false
+  minimap: false,
+  zoomControls: true
 })
 
 const emit = defineEmits<MicrocosmSpatialViewEmits>()
 
-const { onNodesChange, viewport } = useVueFlow()
+const { onNodesChange, viewport, zoomIn, zoomOut, zoomTo } = useVueFlow()
 const { selectedNodeId, isEditing, selectNode, clearSelection, startEditing, stopEditing, isNodeEditing } = useSpatialSelection()
+
+// Zoom controls functionality
+const currentZoom = computed(() => viewport.value.zoom)
+
+const handleZoomIn = () => {
+  zoomIn()
+}
+
+const handleZoomOut = () => {
+  zoomOut()
+}
+
+const handleFitView = () => {
+  zoomTo(1)
+}
 
 
 // Reactive reference to track the canvas element
@@ -82,19 +99,40 @@ const elementsSelectable = computed(() => !isEditing.value)
     :elements-selectable="elementsSelectable">
     <Background variant="lines" patternColor="var(--ui-80)" />
     <MiniMap v-if="minimap" pannable zoomable class="mini-map" title="Mini map" />
+
+    <!-- Built-in Zoom Controls -->
+    <div v-if="zoomControls" class="zoom-controls">
+      <button class="zoom-button" @click="handleZoomIn" aria-label="Zoom in">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="12" y1="5" x2="12" y2="19"></line>
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+        </svg>
+      </button>
+
+      <div class="zoom-level">{{ Math.round(currentZoom * 100) }}%</div>
+
+      <button class="zoom-button" @click="handleZoomOut" aria-label="Zoom out">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+        </svg>
+      </button>
+
+      <!-- <button class="zoom-button fit-button" @click="handleFitView" aria-label="Reset zoom">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="15,3 21,3 21,9"></polyline>
+          <polyline points="9,21 3,21 3,15"></polyline>
+          <line x1="21" y1="3" x2="14" y2="10"></line>
+          <line x1="3" y1="21" x2="10" y2="14"></line>
+        </svg>
+      </button> -->
+    </div>
     <template #node-resizable="resizableNodeProps">
       <slot name="node-resizable"
         v-bind="{ ...resizableNodeProps, isSelected: selectedNodeId === resizableNodeProps.id }">
-        <component 
-          v-if="HTMLEntity" 
-          :is="HTMLEntity" 
-          :entity="resizableNodeProps.data" 
-          :is-selected="selectedNodeId === resizableNodeProps.id"
-          :is-editing="isNodeEditing(resizableNodeProps.id)"
-          :on-start-editing="startEditing"
-          :on-stop-editing="stopEditing"
-          :current-user-identity-id="currentUserIdentityId"
-          v-bind="$attrs" />
+        <component v-if="HTMLEntity" :is="HTMLEntity" :entity="resizableNodeProps.data"
+          :is-selected="selectedNodeId === resizableNodeProps.id" :is-editing="isNodeEditing(resizableNodeProps.id)"
+          :on-start-editing="startEditing" :on-stop-editing="stopEditing"
+          :current-user-identity-id="currentUserIdentityId" v-bind="$attrs" />
       </slot>
     </template>
     <template #node-emoji="emojiNodeProps">
@@ -116,6 +154,56 @@ const elementsSelectable = computed(() => !isEditing.value)
   padding: 0;
 }
 
+.zoom-controls {
+  position: absolute;
+  bottom: var(--size-16);
+  right: var(--size-16);
+  display: flex;
+  flex-direction: column;
+  gap: var(--size-4);
+  z-index: 1000;
+  background: var(--ui-100);
+  border-radius: var(--size-32);
+  padding: var(--size-8);
+  box-shadow: var(--ui-container-shadow);
+}
+
+.zoom-button {
+  width: var(--size-32);
+  height: var(--size-32);
+  border-radius: var(--size-16);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  color: var(--ui-20);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.zoom-button:hover {
+  background: var(--ui-primary-100);
+}
+
+.zoom-button:active {
+  transform: scale(0.95);
+}
+
+.fit-button {
+  margin-top: var(--size-4);
+  border-top: 1px solid var(--ui-80);
+  padding-top: var(--size-8);
+}
+
+.zoom-level {
+  font-size: 0.75rem;
+  color: var(--ui-40);
+  text-align: center;
+  padding: var(--size-4) 0;
+  font-weight: 600;
+}
+
 .button {
   cursor: pointer;
   background: var(--ui-95);
@@ -127,6 +215,21 @@ const elementsSelectable = computed(() => !isEditing.value)
 .button:hover {
   background: var(--ui-primary-100);
   color: var(--ui-100);
+}
+
+@media (prefers-color-scheme: dark) {
+  .zoom-controls {
+    background: var(--ui-85);
+  }
+
+  .zoom-button {
+    color: var(--ui-30);
+  }
+
+  .zoom-button:hover {
+    background: var(--ui-80);
+    color: var(--ui-primary-100);
+  }
 }
 
 .nodes {

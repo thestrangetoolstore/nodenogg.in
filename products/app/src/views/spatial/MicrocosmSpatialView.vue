@@ -12,6 +12,7 @@ import { storeToRefs } from 'pinia'
 import ViewContainer from '@/components/ViewContainer.vue'
 import ActionButton from '@/components/ActionButton.vue'
 import Icon from '@/components/icon/Icon.vue'
+import ZoomControls from './components/ZoomControls.vue'
 import {
   ContextMenuContent,
   // ContextMenuItem,
@@ -174,24 +175,24 @@ const handleAddReactionToEntity = (entity: Entity) => {
     const entityHeight = entity.data.height || 200
     const entityCenterX = entity.data.x + entityWidth / 2
     const entityCenterY = entity.data.y + entityHeight / 2
-    
+
     // Random angle around the entity (0 to 2π)
     const angle = Math.random() * 2 * Math.PI
-    
+
     // Random distance from edge of entity (50-100 pixels outside)
     const minDistance = Math.max(entityWidth, entityHeight) / 2 + 50
     const maxDistance = Math.max(entityWidth, entityHeight) / 2 + 100
     const distance = minDistance + Math.random() * (maxDistance - minDistance)
-    
+
     // Calculate position using polar coordinates
     const emojiX = entityCenterX + Math.cos(angle) * distance - 25 // -25 to center the 50px emoji
     const emojiY = entityCenterY + Math.sin(angle) * distance - 25
-    
-    create({ 
-      type: 'emoji', 
-      content: '❤️', 
-      x: emojiX, 
-      y: emojiY 
+
+    create({
+      type: 'emoji',
+      content: '❤️',
+      x: emojiX,
+      y: emojiY
     })
   }
 }
@@ -245,62 +246,23 @@ const handleCreateNode = async () => {
 
 <template>
   <ViewContainer>
-    <ContextMenuRoot :modal="true" @update:open="handleContextMenuOpenChange">
-      <ContextMenuTrigger as-child>
-        <div @contextmenu="handleContextMenuTrigger" class="spatial-canvas">
-          <SpatialView 
-            :view_id="view_id" 
-            :ui="ui" 
-            :nodes="positionedNodes" 
-            :HTMLEntity="HTMLEntity"
-            :Editor="Editor"
-            :onUpdate="update"
-            :onDelete="deleteEntity"
-            :onDuplicate="create"
-            :editable="true"
-            :current-user-identity-id="currentIdentity?.id"
-            @nodes-change="handleNodeChange">
-            <template #node-resizable="resizableNodeProps">
-              <!-- HTML entities with resizable handles will now use the app's HTMLEntity -->
-            </template>
+    <div class="spatial-canvas">
+      <SpatialView :view_id="view_id" :ui="ui" :nodes="positionedNodes" :HTMLEntity="HTMLEntity" :Editor="Editor"
+        :onUpdate="update" :onDelete="deleteEntity" :onDuplicate="create" :editable="true"
+        :current-user-identity-id="currentIdentity?.id" :zoom-controls="true" @nodes-change="handleNodeChange">
+        <template #node-resizable="resizableNodeProps">
+          <!-- HTML entities with resizable handles will now use the app's HTMLEntity -->
+        </template>
 
-            <template #node-emoji="emojiNodeProps">
-              <!-- Emoji entities without resizable handles -->
-              <EmojiEntity :entity="emojiNodeProps.data" :is-selected="emojiNodeProps.isSelected" />
-            </template>
-          </SpatialView>
-        </div>
-      </ContextMenuTrigger>
-
-      <ContextMenuPortal>
-        <ContextMenuContent class="context-menu-content" :side-offset="2">
-          <!-- Entity-specific menu items -->
-          <template v-if="contextMenuTarget">
-            <ContextMenuItem title="React" value="react" @click="handleAddReactionToEntity(contextMenuTarget)" />
-            <!-- Only show delete option for entities owned by current user -->
-            <template v-if="isOwnedByCurrentUser(contextMenuTarget)">
-              <ContextMenuSeparator class="context-menu-separator" />
-              <ContextMenuItem title="Delete" value="delete" class="context-menu-item destructive"
-                @click="handleDeleteEntity(contextMenuTarget)">
-              </ContextMenuItem>
-            </template>
-          </template>
-
-          <!-- Canvas-specific menu items -->
-          <template v-else>
-            <ContextMenuItem class="context-menu-item" @click="handleCreateNodeAtPosition">
-              <Icon type="new" class="context-menu-icon" />
-              <span>Create Node</span>
-            </ContextMenuItem>
-            <ContextMenuItem class="context-menu-item" @click="handleCreateEmojiAtPosition">
-              <Icon type="heart" class="context-menu-icon" />
-              <span>Add Reaction</span>
-            </ContextMenuItem>
-          </template>
-        </ContextMenuContent>
-      </ContextMenuPortal>
-    </ContextMenuRoot>
-
+        <template #node-emoji="emojiNodeProps">
+          <!-- Emoji entities without resizable handles -->
+          <EmojiEntity :entity="emojiNodeProps.data" :is-selected="emojiNodeProps.isSelected" />
+        </template>
+      </SpatialView>
+      
+      <!-- Enhanced Zoom Controls -->
+      <!-- <ZoomControls /> -->
+    </div>
     <template #actions>
       <ActionButton icon="new" label="Add" @click="handleCreateNode" />
     </template>

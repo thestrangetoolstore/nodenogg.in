@@ -1,152 +1,190 @@
 <script setup lang="ts">
+import { computed } from 'vue'
 import { SliderRange, SliderRoot, SliderThumb, SliderTrack } from 'reka-ui'
-import { useCurrentSpatialView } from '@/views/spatial'
+import { useVueFlow } from '@vue-flow/core'
 import Tooltip from '../../../components/Tooltip.vue'
-import { storeToRefs } from 'pinia';
-import { vue } from '@figureland/kit/state/vue';
+import Icon from '../../../components/icon/Icon.vue'
 
-const view = useCurrentSpatialView()
+// Get VueFlow actions and state
+const { zoomIn, zoomOut, zoomTo, viewport } = useVueFlow()
 
+// Zoom configuration
+const minZoom = 0.1
+const maxZoom = 3
+const zoomStep = 0.1
 
-const handleChange = (n?: number[]) => {
-  if (n) {
-    view.infinitykit.canvas.zoom(n[0])
+// Current zoom level from viewport
+const currentZoom = computed(() => viewport.value.zoom)
+
+// Handle slider changes
+const handleZoomChange = (values?: number[]) => {
+  if (values && values[0] !== undefined) {
+    zoomTo(values[0])
   }
 }
 
+// Handle zoom in button
+const handleZoomIn = () => {
+  zoomIn()
+}
 
-const { canvasOptions } = storeToRefs(view)
+// Handle zoom out button
+const handleZoomOut = () => {
+  zoomOut()
+}
 
-const scale = vue(view.infinitykit.canvas.scale)
-
+// Handle fit view (zoom to 100%)
+const handleFitView = () => {
+  zoomTo(1)
+}
 </script>
 
 <template>
-  <Tooltip tooltip="Zoom" :command="`${Math.round(scale * 100)}%`" side="left" disableClosingTrigger>
-    <SliderRoot @update:modelValue="handleChange" :model-value="[scale]" class="slider-root"
-      :max="canvasOptions.zoom.max" :min="canvasOptions.zoom.min" orientation="vertical"
-      :step="canvasOptions.zoom.increment">
-      <SliderTrack class="slider-track">
-        <SliderRange class="slider-range"> </SliderRange>
-      </SliderTrack>
-      <SliderThumb class="slider-thumb" aria-label="Zoom canvas" />
-    </SliderRoot>
-  </Tooltip>
+  <div class="zoom-controls">
+    <!-- Zoom In Button -->
+    <Tooltip tooltip="Zoom In" side="left">
+      <button class="zoom-button" @click="handleZoomIn" aria-label="Zoom in">
+        <Icon type="plus" :size="16" />
+      </button>
+    </Tooltip>
+
+    <!-- Zoom Slider -->
+    <Tooltip :tooltip="`Zoom: ${Math.round(currentZoom * 100)}%`" side="left">
+      <SliderRoot @update:modelValue="handleZoomChange" :model-value="[currentZoom]" class="slider-root" :max="maxZoom"
+        :min="minZoom" orientation="vertical" :step="zoomStep">
+        <SliderTrack class="slider-track">
+          <SliderRange class="slider-range" />
+        </SliderTrack>
+        <SliderThumb class="slider-thumb" aria-label="Zoom level" />
+      </SliderRoot>
+    </Tooltip>
+
+    <!-- Zoom Out Button -->
+    <Tooltip tooltip="Zoom Out" side="left">
+      <button class="zoom-button" @click="handleZoomOut" aria-label="Zoom out">
+        <Icon type="minus" :size="16" />
+      </button>
+    </Tooltip>
+
+    <!-- Fit View Button -->
+    <Tooltip tooltip="Reset Zoom (100%)" side="left">
+      <button class="zoom-button fit-button" @click="handleFitView" aria-label="Fit view">
+        <Icon type="maximize" :size="16" />
+      </button>
+    </Tooltip>
+  </div>
 </template>
 
-<style>
-.slider-root {
+<style scoped>
+.zoom-controls {
   position: absolute;
+  bottom: var(--size-16);
+  right: var(--size-16);
+  display: flex;
+  flex-direction: column;
+  gap: var(--size-4);
+  z-index: 1000;
+}
+
+.zoom-button {
+  width: var(--size-32);
+  height: var(--size-32);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--ui-90);
+  border: none;
+  border-radius: var(--ui-radius);
+  color: var(--ui-20);
+  cursor: pointer;
+  box-shadow: var(--ui-container-shadow);
+  transition: all 0.2s ease;
+}
+
+.zoom-button:hover {
+  background: var(--ui-80);
+  color: var(--ui-primary-100);
+  box-shadow: var(--ui-shadow-10);
+}
+
+.zoom-button:active {
+  transform: scale(0.95);
+}
+
+.fit-button {
+  margin-top: var(--size-4);
+  border-top: 1px solid var(--ui-80);
+}
+
+.slider-root {
   display: flex;
   align-items: center;
   touch-action: none;
-  z-index: 50000;
-  width: var(--size-24);
-  bottom: var(--size-16);
-  right: var(--size-16);
+  width: var(--size-32);
+  height: 120px;
   cursor: pointer;
   background: var(--ui-90);
   box-shadow: var(--ui-container-shadow);
-  border-radius: var(--size-16);
+  border-radius: var(--ui-radius);
   color: var(--ui-60);
-}
-
-@media (prefers-color-scheme: dark) {
-  .slider-root {
-    box-shadow: var(--ui-shadow-25);
-  }
-}
-
-
-.slider-root::after {
-  width: 100%;
-  height: 100%;
-  border-radius: inherit;
-  top: 0;
-  left: 0;
-  content: '';
-  z-index: 1;
-  position: absolute;
-  pointer-events: none;
-
-}
-
-/* .slider-root:focus-within, */
-.slider-root:active,
-.slider-root:hover {
-  /* box-shadow: var(--ui-shadow-primary); */
-}
-
-.slider-root:hover,
-.slider-root:focus-within {
-  color: var(--ui-primary-100);
-}
-
-.slider-root:focus-within::after,
-.slider-root:hover::after {
-  box-shadow: var(--ui-shadow-primary);
+  padding: var(--size-8) 0;
 }
 
 .slider-root[data-orientation='vertical'] {
   flex-direction: column;
-  height: 120px;
 }
 
 .slider-track {
   position: relative;
-  height: calc(100% - var(--size-48));
-}
-
-.slider-track[data-orientation='vertical'] {
-  width: 100%;
+  width: 3px;
   height: 100%;
-  position: relative;
+  background: var(--ui-80);
+  border-radius: 2px;
 }
 
-.slider-track::after,
-.slider-track::before {
-  font-size: 1.25em;
-  padding: var(--size-4);
-  width: 100%;
-  text-align: center;
+.slider-range {
   position: absolute;
-  left: 0;
-  z-index: 100;
-  color: inherit;
-  mix-blend-mode: difference;
-  pointer-events: none;
-}
-
-.slider-track::before {
-  top: 0;
-  content: '+';
-}
-
-.slider-track::after {
-  bottom: 0;
-  content: '–';
+  background: var(--ui-primary-100);
+  border-radius: inherit;
+  width: 100%;
 }
 
 .slider-thumb {
   display: block;
-  width: var(--size-24);
-  height: var(--size-24);
-  background: inherit;
-  box-shadow: var(--ui-shadow-100);
-  border-radius: var(--size-16);
-  z-index: 2;
-  outline: initial;
+  width: var(--size-16);
+  height: var(--size-16);
+  background: var(--ui-primary-100);
+  box-shadow: var(--ui-shadow-10);
+  border-radius: 50%;
+  outline: none;
+  cursor: grab;
+  transition: all 0.2s ease;
 }
 
-.slider-root:focus-within>.slider-thumb,
-.slider-thumb:hover {
-  box-shadow: 0 0 0 var(--ui-weight) var(--ui-100);
-  background: var(--ui-primary-100);
+.slider-thumb:hover,
+.slider-thumb:focus {
+  transform: scale(1.1);
+  box-shadow: var(--ui-shadow-primary);
+}
+
+.slider-thumb:active {
+  cursor: grabbing;
+  transform: scale(1.2);
 }
 
 @media (prefers-color-scheme: dark) {
-  .slider-thumb {
-    background: var(--ui-90);
+  .zoom-button {
+    background: var(--ui-85);
+    color: var(--ui-30);
+  }
+
+  .zoom-button:hover {
+    background: var(--ui-80);
+    color: var(--ui-primary-100);
+  }
+
+  .slider-root {
+    background: var(--ui-85);
   }
 }
 </style>
