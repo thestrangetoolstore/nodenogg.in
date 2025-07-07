@@ -1,18 +1,21 @@
 <script lang="ts" setup>
 import { useRouter } from 'vue-router';
-import type { MicrocosmID } from '@nodenogg.in/schema';
-import MicrocosmQuickMenu from './MicrocosmQuickMenu.vue';
-import Tooltip from '@/components/Tooltip.vue';
+import { MicrocosmSchema, type MicrocosmID } from '@nodenogg.in/schema';
 import { useApp } from '@/state';
 import Dialog from '../dialog/Dialog.vue';
 import { ref } from 'vue';
 import Button from '../button/Button.vue';
 import Icon from '../icon/Icon.vue';
+import Input from '../input/Input.vue';
+
+const { createMicrocosmID, sanitizeMicrocosmIDTitle } = MicrocosmSchema.utils
 
 const router = useRouter()
 const app = useApp()
+const inputValue = ref<string>('')
 
 const handleConfirm = (microcosm_id: MicrocosmID) => {
+    console.log(microcosm_id)
     app.showCommandMenu = false
     router.push({
         name: 'microcosm',
@@ -20,6 +23,17 @@ const handleConfirm = (microcosm_id: MicrocosmID) => {
             microcosm_id
         }
     })
+}
+
+const handleKeydown = (event: KeyboardEvent) => {
+    console.log(inputValue.value)
+    if (event.key === 'Enter' && inputValue.value.trim()) {
+        event.preventDefault()
+        const sanitizedInput = sanitizeMicrocosmIDTitle(inputValue.value)
+        const microcosmId = createMicrocosmID(sanitizedInput)
+        handleConfirm(microcosmId)
+        inputValue.value = ''
+    }
 }
 </script>
 
@@ -30,11 +44,11 @@ const handleConfirm = (microcosm_id: MicrocosmID) => {
         Join or Create Microcosm
     </Button>
     <!-- </Tooltip> -->
-    <Dialog :onConfirm="handleConfirm" v-model:open="app.showCommandMenu" title="Add microcosm"
-        description="Add a microcosm name to join">
+    <Dialog v-model:open="app.showCommandMenu" title="Join or Create Microcosm"
+        description="Enter a microcosm name and press enter to join or create" :onConfirm="() => { }">
         <template v-slot:content>
-            <MicrocosmQuickMenu :options="[...app.microcosms.sort((a, b) => b.lastAccessed - a.lastAccessed)]"
-                :onSelect="handleConfirm" :onCreate="handleConfirm" />
+            <Input v-model="inputValue" large placeholder="Enter microcosm name..." autoFocus
+                @keydown="handleKeydown" />
         </template>
     </Dialog>
 </template>

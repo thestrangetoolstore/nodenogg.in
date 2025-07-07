@@ -118,10 +118,11 @@ const handleDuplicate = () => {
     'is-selected': isSelected,
     'is-editing': isEditing,
     'read-only': !isEditable
-  }" :style="`background-color: ${getColor(entity.data.backgroundColor || 'yellow')}`" tabindex="0"
-    @keydown="handleKeydown" @dblclick="handleDoubleClick" @click="handleClick" @mousedown="handleMouseDown"
-    @wheel="handleWheel">
+  }" :style="`background-color: ${getColor(entity.data.backgroundColor || 'yellow', isEditable ? 50 : 90)}`"
+    tabindex="0" @keydown="handleKeydown" @dblclick="handleDoubleClick" @click="handleClick"
+    @mousedown="handleMouseDown" @wheel="handleWheel">
 
+    {{ isEditable }}
     <!-- Content slot with default implementation -->
     <div class="content-wrapper">
       <slot name="content" :entity="entity" :is-editing="isEditing" :is-editable="isEditable"
