@@ -76,13 +76,12 @@ const handleWheel = (event: WheelEvent) => {
 <template>
   <!-- Only show NodeResizer for editable entities -->
   <!-- <NodeResizer v-if="isEditable" :min-width="50" :min-height="50" :node-id="entity.id" /> -->
-  <div class="resizable-container" :class="{ 
-    'is-selected': isSelected, 
+  <div class="resizable-container" :class="{
+    'is-selected': isSelected,
     'is-editing': isEditing,
     'read-only': !isEditable
-  }" tabindex="0"
-    @keydown="handleKeydown" @dblclick="handleDoubleClick" @click="handleClick" @mousedown="handleMouseDown"
-    @wheel="handleWheel">
+  }" tabindex="0" @keydown="handleKeydown" @dblclick="handleDoubleClick" @click="handleClick"
+    @mousedown="handleMouseDown" @wheel="handleWheel">
     <div class="content-wrapper">
       <component v-if="Editor" :is="Editor" :value="entity?.data.content" :onChange="handleContentChange"
         :editable="isEditing && isEditable" @cancel="handleCancel" />
@@ -93,7 +92,8 @@ const handleWheel = (event: WheelEvent) => {
 
 <style scoped>
 .resizable-container {
-  background: var(--ui-80);
+  box-shadow: var(--ui-shadow-10);
+  background: var(--card-yellow-50);
   color: var(--ui-0);
   border-radius: var(--ui-radius);
   width: 100%;
@@ -129,9 +129,8 @@ const handleWheel = (event: WheelEvent) => {
 
 /* Read-only state */
 .resizable-container.read-only {
-  background: var(--ui-85);
-  opacity: 0.8;
-  border: 1px solid var(--ui-70);
+  background: var(--card-yellow-90);
+  /* opacity: 0.8; */
 }
 
 .resizable-container.read-only:focus {
@@ -145,7 +144,8 @@ const handleWheel = (event: WheelEvent) => {
 }
 
 .resizable-container.read-only .content-wrapper {
-  pointer-events: none; /* Prevent text selection in read-only mode */
+  pointer-events: none;
+  /* Prevent text selection in read-only mode */
 }
 
 /* Content wrapper to handle overflow */

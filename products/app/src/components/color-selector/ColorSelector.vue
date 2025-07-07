@@ -89,3 +89,12 @@ button {
   box-shadow: var(--ui-shadow-100);
 }
 </style> -->
+
+
+yellow heart
+thumbs up
+thumbs down
+poop
+zombie
+space invader
+
