@@ -25,10 +25,10 @@ const handleConfirm = (microcosm_id: MicrocosmID) => {
 
 <template>
     <!-- <Tooltip tooltip="New microcosm" command="m" side="bottom" align="center" disableClosingTrigger :delay="200"> -->
-        <Button class="menu-button" @click="() => app.showCommandMenu = true">
-            <Icon type="plus" :size="32" />
-            Join or Create Microcosm
-        </Button>
+    <Button class="menu-button" @click="() => app.showCommandMenu = true">
+        <Icon type="plus" :size="32" />
+        Join or Create Microcosm
+    </Button>
     <!-- </Tooltip> -->
     <Dialog :onConfirm="handleConfirm" v-model:open="app.showCommandMenu" title="Add microcosm"
         description="Add a microcosm name to join">
@@ -50,6 +50,7 @@ const handleConfirm = (microcosm_id: MicrocosmID) => {
 
 .menu-button {
     background: var(--ui-80);
-    padding-left: 0;
+    padding-left: var(--size-4);
+    padding-right: var(--size-16);
 }
 </style>

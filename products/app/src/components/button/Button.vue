@@ -17,7 +17,7 @@ button {
   user-select: none;
   font-weight: 500;
   position: relative;
-  border-radius: var(--ui-radius);
+  border-radius: var(--size-16);
 }
 
 button.outline {

@@ -12,7 +12,7 @@ export const viewRegistry = freeze({
   spatial: {
     component: defineAsyncComponent(() => import('./spatial/MicrocosmSpatialView.vue')),
     title: 'Spatial',
-    description: 'Arrange and connect entities on a 2D canvas',
+    description: 'Arrange and connect stuff on a canvas',
     icon: 'spatial-view'
   },
   collect: {
