@@ -31,7 +31,7 @@ defineProps({
   box-shadow: var(--ui-shadow-10);
   border-radius: var(--size-4);
   padding: var(--size-16);
-  min-height: 160px;
+  min-height: 140px;
   color: inherit;
   text-decoration: none;
   transition: all 0.2s ease;
@@ -44,7 +44,6 @@ defineProps({
 
 .microcosm-card:focus {
   outline: 2px solid var(--ui-primary-100);
-  outline-offset: 2px;
 }
 
 .microcosm-name {

@@ -76,7 +76,7 @@ const filter = (list: (string[]), term: string) =>
                         <article class="item">
                             <span>{{ parseMicrocosmID(m.id) }}</span> <span class="secondary">{{
                                 getTimeSince(m.lastAccessed)
-                            }}</span>
+                                }}</span>
                         </article>
                     </ComboboxItem>
                 </ComboboxGroup>

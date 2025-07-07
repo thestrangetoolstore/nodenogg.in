@@ -13,7 +13,7 @@ const sortMode = ref<'name' | 'lastAccessed'>('lastAccessed')
 // Load preferences from localStorage
 onMounted(() => {
   const savedSortMode = localStorage.getItem('microcosm-sort-mode')
-  
+
   if (savedSortMode === 'name' || savedSortMode === 'lastAccessed') {
     sortMode.value = savedSortMode
   }
@@ -21,6 +21,7 @@ onMounted(() => {
 
 // Watch for sort mode changes to save to localStorage
 import { watch } from 'vue'
+import JoinMicrocosmDialog from '@/components/menu/JoinMicrocosmDialog.vue'
 watch(sortMode, (newMode) => {
   localStorage.setItem('microcosm-sort-mode', newMode)
 })
@@ -28,7 +29,7 @@ watch(sortMode, (newMode) => {
 // Sorted microcosms
 const sortedMicrocosms = computed(() => {
   const microcosms = [...app.microcosms]
-  
+
   if (sortMode.value === 'name') {
     return microcosms.sort((a, b) => a.id.localeCompare(b.id))
   } else {
@@ -41,6 +42,7 @@ const sortedMicrocosms = computed(() => {
   <main class="homepage">
     <!-- Controls -->
     <div class="controls">
+      <JoinMicrocosmDialog />
       <Select v-model="sortMode" placeholder="Sort by" label="Sort microcosms">
         <SelectItem text="Last accessed" value="lastAccessed" />
         <SelectItem text="Name" value="name" />
@@ -49,11 +51,7 @@ const sortedMicrocosms = computed(() => {
 
     <!-- Grid view -->
     <div class="microcosm-grid">
-      <MicrocosmCard 
-        v-for="microcosm of sortedMicrocosms" 
-        :key="microcosm.id"
-        :microcosm="microcosm"
-      />
+      <MicrocosmCard v-for="microcosm of sortedMicrocosms" :key="microcosm.id" :microcosm="microcosm" />
     </div>
   </main>
 </template>
@@ -68,7 +66,7 @@ const sortedMicrocosms = computed(() => {
 /* Controls */
 .controls {
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
   align-items: center;
   margin-bottom: var(--size-16);
 }

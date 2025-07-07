@@ -13,12 +13,7 @@ defineEmits<{
 </script>
 
 <template>
-  <button
-    class="action-button"
-    :class="{ disabled }"
-    :disabled="disabled"
-    @click="$emit('click')"
-  >
+  <button class="action-button" :class="{ disabled }" :disabled="disabled" @click="$emit('click')">
     <Icon v-if="icon" :type="icon" class="action-icon" />
     <span v-if="label" class="action-label">{{ label }}</span>
   </button>
@@ -28,14 +23,12 @@ defineEmits<{
 .action-button {
   display: flex;
   align-items: center;
-  gap: var(--size-6);
-  padding: var(--size-8) var(--size-12);
+  /* gap: var(--size-); */
   background: var(--ui-100);
-  border: 1px solid var(--ui-80);
-  border-radius: calc(var(--ui-radius) - 2px);
+  border-radius: var(--size-24);
+  box-shadow: var(--ui-shadow-10);
   color: var(--ui-30);
-  font-size: 0.875rem;
-  font-weight: 500;
+  padding-left: var(--size-4);
   cursor: pointer;
   transition: all 0.2s ease;
   user-select: none;
@@ -54,11 +47,12 @@ defineEmits<{
 }
 
 .action-icon {
-  width: var(--size-16);
-  height: var(--size-16);
+  width: var(--size-32);
+  height: var(--size-32);
 }
 
 .action-label {
+  padding: var(--size-8) var(--size-12) var(--size-8) 0;
   white-space: nowrap;
 }
 

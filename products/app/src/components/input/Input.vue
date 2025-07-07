@@ -57,14 +57,15 @@ onMounted(() => {
   width: 100%;
   height: var(--size-40);
   border-radius: var(--ui-radius);
-  background: var(--ui-primary-20);
+  background: var(--ui-primary-80);
   color: var(--ui-primary-100);
   outline: initial;
   caret-color: var(--ui-primary-100);
 }
 
 .base.large {
-  font-size: 1.2em;
+  font-size: 1.5em;
+  padding: var(--size-24) var(--size-16);
 }
 
 .base::selection {

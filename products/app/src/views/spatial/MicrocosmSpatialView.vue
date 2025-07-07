@@ -19,7 +19,6 @@ import {
   ContextMenuSeparator,
   ContextMenuTrigger,
 } from 'reka-ui'
-import { randomInt } from '@figureland/kit/math/random'
 
 defineProps({
   view_id: {
@@ -46,7 +45,7 @@ const isOwnedByCurrentUser = (entity: Entity) => {
 }
 
 // Access vue-flow instance for coordinate transformation and interaction control
-const { screenToFlowCoordinate, panOnDrag, zoomOnScroll, zoomOnPinch } = useVueFlow()
+const { screenToFlowCoordinate, panOnDrag, zoomOnScroll, zoomOnPinch, getViewport, dimensions } = useVueFlow()
 
 // Compute positioned nodes for the spatial view
 const positionedNodes = computed(() => {
@@ -193,10 +192,19 @@ const handleCreateEmojiAtPosition = () =>
 
 // Action handlers for spatial view
 const handleCreateNode = async () => {
+  // Get the current viewport to calculate center position
+  const viewport = getViewport()
+  const viewportDimensions = dimensions.value
+
+  // Calculate the center of the viewport in flow coordinates
+  const centerX = -viewport.x + (viewportDimensions.width / 2) / viewport.zoom
+  const centerY = -viewport.y + (viewportDimensions.height / 2) / viewport.zoom
+
+  // Create node at viewport center
   await create({
     type: 'html',
-    x: randomInt(-400, 400),
-    y: randomInt(-400, 400),
+    x: centerX - 100, // Subtract half the width to center the node
+    y: centerY - 100, // Subtract half the height to center the node
     width: 200,
     height: 200,
     content: ''
@@ -213,13 +221,9 @@ const handleCreateNode = async () => {
           <SpatialView :view_id="view_id" :ui="ui" :nodes="positionedNodes" @nodes-change="handleNodeChange">
             <template #node-resizable="resizableNodeProps">
               <!-- Use single HTMLEntity with editable prop -->
-              <HTMLEntity 
-                :entity="resizableNodeProps.data" 
-                :Editor="Editor" 
-                :onUpdate="update"
+              <HTMLEntity :entity="resizableNodeProps.data" :Editor="Editor" :onUpdate="update"
                 :is-selected="resizableNodeProps.isSelected"
-                :editable="isOwnedByCurrentUser(resizableNodeProps.data)"
-              />
+                :editable="isOwnedByCurrentUser(resizableNodeProps.data)" />
             </template>
           </SpatialView>
         </div>
@@ -246,7 +250,7 @@ const handleCreateNode = async () => {
           <!-- Canvas-specific menu items -->
           <template v-else>
             <ContextMenuItem class="context-menu-item" @click="handleCreateNodeAtPosition">
-              <Icon type="plus" class="context-menu-icon" />
+              <Icon type="new" class="context-menu-icon" />
               <span>Create Node</span>
             </ContextMenuItem>
             <ContextMenuItem class="context-menu-item" @click="handleCreateEmojiAtPosition">
@@ -259,7 +263,7 @@ const handleCreateNode = async () => {
     </ContextMenuRoot>
 
     <template #actions>
-      <ActionButton icon="plus" label="New node" @click="handleCreateNode" />
+      <ActionButton icon="new" label="New node" @click="handleCreateNode" />
     </template>
   </ViewContainer>
 </template>

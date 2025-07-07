@@ -53,10 +53,8 @@ withDefaults(defineProps<{
     align-items: center;
     gap: var(--size-8);
     padding: var(--size-12);
-    background: var(--ui-95);
-    border: 1px solid var(--ui-80);
-    border-radius: var(--ui-radius);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    /* background: var(--ui-95);
+    border-radius: var(--size-64); */
 }
 
 @media (prefers-color-scheme: dark) {

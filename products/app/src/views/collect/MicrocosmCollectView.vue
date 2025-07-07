@@ -55,7 +55,7 @@ const handleCreateEmoji = async () => {
     </div>
 
     <template #actions>
-      <ActionButton icon="plus" label="New node" @click="handleCreateEntity" />
+      <ActionButton icon="new" label="New node" @click="handleCreateEntity" />
     </template>
   </ViewContainer>
 </template>
