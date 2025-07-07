@@ -26,15 +26,10 @@ const handleDelete = (event: Event) => {
 <template>
   <div class="emoji-container">
     <span class="emoji-content">{{ entity.data.content }}</span>
-    
+
     <!-- Delete button - only show for owners on hover -->
-    <button 
-      v-if="isOwner"
-      class="emoji-delete-button"
-      @click="handleDelete"
-      aria-label="Delete emoji"
-      title="Delete emoji"
-    >
+    <button v-if="isOwner" class="emoji-delete-button" @click="handleDelete" aria-label="Delete emoji"
+      title="Delete emoji">
       <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
         <line x1="18" y1="6" x2="6" y2="18"></line>
         <line x1="6" y1="6" x2="18" y2="18"></line>
@@ -67,14 +62,13 @@ const handleDelete = (event: Event) => {
 /* Delete button */
 .emoji-delete-button {
   position: absolute;
-  top: -2px;
-  right: -2px;
-  width: 18px;
-  height: 18px;
-  background: rgba(255, 255, 255, 0.9);
-  border: 1px solid rgba(0, 0, 0, 0.2);
+  top: 0;
+  right: 0;
+  width: var(--size-16);
+  height: var(--size-16);
   border-radius: 50%;
-  color: #666;
+  color: var(--ui-0);
+  background: var(--ui-100);
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -82,7 +76,6 @@ const handleDelete = (event: Event) => {
   opacity: 0;
   transition: all 0.2s ease;
   z-index: 10;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
 }
 
 .emoji-container:hover .emoji-delete-button {
@@ -90,9 +83,9 @@ const handleDelete = (event: Event) => {
 }
 
 .emoji-delete-button:hover {
-  background: #ff4757;
-  color: white;
-  border-color: #ff4757;
+  color: var(--ui-100);
+  background: var(--ui-0);
+
   transform: scale(1.1);
 }
 
@@ -106,7 +99,7 @@ const handleDelete = (event: Event) => {
     border-color: rgba(255, 255, 255, 0.2);
     color: #ccc;
   }
-  
+
   .emoji-delete-button:hover {
     background: #ff4757;
     color: white;
