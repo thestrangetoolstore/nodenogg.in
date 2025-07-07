@@ -7,6 +7,9 @@ import ActionButton from '@/components/ActionButton.vue'
 import { computed } from 'vue'
 import { EntitySchema } from '@nodenogg.in/schema'
 
+// Utility function to generate random position offset
+const getRandomOffset = () => Math.floor(Math.random() * 1000) - 500 // Range: -500 to 500
+
 defineProps({
   view_id: {
     type: String,
@@ -33,8 +36,8 @@ const { setEditingNode, isEditing, update, deleteEntity, create } = microcosm
 const handleCreateEntity = async () => {
   await create({
     type: 'html',
-    x: 0,
-    y: 0,
+    x: getRandomOffset(),
+    y: getRandomOffset(),
     width: 300,
     height: 200,
     content: ''
@@ -42,7 +45,12 @@ const handleCreateEntity = async () => {
 }
 
 const handleCreateEmoji = async () => {
-  await create({ type: 'emoji', x: 0, y: 0, content: `❤️` })
+  await create({ 
+    type: 'emoji', 
+    x: getRandomOffset(), 
+    y: getRandomOffset(), 
+    content: `❤️` 
+  })
 }
 </script>
 

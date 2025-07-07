@@ -75,7 +75,7 @@ const handleWheel = (event: WheelEvent) => {
 
 <template>
   <!-- Only show NodeResizer for editable entities -->
-  <NodeResizer v-if="isEditable" :min-width="50" :min-height="50" :node-id="entity.id" />
+  <!-- <NodeResizer v-if="isEditable" :min-width="50" :min-height="50" :node-id="entity.id" /> -->
   <div class="resizable-container" :class="{ 
     'is-selected': isSelected, 
     'is-editing': isEditing,

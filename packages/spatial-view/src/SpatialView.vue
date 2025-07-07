@@ -87,6 +87,13 @@ const elementsSelectable = computed(() => !isEditing.value)
         <HTMLEntity :entity="resizableNodeProps.data" :is-selected="selectedNodeId === resizableNodeProps.id" />
       </slot>
     </template>
+    
+    <template #node-emoji="emojiNodeProps">
+      <slot name="node-emoji"
+        v-bind="{ ...emojiNodeProps, isSelected: selectedNodeId === emojiNodeProps.id }">
+        <!-- Default emoji rendering can go here if needed -->
+      </slot>
+    </template>
   </VueFlow>
 </template>
 
@@ -136,5 +143,20 @@ const elementsSelectable = computed(() => !isEditing.value)
 .large {
   font-size: 14em;
   line-height: 0.95em;
+}
+
+/* Override Vue Flow default styles for emoji nodes */
+:deep(.vue-flow__node-emoji) {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+}
+
+:deep(.vue-flow__node-emoji .vue-flow__node-default) {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
 }
 </style>

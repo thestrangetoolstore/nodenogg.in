@@ -24,7 +24,8 @@ defineEmits<{
 </script>
 
 <template>
-  <ContextMenuItem v-bind="$attrs" :value="value" class="context-menu-item" :disabled="disabled" @click="$emit('click', value)">
+  <ContextMenuItem v-bind="$attrs" :value="value" class="context-menu-item" :disabled="disabled"
+    @click="$emit('click', value)">
     {{ title }}
     <div v-if="command" class="right-slot">
       <span>

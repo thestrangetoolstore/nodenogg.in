@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
-import { SpatialView, HTMLEntity } from '@nodenogg.in/spatial-view'
+import { SpatialView, HTMLEntity, EmojiEntity } from '@nodenogg.in/spatial-view'
 import { useCurrentMicrocosm } from '@/state'
 import { EntitySchema, type Entity } from '@nodenogg.in/schema'
 import { client } from '@/state/app'
@@ -13,12 +13,13 @@ import ActionButton from '@/components/ActionButton.vue'
 import Icon from '@/components/icon/Icon.vue'
 import {
   ContextMenuContent,
-  ContextMenuItem,
+  // ContextMenuItem,
   ContextMenuPortal,
   ContextMenuRoot,
   ContextMenuSeparator,
   ContextMenuTrigger,
 } from 'reka-ui'
+import ContextMenuItem from '@/components/context-menu/ContextMenuItem.vue'
 
 defineProps({
   view_id: {
@@ -60,7 +61,7 @@ const positionedNodes = computed(() => {
 
     return {
       id: entity.id,
-      type: 'resizable',
+      type: isEmoji ? 'emoji' : 'resizable', // Use different types for emoji vs HTML
       data: entity,
       position: {
         x,
@@ -167,7 +168,30 @@ const handleContextMenuTrigger = (event: MouseEvent) => {
 // Context menu actions
 const handleAddReactionToEntity = (entity: Entity) => {
   if (EntitySchema.utils.isType(entity, 'html')) {
-    create({ type: 'emoji', content: '❤️', x: entity.data.x + 50, y: entity.data.y - 30 })
+    // Generate random position around the entity
+    const entityWidth = entity.data.width || 200
+    const entityHeight = entity.data.height || 200
+    const entityCenterX = entity.data.x + entityWidth / 2
+    const entityCenterY = entity.data.y + entityHeight / 2
+    
+    // Random angle around the entity (0 to 2π)
+    const angle = Math.random() * 2 * Math.PI
+    
+    // Random distance from edge of entity (50-100 pixels outside)
+    const minDistance = Math.max(entityWidth, entityHeight) / 2 + 50
+    const maxDistance = Math.max(entityWidth, entityHeight) / 2 + 100
+    const distance = minDistance + Math.random() * (maxDistance - minDistance)
+    
+    // Calculate position using polar coordinates
+    const emojiX = entityCenterX + Math.cos(angle) * distance - 25 // -25 to center the 50px emoji
+    const emojiY = entityCenterY + Math.sin(angle) * distance - 25
+    
+    create({ 
+      type: 'emoji', 
+      content: '❤️', 
+      x: emojiX, 
+      y: emojiY 
+    })
   }
 }
 
@@ -194,17 +218,17 @@ const handleCreateEmojiAtPosition = () =>
 const handleCreateNode = async () => {
   // Get the viewport dimensions
   const viewportDimensions = dimensions.value
-  
+
   // Calculate the center of the viewport in screen coordinates
   const centerScreenX = viewportDimensions.width / 2
   const centerScreenY = viewportDimensions.height / 2
-  
+
   // Convert screen coordinates to flow coordinates using project
   const flowPosition = project({
     x: centerScreenX,
     y: centerScreenY
   })
-  
+
   // Create node at viewport center
   await create({
     type: 'html',
@@ -225,10 +249,15 @@ const handleCreateNode = async () => {
         <div @contextmenu="handleContextMenuTrigger" class="spatial-canvas">
           <SpatialView :view_id="view_id" :ui="ui" :nodes="positionedNodes" @nodes-change="handleNodeChange">
             <template #node-resizable="resizableNodeProps">
-              <!-- Use single HTMLEntity with editable prop -->
+              <!-- HTML entities with resizable handles -->
               <HTMLEntity :entity="resizableNodeProps.data" :Editor="Editor" :onUpdate="update"
                 :is-selected="resizableNodeProps.isSelected"
                 :editable="isOwnedByCurrentUser(resizableNodeProps.data)" />
+            </template>
+
+            <template #node-emoji="emojiNodeProps">
+              <!-- Emoji entities without resizable handles -->
+              <EmojiEntity :entity="emojiNodeProps.data" :is-selected="emojiNodeProps.isSelected" />
             </template>
           </SpatialView>
         </div>
@@ -238,16 +267,12 @@ const handleCreateNode = async () => {
         <ContextMenuContent class="context-menu-content" :side-offset="2">
           <!-- Entity-specific menu items -->
           <template v-if="contextMenuTarget">
-            <ContextMenuItem class="context-menu-item" @click="handleAddReactionToEntity(contextMenuTarget)">
-              <Icon type="heart" class="context-menu-icon" />
-              <span>Add Reaction</span>
-            </ContextMenuItem>
+            <ContextMenuItem title="React" value="react" @click="handleAddReactionToEntity(contextMenuTarget)" />
             <!-- Only show delete option for entities owned by current user -->
             <template v-if="isOwnedByCurrentUser(contextMenuTarget)">
               <ContextMenuSeparator class="context-menu-separator" />
-              <ContextMenuItem class="context-menu-item destructive" @click="handleDeleteEntity(contextMenuTarget)">
-                <Icon type="trash" class="context-menu-icon" />
-                <span>Delete</span>
+              <ContextMenuItem title="Delete" value="delete" class="context-menu-item destructive"
+                @click="handleDeleteEntity(contextMenuTarget)">
               </ContextMenuItem>
             </template>
           </template>
@@ -298,7 +323,7 @@ const handleCreateNode = async () => {
   }
 }
 
-:deep(.context-menu-item) {
+/* :deep(.context-menu-item) {
   display: flex;
   align-items: center;
   gap: var(--size-8);
@@ -337,5 +362,5 @@ const handleCreateNode = async () => {
   height: 1px;
   background: var(--ui-80);
   margin: var(--size-4) 0;
-}
+} */
 </style>

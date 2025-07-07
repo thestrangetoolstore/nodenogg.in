@@ -39,7 +39,8 @@ defineProps({
 }
 
 .microcosm-card:hover {
-  background-color: var(--ui-80);
+  background-color: var(--ui-10);
+  color: var(--ui-100);
 }
 
 .microcosm-card:focus {
