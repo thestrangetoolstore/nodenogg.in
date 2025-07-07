@@ -15,7 +15,7 @@ withDefaults(defineProps<{
         background
     }">
         <slot></slot>
-        
+
         <!-- Floating Actions Toolbar -->
         <div v-if="$slots.actions" class="floating-actions-toolbar">
             <slot name="actions"></slot>
@@ -35,7 +35,7 @@ withDefaults(defineProps<{
 }
 
 .outline {
-    box-shadow: 0 0 0 1px hsla(var(--mono-base-hue), 8%, 90%, 0.07);
+    box-shadow: var(--ui-shadow-10);
 }
 
 .background {

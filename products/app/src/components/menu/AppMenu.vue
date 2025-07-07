@@ -199,7 +199,7 @@ const handleExport = async () => {
                 </MenubarMenu>
             </MenubarRoot>
         </div>
-        <JoinMicrocosmDialog />
+        <!-- <JoinMicrocosmDialog /> -->
 
         <!-- Delete Data Confirmation Dialog -->
         <AlertDialogRoot v-model:open="deleteDialogOpen">
@@ -233,7 +233,7 @@ nav {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: var(--size-4);
+    padding: var(--size-4) 0 var(--size-8) 0;
     width: 100%;
 }
 
