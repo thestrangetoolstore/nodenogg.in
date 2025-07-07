@@ -258,6 +258,7 @@ const handleCreateNode = async () => {
             :onDelete="deleteEntity"
             :onDuplicate="create"
             :editable="true"
+            :current-user-identity-id="currentIdentity?.id"
             @nodes-change="handleNodeChange">
             <template #node-resizable="resizableNodeProps">
               <!-- HTML entities with resizable handles will now use the app's HTMLEntity -->

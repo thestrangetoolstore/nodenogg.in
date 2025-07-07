@@ -25,10 +25,18 @@ const props = defineProps<{
   isEditing?: boolean
   onStartEditing?: (id: string) => void
   onStopEditing?: () => void
+  currentUserIdentityId?: string
 }>()
 
-// Default to editable if not specified
-const isEditable = computed(() => props.editable !== false)
+// Check if current user owns this entity
+const isOwner = computed(() => {
+  return props.currentUserIdentityId && props.entity.identity_id === props.currentUserIdentityId
+})
+
+// Entity is editable if explicitly allowed AND user owns the entity
+const isEditable = computed(() => {
+  return props.editable !== false && isOwner.value
+})
 
 // Handler for content changes
 const handleContentChange = (html: string) => {
@@ -122,7 +130,6 @@ const handleDuplicate = () => {
     tabindex="0" @keydown="handleKeydown" @dblclick="handleDoubleClick" @click="handleClick"
     @mousedown="handleMouseDown" @wheel="handleWheel">
 
-    {{ isEditable }}
     <!-- Content slot with default implementation -->
     <div class="content-wrapper">
       <slot name="content" :entity="entity" :is-editing="isEditing" :is-editable="isEditable"
@@ -133,7 +140,7 @@ const handleDuplicate = () => {
       </slot>
     </div>
 
-    <!-- Menu trigger slot with default implementation -->
+    <!-- Menu trigger slot with default implementation - show for all entities -->
     <DropdownMenuRoot :modal="true">
       <DropdownMenuTrigger class="entity-menu-trigger">
         <slot name="menu-trigger">
@@ -144,18 +151,27 @@ const handleDuplicate = () => {
         <DropdownMenuContent class="dropdown-menu-content" :side-offset="5" :align="'end'">
           <!-- Menu items slot with default implementation -->
           <slot name="menu-items" :entity="entity" :on-delete="handleDelete" :on-duplicate="handleDuplicate"
-            :on-color-change="handleColorChange">
-            <!-- Default menu items -->
-            <DropdownMenuItem class="dropdown-menu-item">
-              <ColorSelector :value="entity.data.backgroundColor" :onUpdate="handleColorChange" />
-            </DropdownMenuItem>
-            <DropdownMenuSeparator class="dropdown-menu-separator" />
-            <DropdownMenuItem class="dropdown-menu-item" @click="handleDuplicate">
-              Duplicate
-            </DropdownMenuItem>
-            <DropdownMenuItem class="dropdown-menu-item" @click="handleDelete">
-              Delete
-            </DropdownMenuItem>
+            :on-color-change="handleColorChange" :is-owner="isOwner">
+            <!-- Default menu items based on ownership -->
+            <template v-if="isOwner">
+              <!-- Owner actions: full control -->
+              <DropdownMenuItem class="dropdown-menu-item">
+                <ColorSelector :value="entity.data.backgroundColor" :onUpdate="handleColorChange" />
+              </DropdownMenuItem>
+              <DropdownMenuSeparator class="dropdown-menu-separator" />
+              <DropdownMenuItem class="dropdown-menu-item" @click="handleDuplicate">
+                Duplicate
+              </DropdownMenuItem>
+              <DropdownMenuItem class="dropdown-menu-item" @click="handleDelete">
+                Delete
+              </DropdownMenuItem>
+            </template>
+            <template v-else>
+              <!-- Non-owner actions: limited -->
+              <DropdownMenuItem class="dropdown-menu-item" @click="handleDuplicate">
+                Duplicate
+              </DropdownMenuItem>
+            </template>
           </slot>
         </DropdownMenuContent>
       </DropdownMenuPortal>
@@ -201,7 +217,8 @@ const handleDuplicate = () => {
 
 /* Read-only state */
 .resizable-container.read-only {
-  background: var(--card-yellow-90);
+  opacity: 0.7;
+  border: 1px dashed var(--ui-60);
 }
 
 .resizable-container.read-only:focus {
@@ -216,6 +233,7 @@ const handleDuplicate = () => {
 
 .resizable-container.read-only .content-wrapper {
   pointer-events: none;
+  user-select: none;
 }
 
 /* Content wrapper to handle overflow */
@@ -232,12 +250,6 @@ const handleDuplicate = () => {
   max-width: 100%;
 }
 
-@media (prefers-color-scheme: dark) {
-  .resizable-container.read-only {
-    background: var(--ui-80);
-    border-color: var(--ui-60);
-  }
-}
 
 /* Dropdown menu styles matching ContextMenu */
 :deep(.dropdown-menu-content) {
@@ -326,5 +338,17 @@ const handleDuplicate = () => {
   height: 1px;
   background: var(--ui-90);
   margin: var(--size-2) 0;
+}
+
+/* Info item styles for non-owner menu */
+.info-item {
+  font-size: 0.875rem;
+  color: var(--ui-50) !important;
+  cursor: default !important;
+  font-style: italic;
+}
+
+.info-item[data-disabled] {
+  opacity: 0.8;
 }
 </style>

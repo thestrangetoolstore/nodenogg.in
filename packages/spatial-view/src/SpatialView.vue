@@ -13,6 +13,7 @@ const props = withDefaults(defineProps<{
   ui?: boolean;
   minimap?: boolean;
   HTMLEntity?: any;
+  currentUserIdentityId?: string;
 }>(), {
   ui: false,
   minimap: false
@@ -47,7 +48,9 @@ const handleNodeChange = (changes: NodeChange[]) => {
 
 // Handle node clicks for selection
 const handleNodeClick = (event: MouseEvent, node: any) => {
-  selectNode(node.id)
+  if (node && node.id) {
+    selectNode(node.id)
+  }
 }
 
 // Handle pane clicks for deselection
@@ -90,6 +93,7 @@ const elementsSelectable = computed(() => !isEditing.value)
           :is-editing="isNodeEditing(resizableNodeProps.id)"
           :on-start-editing="startEditing"
           :on-stop-editing="stopEditing"
+          :current-user-identity-id="currentUserIdentityId"
           v-bind="$attrs" />
       </slot>
     </template>
