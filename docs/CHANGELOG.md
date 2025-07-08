@@ -1,9 +1,8 @@
 # Changelog
 
+## v0.3.0
 
-## v0.2.0
-
-[compare changes](https://github.com/thestrangetoolstore/nodenogg.in/compare/v0.0.12...v0.2.0)
+[compare changes](https://github.com/thestrangetoolstore/nodenogg.in/compare/v0.0.12...v0.3.0)
 
 ### 🚀 Features
 
@@ -85,10 +84,20 @@
 - **release:** V0.0.15 ([26db62a4](https://github.com/thestrangetoolstore/nodenogg.in/commit/26db62a4))
 - **release:** V0.0.16 ([4981d50c](https://github.com/thestrangetoolstore/nodenogg.in/commit/4981d50c))
 - **release:** V0.1.0 ([e13fb0a6](https://github.com/thestrangetoolstore/nodenogg.in/commit/e13fb0a6))
+- **release:** V0.2.0 ([6d5effff](https://github.com/thestrangetoolstore/nodenogg.in/commit/6d5effff))
 
 ### 🤖 CI
 
 - Updated github actions ([aab24989](https://github.com/thestrangetoolstore/nodenogg.in/commit/aab24989))
+
+### ❤️ Contributors
+
+- Toby Milner-Gulland <toby@figure.land>
+- Adam Procter ([@adamprocter](https://github.com/adamprocter))
+
+## v0.2.0
+
+[compare changes](https://github.com/thestrangetoolstore/nodenogg.in/compare/v0.0.12...v0.2.0)
 
 ### ❤️ Contributors
 
@@ -547,4 +556,3 @@
 
 - Toby Milner-Gulland <toby@figure.land>
 - Adam Procter ([@adamprocter](https://github.com/adamprocter))
-
