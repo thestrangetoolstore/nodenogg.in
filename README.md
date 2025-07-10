@@ -24,10 +24,13 @@ The GNU Affero General Public License is a free software license that lets anyon
 
 This project is organised as a pnpm monorepo. You can read more about pnpm's workspace feature [here](https://pnpm.io/workspaces).
 
-## Setup
+## Setting up nodenogg.in
 
 1. Install `pnpm` using [these instructions](https://pnpm.io/installation).
-2. Install dependencies for the project (in the root directory of this project) like so.
+2. Install `node` using [these instructions](https://nodejs.org/en/download).
+3. Download or pull this project (repository) to your machine.
+4. Change to the root directory of the downloaded project.
+5. Install dependencies for the project (in the root directory of the project) like so.
 
 ```bash
 pnpm install
@@ -35,9 +38,9 @@ pnpm install
 
 3. (Optional) We recommend using [VSCode](https://code.visualstudio.com/). For working with Vue code, we recommend installing the [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) plugin.
 
-## Running locally for testing
+## Run locally for using on a private local network (and for testing)
 
-Make sure you have the latest code from the main branch and remember to run
+First make sure you have the latest code from the main branch (git pull or download) and remember install/ updated dependencies in your projects root directory.
 
 ```bash
 pnpm install
@@ -49,24 +52,36 @@ followed by
 pnpm dev
 ```
 
-This runs both the app and the Yjs server. You are now good to test the latest version of nodenogg.in
+This will run both the app and the Yjs (sync) server. You are now good to test the latest version of nodenogg.in.
+
+visit
+
+```bash
+http://localhost:8080
+```
 
 ## Local nodenogg.in documentation
 
-If you would also like to run the nodenogg.in documentation locally you can, please note that embedded YouTube videos will need an externally connected network connection (connection to the internet)
+If you would also like to run the nodenogg.in documentation locally you can, please note that any embedded YouTube videos will need an externally connected network connection (aka connection to the internet)
 
 ```bash
 pnpm docs:dev
 ```
 
+visit
+
+```bash
+http://localhost:8081/
+```
+
 ## Container development for deployment
 
-These steps are more for deployment related to hosting your own instance of the app nodenogg.in on a server, such as Azure, AWS or your own Virtual Private Server. You will want to be familiar with docker.
+**NB these Steps are not completed**
+
+The next steps are more for deployment related to hosting your own instance of the app nodenogg.in on a server, such as Azure, AWS or your own Virtual Private Server. You will want to be familiar with docker.
 
 ## Install docker locally
 
 We recommend using [Docker Desktop](https://docs.docker.com/get-docker/) for development. See [docker's website](https://docs.docker.com/get-docker/) for instructions.
 
 ## Build and run the whole system
-
-More details to come.
