@@ -1,5 +1,22 @@
 # Changelog
 
+## v0.3.1
+
+[compare changes](https://github.com/thestrangetoolstore/nodenogg.in/compare/v0.3.0...v0.3.1)
+
+### 🐛 Bug Fixes
+
+- Edited changelog config ([a3c2b180](https://github.com/thestrangetoolstore/nodenogg.in/commit/a3c2b180))
+
+### 📖 Documentation
+
+- Improves usage instructions ([122ace9a](https://github.com/thestrangetoolstore/nodenogg.in/commit/122ace9a))
+- Update bug report template ([e34643b5](https://github.com/thestrangetoolstore/nodenogg.in/commit/e34643b5))
+
+### ❤️ Contributors
+
+- Adam Procter ([@adamprocter](https://github.com/adamprocter))
+
 ## v0.3.0
 
 [compare changes](https://github.com/thestrangetoolstore/nodenogg.in/compare/v0.0.12...v0.3.0)
