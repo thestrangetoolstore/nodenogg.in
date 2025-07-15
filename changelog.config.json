@@ -13,7 +13,7 @@
     "revert": { "title": "⏪ Reverts" }
   },
   "github": {
-    "repo": "nodenogg-in/nn-p2p",
+    "repo": "thestrangetoolstore/nodenogg.in",
     "token": true
   },
   "output": "./docs/CHANGELOG.md",
