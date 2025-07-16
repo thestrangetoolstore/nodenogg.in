@@ -3,6 +3,7 @@ import { watch } from 'vue'
 import { RouterView, useRoute } from 'vue-router'
 import { TooltipProvider } from 'reka-ui'
 import AppMenu from '@/components/menu/AppMenu.vue'
+import Footer from '@/components/footer/Footer.vue'
 import { useApp } from './state'
 import { client } from './state'
 
@@ -24,5 +25,6 @@ watch(() => route.name, (routeName) => {
     <Suspense>
       <RouterView />
     </Suspense>
+      <Footer></Footer>
   </TooltipProvider>
 </template>
