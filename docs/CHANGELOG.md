@@ -1,5 +1,17 @@
 # Changelog
 
+## v0.3.4
+
+[compare changes](https://github.com/thestrangetoolstore/nodenogg.in/compare/v0.3.2...v0.3.4)
+
+### 🏠 Chore
+
+- **release:** V0.3.3 ([6b40f6d5](https://github.com/thestrangetoolstore/nodenogg.in/commit/6b40f6d5))
+
+### ❤️ Contributors
+
+- Adam Procter ([@adamprocter](https://github.com/adamprocter))
+
 ## v0.3.3
 
 [compare changes](https://github.com/thestrangetoolstore/nodenogg.in/compare/v0.3.2...v0.3.3)
