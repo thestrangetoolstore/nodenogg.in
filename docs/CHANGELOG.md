@@ -1,5 +1,22 @@
 # Changelog
 
+## v0.3.2
+
+[compare changes](https://github.com/thestrangetoolstore/nodenogg.in/compare/v0.3.1...v0.3.2)
+
+### 🚀 Features
+
+- Added basic footer ([a61a1fe4](https://github.com/thestrangetoolstore/nodenogg.in/commit/a61a1fe4))
+- Added basic version number to footer ([8baf9cc1](https://github.com/thestrangetoolstore/nodenogg.in/commit/8baf9cc1))
+
+### 🏠 Chore
+
+- **release:** V0.3.1 ([e4d50b6c](https://github.com/thestrangetoolstore/nodenogg.in/commit/e4d50b6c))
+
+### ❤️ Contributors
+
+- Adam Procter ([@adamprocter](https://github.com/adamprocter))
+
 ## v0.3.1
 
 [compare changes](https://github.com/thestrangetoolstore/nodenogg.in/compare/v0.3.0...v0.3.1)
