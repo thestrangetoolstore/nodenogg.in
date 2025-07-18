@@ -46,7 +46,7 @@ watch(() => route.name, (routeName) => {
     padding-bottom: var(--size-4);
     -webkit-overflow-scrolling: touch;
     flex: 1;
-    max-height: calc(100vh - 120px);
+    max-height: calc(100vh - 180px);
   }
   
   :deep(.microcosm-grid .microcosm-card) {
@@ -73,5 +73,8 @@ watch(() => route.name, (routeName) => {
   :deep(.microcosm-grid)::-webkit-scrollbar-thumb:hover {
     background: var(--ui-30);
   }
+  
+
 }
+
 </style>

@@ -174,7 +174,7 @@ const elementsSelectable = computed(() => !isEditing.value)
 
 .zoom-controls {
   position: absolute;
-  bottom: var(--size-16);
+  bottom: var(--size-64);
   right: var(--size-16);
   display: flex;
   flex-direction: column;
