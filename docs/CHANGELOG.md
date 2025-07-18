@@ -1,5 +1,17 @@
 # Changelog
 
+## v0.3.6
+
+[compare changes](https://github.com/thestrangetoolstore/nodenogg.in/compare/v0.3.5...v0.3.6)
+
+### 🐛 Bug Fixes
+
+- Placement of footer and floating buttons ([67809124](https://github.com/thestrangetoolstore/nodenogg.in/commit/67809124))
+
+### ❤️ Contributors
+
+- Adam Procter ([@adamprocter](https://github.com/adamprocter))
+
 ## v0.3.5
 
 [compare changes](https://github.com/thestrangetoolstore/nodenogg.in/compare/v0.3.4...v0.3.5)
