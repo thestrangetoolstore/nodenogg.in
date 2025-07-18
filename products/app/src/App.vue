@@ -28,3 +28,50 @@ watch(() => route.name, (routeName) => {
       <Footer></Footer>
   </TooltipProvider>
 </template>
+
+<style scoped>
+@media (max-width: 768px) {
+  :deep(.homepage) {
+    height: 100vh;
+    overflow-y: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  :deep(.microcosm-grid) {
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    gap: var(--size-8);
+    padding-bottom: var(--size-4);
+    -webkit-overflow-scrolling: touch;
+    flex: 1;
+    max-height: calc(100vh - 120px);
+  }
+  
+  :deep(.microcosm-grid .microcosm-card) {
+    flex: none;
+    width: 100%;
+    max-width: none;
+    min-width: auto;
+  }
+  
+  :deep(.microcosm-grid)::-webkit-scrollbar {
+    width: 8px;
+  }
+  
+  :deep(.microcosm-grid)::-webkit-scrollbar-track {
+    background: var(--ui-80);
+    border-radius: 4px;
+  }
+  
+  :deep(.microcosm-grid)::-webkit-scrollbar-thumb {
+    background: var(--ui-40);
+    border-radius: 4px;
+  }
+  
+  :deep(.microcosm-grid)::-webkit-scrollbar-thumb:hover {
+    background: var(--ui-30);
+  }
+}
+</style>
