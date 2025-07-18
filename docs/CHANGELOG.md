@@ -1,5 +1,17 @@
 # Changelog
 
+## v0.3.5
+
+[compare changes](https://github.com/thestrangetoolstore/nodenogg.in/compare/v0.3.4...v0.3.5)
+
+### 🐛 Bug Fixes
+
+- Homepage scrolling ([4968d837](https://github.com/thestrangetoolstore/nodenogg.in/commit/4968d837))
+
+### ❤️ Contributors
+
+- Adam Procter ([@adamprocter](https://github.com/adamprocter))
+
 ## v0.3.4
 
 [compare changes](https://github.com/thestrangetoolstore/nodenogg.in/compare/v0.3.2...v0.3.4)
