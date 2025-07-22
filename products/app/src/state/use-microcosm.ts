@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { inject, ref } from 'vue'
+import { inject, ref, computed } from 'vue'
 import { vue } from '@figureland/kit/state/vue'
 import {
   type Entity,
@@ -76,7 +76,7 @@ export const useMicrocosm = async (id: MicrocosmID) => {
     const duplicateEntity = async (entity: Entity) => create(entity.data)
 
     const status = vue(microcosm.state)
-    const identities: Identity[] = []
+    const identities = computed(() => status.value.identities)
 
     return {
       id,

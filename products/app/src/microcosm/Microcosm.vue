@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, provide, type PropType } from 'vue'
+import { computed, provide, onUnmounted, onMounted, onBeforeUnmount, type PropType } from 'vue'
 import type { MicrocosmID } from '@nodenogg.in/schema'
 import MicrocosmContainer from './MicrocosmContainer.vue'
 import {
@@ -7,6 +7,7 @@ import {
   useApp,
   useAppRouter,
   useMicrocosm,
+  client
 } from '@/state'
 import { getViewComponent } from '@/views'
 
@@ -33,6 +34,40 @@ provide(MICROCOSM_DATA_INJECTION_KEY, microcosm)
 
 const ActiveViewComponent = computed(() => {
   return getViewComponent(router.value.viewType)
+})
+
+// Handle visibility changes to update awareness when tab becomes hidden/visible
+let visibilityHandler: (() => void) | null = null
+
+onMounted(() => {
+  visibilityHandler = () => {
+    const identity = client.identity.get()
+    if (identity) {
+      if (document.hidden) {
+        microcosm.api.leave(identity)
+      } else {
+        microcosm.api.join(identity)
+      }
+    }
+  }
+  
+  document.addEventListener('visibilitychange', visibilityHandler)
+})
+
+// Handle cleanup when leaving the microcosm (call before unmount for faster updates)
+onBeforeUnmount(() => {
+  const identity = client.identity.get()
+  if (identity) {
+    microcosm.api.leave(identity)
+  }
+})
+
+// Final cleanup
+onUnmounted(() => {
+  // Clean up visibility listener
+  if (visibilityHandler) {
+    document.removeEventListener('visibilitychange', visibilityHandler)
+  }
 })
 
 </script>

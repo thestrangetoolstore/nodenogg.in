@@ -4,6 +4,7 @@ import CollectNode from './CollectNode.vue'
 import { storeToRefs } from 'pinia'
 import ViewContainer from '@/components/ViewContainer.vue'
 import ActionButton from '@/components/ActionButton.vue'
+import AwarenessIndicator from '@/components/awareness/AwarenessIndicator.vue'
 import { computed } from 'vue'
 import { EntitySchema, type Entity } from '@nodenogg.in/schema'
 
@@ -25,7 +26,7 @@ const microcosm = useCurrentMicrocosm()
 
 const identity = client.identity.get()
 
-const { entities } = storeToRefs(microcosm)
+const { entities, identities } = storeToRefs(microcosm)
 
 const htmlEntities = computed(() => entities.value.filter(e =>
   EntitySchema.utils.isType(e, 'html') && identity?.id === e.identity_id
@@ -68,6 +69,10 @@ const handleCreateEmoji = async () => {
       <!-- <h2 v-if="htmlEntities.length === 0">You haven't added anything to this microcosm yet.</h2> -->
     </div>
 
+    <div class="awareness-container">
+      <AwarenessIndicator :identities="identities" />
+    </div>
+
     <template #actions>
       <ActionButton icon="new" label="Add" @click="handleCreateEntity" />
     </template>
@@ -88,5 +93,12 @@ const handleCreateEmoji = async () => {
   top: 0;
   left: 0;
   overflow-y: auto;
+}
+
+.awareness-container {
+  position: absolute;
+  top: var(--size-16);
+  right: var(--size-16);
+  z-index: 100;
 }
 </style>

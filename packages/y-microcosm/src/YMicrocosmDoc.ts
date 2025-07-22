@@ -361,6 +361,9 @@ export class YMicrocosmDoc {
       timestamp: createTimestamp(),
       joined: true
     } as Identity)
+    
+    // Force immediate awareness update
+    this.handleAwareness()
   }
 
   public leave = (identity: Identity) => {
@@ -369,6 +372,9 @@ export class YMicrocosmDoc {
       timestamp: createTimestamp(),
       joined: false
     } as Identity)
+    
+    // Force immediate awareness update
+    this.handleAwareness()
   }
 }
 

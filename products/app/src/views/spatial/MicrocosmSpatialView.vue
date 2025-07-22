@@ -13,6 +13,7 @@ import ViewContainer from '@/components/ViewContainer.vue'
 import ActionButton from '@/components/ActionButton.vue'
 import Icon from '@/components/icon/Icon.vue'
 import ZoomControls from './components/ZoomControls.vue'
+import AwarenessIndicator from '@/components/awareness/AwarenessIndicator.vue'
 import {
   ContextMenuContent,
   // ContextMenuItem,
@@ -37,7 +38,7 @@ defineProps({
 const microcosm = useCurrentMicrocosm()
 const { update, create, deleteEntity } = microcosm
 
-const { entities } = storeToRefs(microcosm)
+const { entities, identities } = storeToRefs(microcosm)
 
 // Get current user identity
 const currentIdentity = client.identity.get()
@@ -299,6 +300,11 @@ const handleEmojiCreateFromEntity = (emoji: string, entity: Entity) => {
       <!-- Enhanced Zoom Controls -->
       <!-- <ZoomControls /> -->
     </div>
+    
+    <div class="awareness-container">
+      <AwarenessIndicator :identities="identities" />
+    </div>
+
     <template #actions>
       <ActionButton icon="new" label="Add" @click="handleCreateNode" />
     </template>
@@ -310,6 +316,13 @@ const handleEmojiCreateFromEntity = (emoji: string, entity: Entity) => {
   width: 100%;
   height: 100%;
   position: relative;
+}
+
+.awareness-container {
+  position: absolute;
+  top: var(--size-16);
+  right: var(--size-16);
+  z-index: 100;
 }
 
 /* Context Menu Styles */
