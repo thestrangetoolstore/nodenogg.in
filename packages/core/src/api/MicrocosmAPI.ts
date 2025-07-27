@@ -10,11 +10,13 @@ export type MicrocosmAPIConfig = {
 export type MicrocosmAPIState = {
   ready: boolean
   connected: boolean
+  identities: any[]
 }
 
 const defaultAPIState = (): MicrocosmAPIState => ({
   ready: false,
-  connected: false
+  connected: false,
+  identities: []
 })
 
 export abstract class MicrocosmAPI<Config extends MicrocosmAPIConfig = MicrocosmAPIConfig> {

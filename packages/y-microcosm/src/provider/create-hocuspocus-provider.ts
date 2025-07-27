@@ -27,13 +27,24 @@ export const createHocuspocusProvider = ({
 
   return async (name, document, token = 'default') => {
     try {
-      return new HocuspocusProvider({
+      const provider = new HocuspocusProvider({
         url,
         document,
         name,
         token,
-        websocketProvider
+        websocketProvider,
+        onConnect() {
+          if (provider.onConnectionStatusChange) {
+            provider.onConnectionStatusChange(true)
+          }
+        },
+        onDisconnect() {
+          if (provider.onConnectionStatusChange) {
+            provider.onConnectionStatusChange(false)
+          }
+        }
       })
+      return provider
     } catch (error) {
       throw new NNError({
         name: 'createHocuspocusProvider',

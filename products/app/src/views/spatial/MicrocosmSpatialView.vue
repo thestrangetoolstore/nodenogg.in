@@ -38,7 +38,7 @@ defineProps({
 const microcosm = useCurrentMicrocosm()
 const { update, create, deleteEntity } = microcosm
 
-const { entities, identities } = storeToRefs(microcosm)
+const { entities, identities, status } = storeToRefs(microcosm)
 
 // Get current user identity
 const currentIdentity = client.identity.get()
@@ -302,7 +302,7 @@ const handleEmojiCreateFromEntity = (emoji: string, entity: Entity) => {
     </div>
     
     <div class="awareness-container">
-      <AwarenessIndicator :identities="identities" />
+      <AwarenessIndicator :identities="identities" :status="status" />
     </div>
 
     <template #actions>

@@ -271,12 +271,19 @@ export class YMicrocosmDoc {
       this.provider?.awareness?.on('update', this.handleAwareness)
 
       this.providers?.forEach((p) => {
+        // Set up connection status handler
+        p.onConnectionStatusChange = (connected: boolean) => {
+          this.state.set({
+            connected
+          })
+        }
         p.shouldConnect = true
         p.connect()
       })
 
+      // Initial connection state is false - will be updated by connection events
       this.state.set({
-        connected: true
+        connected: false
       })
 
       return this.providers

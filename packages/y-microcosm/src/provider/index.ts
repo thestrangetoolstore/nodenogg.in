@@ -26,6 +26,10 @@ export interface Provider {
    * The signaling server URLs
    */
   signalingUrls?: string[]
+  /**
+   * Set connection status handler
+   */
+  onConnectionStatusChange?: (connected: boolean) => void
 }
 
 export type ProviderFactory<T extends Provider = Provider> = (

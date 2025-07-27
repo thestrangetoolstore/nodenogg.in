@@ -26,7 +26,7 @@ const microcosm = useCurrentMicrocosm()
 
 const identity = client.identity.get()
 
-const { entities, identities } = storeToRefs(microcosm)
+const { entities, identities, status } = storeToRefs(microcosm)
 
 const htmlEntities = computed(() => entities.value.filter(e =>
   EntitySchema.utils.isType(e, 'html') && identity?.id === e.identity_id
@@ -70,7 +70,7 @@ const handleCreateEmoji = async () => {
     </div>
 
     <div class="awareness-container">
-      <AwarenessIndicator :identities="identities" />
+      <AwarenessIndicator :identities="identities" :status="status" />
     </div>
 
     <template #actions>

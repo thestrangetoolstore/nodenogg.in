@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import type { Identity } from '@nodenogg.in/schema'
+import type { MicrocosmAPIState } from '@nodenogg.in/core'
 
 type AwarenessIdentity = Identity & {
   joined?: boolean
@@ -9,6 +10,7 @@ type AwarenessIdentity = Identity & {
 
 const props = defineProps<{
   identities: AwarenessIdentity[]
+  status: MicrocosmAPIState
 }>()
 
 const connectedCount = computed(() => {
@@ -16,14 +18,15 @@ const connectedCount = computed(() => {
 })
 
 const statusColor = computed(() => {
-  if (connectedCount.value === 0) return '#ef4444' // red-500
+  if (!props.status.connected) return '#ef4444' // red-500
   return '#22c55e' // green-500
 })
 
 const statusLabel = computed(() => {
-  if (connectedCount.value === 0) return 'No one connected'
-  if (connectedCount.value === 1) return '1 person connected'
-  return `${connectedCount.value} people connected`
+  if (!props.status.connected) return 'Disconnected from sync server'
+  if (connectedCount.value === 0) return 'Connected to sync server'
+  if (connectedCount.value === 1) return 'Connected - 1 person online'
+  return `Connected - ${connectedCount.value} people online`
 })
 </script>
 
