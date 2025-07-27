@@ -46,7 +46,7 @@ const statusLabel = computed(() => {
   background: var(--ui-95);
   border-radius: var(--ui-radius);
   box-shadow: var(--ui-container-shadow);
-  font-size: 0.75rem;
+  font-size: 1rem;
   font-weight: 600;
   color: var(--ui-20);
 }
@@ -65,8 +65,8 @@ const statusLabel = computed(() => {
 
 @media (prefers-color-scheme: dark) {
   .awareness-indicator {
-    background: var(--ui-85);
-    color: var(--ui-80);
+    background: var(--ui-95);
+    color: var(--ui-85);
   }
 }
 </style>
