@@ -5,8 +5,8 @@ const version = import.meta.env.VITE_APP_VERSION;
 <template>
     <footer>
         <div class="footer-info">
-            <p>Made by the University of Southampton, Winchester School of Art </p>
-            <span>v{{ version }}</span>
+            <p>Made by the University of Southampton, Winchester School of Art <span>v{{ version }}</span></p>
+
         </div>
     </footer>
 </template>
@@ -18,9 +18,18 @@ const version = import.meta.env.VITE_APP_VERSION;
     bottom: var(--size-24);
     pointer-events: none;
     color: var(--ui-30);
+    background-color: var(--ui-90);
+    padding: var(--size-2) var(--size-4);
 }
 
 p {
     font-size: 0.9em;
+}
+
+@media (max-width: 768px) {
+    .footer-info {
+        left: var(--size-4);
+        bottom: var(--size-4);
+    }
 }
 </style>
