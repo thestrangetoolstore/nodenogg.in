@@ -71,8 +71,13 @@ const handleCreateEmoji = async () => {
         v-if="htmlEntities.length === 0"
         :title="COPY.emptyStates.collect.title"
         :description="COPY.emptyStates.collect.description"
-        :action-text="COPY.emptyStates.collect.actionText"
-      />
+      >
+        <template #action>
+          <p>
+            Click <span class="button-style">{{ COPY.emptyStates.collect.actionText }}</span> to create your first node.
+          </p>
+        </template>
+      </EmptyState>
     </div>
 
     <template #actions>
@@ -97,4 +102,22 @@ const handleCreateEmoji = async () => {
   overflow-y: auto;
 }
 
+.button-style {
+  display: inline-flex;
+  align-items: center;
+  background: var(--ui-100);
+  border-radius: var(--size-24);
+  box-shadow: var(--ui-shadow-10);
+  color: var(--ui-30);
+  padding: var(--size-4) var(--size-12);
+  white-space: nowrap;
+  border: none;
+}
+
+@media (prefers-color-scheme: dark) {
+  .button-style {
+    background: var(--ui-90);
+    color: var(--ui-20);
+  }
+}
 </style>

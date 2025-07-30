@@ -53,7 +53,7 @@ withDefaults(defineProps<{
 /* Floating Actions Toolbar */
 .floating-actions-toolbar {
     position: fixed;
-    bottom: var(--size-64);
+    bottom: var(--size-32);
     left: 50%;
     transform: translateX(-50%);
     z-index: 300;
