@@ -11,7 +11,7 @@
   },
   "type": "module",
   "devDependencies": {
-    "@types/node": "^22.16.0",
+    "@types/node": "^22.17.0",
     "ts-node": "^10.9.2",
     "tsup": "^8.5.0",
     "typescript": "^5.8.3"
@@ -20,10 +20,10 @@
     "@hocuspocus/extension-logger": "^2.15.3",
     "@hocuspocus/extension-throttle": "^2.15.3",
     "@hocuspocus/server": "^2.15.3",
-    "@hono/node-server": "^1.15.0",
+    "@hono/node-server": "^1.17.1",
     "@hono/node-ws": "^1.2.0",
     "dotenv": "^16.6.1",
-    "hono": "^4.8.4",
+    "hono": "^4.8.10",
     "y-protocols": "^1.0.6",
     "yjs": "^13.6.27"
   }
