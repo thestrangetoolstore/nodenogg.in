@@ -63,8 +63,8 @@ ol {
 }
 
 code {
-  background-color: rgba(var(--ui-50), 0.1);
-  color: var(--ui-0);
+  background-color: hsla(var(--mono-base-hue), 8%, 2%, 0.15);
+  border-radius: 2px;
 }
 
 pre {
