@@ -78,8 +78,10 @@ export const EntitySplitter = Extension.create<EntitySplitterOptions>({
           }
           this.storage.lastSplitTime = now
           
-          // Get content before and after the split point
+          // Get content before the split point
           const beforeContent = state.doc.textBetween(0, from, '\n')
+          
+          // Get content after the split point - BEFORE we delete it
           const afterContent = state.doc.textBetween(to, state.doc.content.size, '\n')
           
           console.log('Split detected:', { 
