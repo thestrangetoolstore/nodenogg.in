@@ -3,23 +3,24 @@ const version = import.meta.env.VITE_APP_VERSION;
 </script>
 
 <template>
-    <footer >
+    <footer>
         <div class="footer-info">
-            <p>Made by the University of Southampton, Winchester School of Art.</p>
-        <p>v{{ version }}</p>
+            <p>Made by the University of Southampton, Winchester School of Art </p>
+            <span>v{{ version }}</span>
         </div>
     </footer>
 </template>
 
 <style scoped>
-.footer-info{
-  position: fixed;
-  left: 0;
-  bottom: 0;
-  width: 100%;
-  text-align: center;
-  padding: 10px;
-  height: 80px; /* fixed height */
-  line-height: 50px; /* vertically centers text */
+.footer-info {
+    position: fixed;
+    left: var(--size-24);
+    bottom: var(--size-24);
+    pointer-events: none;
+    color: var(--ui-30);
+}
+
+p {
+    font-size: 0.9em;
 }
 </style>
