@@ -67,13 +67,10 @@ const handleCreateEmoji = async () => {
         :onDelete="() => deleteEntity(e)" :isEditing="isEditing(e.id)" :onDuplicate="() => handleDuplicateEntity(e)"
         @startEditing="setEditingNode(e.id)" @stopEditing="setEditingNode(null)" />
 
-      <EmptyState 
-        v-if="htmlEntities.length === 0"
-        :title="COPY.emptyStates.collect.title"
-        :description="COPY.emptyStates.collect.description"
-      >
+      <EmptyState v-if="htmlEntities.length === 0" :title="COPY.emptyStates.collect.title"
+        :description="COPY.emptyStates.collect.description">
         <template #action>
-          <p>
+          <p class="action-message">
             Click <span class="button-style">{{ COPY.emptyStates.collect.actionText }}</span> to create your first node.
           </p>
         </template>
@@ -119,5 +116,9 @@ const handleCreateEmoji = async () => {
     background: var(--ui-90);
     color: var(--ui-20);
   }
+}
+
+.action-message {
+  color: var(--ui-40);
 }
 </style>

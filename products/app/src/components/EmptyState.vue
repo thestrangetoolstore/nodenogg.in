@@ -33,9 +33,8 @@ defineProps<{
 }
 
 .empty-state p {
+  max-width: 300px;
   color: var(--ui-40);
-  font-size: 1rem;
   margin: 0;
 }
-
 </style>
