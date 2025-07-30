@@ -1,5 +1,22 @@
 # Changelog
 
+## v0.3.7
+
+[compare changes](https://github.com/thestrangetoolstore/nodenogg.in/compare/v0.3.6...v0.3.7)
+
+### 🐛 Bug Fixes
+
+- Text color visibility in darkmode ([ef10482c](https://github.com/thestrangetoolstore/nodenogg.in/commit/ef10482c))
+
+### 🏠 Chore
+
+- Bump dependencies ([a3a8e063](https://github.com/thestrangetoolstore/nodenogg.in/commit/a3a8e063))
+- Bumped vue dependencies ([71300745](https://github.com/thestrangetoolstore/nodenogg.in/commit/71300745))
+
+### ❤️ Contributors
+
+- Toby Milner-Gulland <toby@figure.land>
+
 ## v0.3.6
 
 [compare changes](https://github.com/thestrangetoolstore/nodenogg.in/compare/v0.3.5...v0.3.6)
