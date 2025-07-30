@@ -1,5 +1,45 @@
 # Changelog
 
+## v0.3.9
+
+[compare changes](https://github.com/thestrangetoolstore/nodenogg.in/compare/v0.3.6...v0.3.9)
+
+### 🚀 Features
+
+- User count ([dbf6d8f9](https://github.com/thestrangetoolstore/nodenogg.in/commit/dbf6d8f9))
+- Improvements to mobile nav ([285e674c](https://github.com/thestrangetoolstore/nodenogg.in/commit/285e674c))
+- Relocated footer design ([cbc5fad3](https://github.com/thestrangetoolstore/nodenogg.in/commit/cbc5fad3))
+- Improvement to zoom controls background ([0faf104d](https://github.com/thestrangetoolstore/nodenogg.in/commit/0faf104d))
+- Added empty message for collect view ([c7cde58c](https://github.com/thestrangetoolstore/nodenogg.in/commit/c7cde58c))
+- Improved empty state component ([805613cc](https://github.com/thestrangetoolstore/nodenogg.in/commit/805613cc))
+- Created central location for ux copy ([b27f180d](https://github.com/thestrangetoolstore/nodenogg.in/commit/b27f180d))
+- Ui/ux iimprovements to the collect view cards ([0a9ebf9e](https://github.com/thestrangetoolstore/nodenogg.in/commit/0a9ebf9e))
+- Ui/ux iimprovements to the collect view cards ([762a242b](https://github.com/thestrangetoolstore/nodenogg.in/commit/762a242b))
+
+### 🐛 Bug Fixes
+
+- Text color visibility in darkmode ([ef10482c](https://github.com/thestrangetoolstore/nodenogg.in/commit/ef10482c))
+- Code block color and background ([d6e11588](https://github.com/thestrangetoolstore/nodenogg.in/commit/d6e11588))
+- Ui padding refinement ([30136aea](https://github.com/thestrangetoolstore/nodenogg.in/commit/30136aea))
+- Ui padding refinement ([8f33f363](https://github.com/thestrangetoolstore/nodenogg.in/commit/8f33f363))
+- Slot/text logic for Empty State placeholder ([23200656](https://github.com/thestrangetoolstore/nodenogg.in/commit/23200656))
+- Ui and layout tweaks ([9e1b4c51](https://github.com/thestrangetoolstore/nodenogg.in/commit/9e1b4c51))
+- Slot/text logic for Empty State placeholder ([c9b6a83d](https://github.com/thestrangetoolstore/nodenogg.in/commit/c9b6a83d))
+- Removed pointer-events/user selection for read-only entities (partial fix) ([35dd46b2](https://github.com/thestrangetoolstore/nodenogg.in/commit/35dd46b2))
+- Moved zoom controls ([78891172](https://github.com/thestrangetoolstore/nodenogg.in/commit/78891172))
+
+### 🏠 Chore
+
+- Bump dependencies ([a3a8e063](https://github.com/thestrangetoolstore/nodenogg.in/commit/a3a8e063))
+- Bumped vue dependencies ([71300745](https://github.com/thestrangetoolstore/nodenogg.in/commit/71300745))
+- **release:** V0.3.7 ([2bb73694](https://github.com/thestrangetoolstore/nodenogg.in/commit/2bb73694))
+- Rm inaccurate and unnecessary claude file ([b93bea61](https://github.com/thestrangetoolstore/nodenogg.in/commit/b93bea61))
+- **release:** V0.3.8 ([5861cd13](https://github.com/thestrangetoolstore/nodenogg.in/commit/5861cd13))
+
+### ❤️ Contributors
+
+- Toby Milner-Gulland <toby@figure.land>
+
 ## v0.3.8
 
 [compare changes](https://github.com/thestrangetoolstore/nodenogg.in/compare/v0.3.6...v0.3.8)
