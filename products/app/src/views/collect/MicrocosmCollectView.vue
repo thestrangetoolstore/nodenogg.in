@@ -4,8 +4,10 @@ import CollectNode from './CollectNode.vue'
 import { storeToRefs } from 'pinia'
 import ViewContainer from '@/components/ViewContainer.vue'
 import ActionButton from '@/components/ActionButton.vue'
+import EmptyState from '@/components/EmptyState.vue'
 import { computed } from 'vue'
 import { EntitySchema, type Entity } from '@nodenogg.in/schema'
+import { COPY } from '@/constants/copy'
 
 // Utility function to generate random position offset
 const getRandomOffset = () => Math.floor(Math.random() * 1000) - 500 // Range: -500 to 500
@@ -65,11 +67,18 @@ const handleCreateEmoji = async () => {
         :onDelete="() => deleteEntity(e)" :isEditing="isEditing(e.id)" :onDuplicate="() => handleDuplicateEntity(e)"
         @startEditing="setEditingNode(e.id)" @stopEditing="setEditingNode(null)" />
 
-      <!-- <h2 v-if="htmlEntities.length === 0">You haven't added anything to this microcosm yet.</h2> -->
+      <EmptyState v-if="htmlEntities.length === 0" :title="COPY.emptyStates.collect.title"
+        :description="COPY.emptyStates.collect.description">
+        <template #action>
+          <p class="action-message">
+            Click <span class="button-style">{{ COPY.emptyStates.collect.actionText }}</span> to create your first node.
+          </p>
+        </template>
+      </EmptyState>
     </div>
 
     <template #actions>
-      <ActionButton icon="new" label="Add" @click="handleCreateEntity" />
+      <ActionButton icon="new" :label="COPY.buttons.add" @click="handleCreateEntity" />
     </template>
   </ViewContainer>
 </template>
@@ -88,5 +97,28 @@ const handleCreateEmoji = async () => {
   top: 0;
   left: 0;
   overflow-y: auto;
+}
+
+.button-style {
+  display: inline-flex;
+  align-items: center;
+  background: var(--ui-100);
+  border-radius: var(--size-24);
+  box-shadow: var(--ui-shadow-10);
+  color: var(--ui-30);
+  padding: var(--size-4) var(--size-12);
+  white-space: nowrap;
+  border: none;
+}
+
+@media (prefers-color-scheme: dark) {
+  .button-style {
+    background: var(--ui-90);
+    color: var(--ui-20);
+  }
+}
+
+.action-message {
+  color: var(--ui-40);
 }
 </style>

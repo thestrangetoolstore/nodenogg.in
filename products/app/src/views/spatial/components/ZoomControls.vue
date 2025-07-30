@@ -84,6 +84,7 @@ const handleFitView = () => {
   flex-direction: column;
   gap: var(--size-4);
   z-index: 1000;
+  background-color: var(--ui-90)
 }
 
 .zoom-button {
@@ -174,7 +175,7 @@ const handleFitView = () => {
 
 @media (prefers-color-scheme: dark) {
   .zoom-button {
-    background: var(--ui-85);
+    background: var(--ui-90);
     color: var(--ui-30);
   }
 
@@ -183,8 +184,8 @@ const handleFitView = () => {
     color: var(--ui-primary-100);
   }
 
-  .slider-root {
-    background: var(--ui-85);
+  .zoom-controls  {
+    background-color: red;
   }
 }
 </style>

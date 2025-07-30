@@ -7,6 +7,7 @@ import { computed, ref } from 'vue';
 import Button from '../button/Button.vue';
 import Icon from '../icon/Icon.vue';
 import Input from '../input/Input.vue';
+import { COPY } from '@/constants/copy';
 
 const { createMicrocosmID, sanitizeMicrocosmIDTitle } = MicrocosmSchema.utils
 
@@ -47,25 +48,25 @@ const newMicrocosmID = computed(() => createMicrocosmID(inputValue.value))
 <template>
     <Button class="menu-button" @click="() => app.showCommandMenu = true">
         <Icon type="plus" :size="32" />
-        Join or Create Microcosm
+        {{ COPY.dialogs.joinMicrocosm.buttonText }}
     </Button>
     <!-- </Tooltip> -->
-    <Dialog v-model:open="app.showCommandMenu" title="Join or Create Microcosm"
-        description="Enter a microcosm name and press enter to join or create" :onConfirm="() => { }">
+    <Dialog v-model:open="app.showCommandMenu" :title="COPY.dialogs.joinMicrocosm.title"
+        :description="COPY.dialogs.joinMicrocosm.description" :onConfirm="() => { }">
         <template v-slot:content>
             <div class="input-container">
-                <Input v-model="inputValue" large placeholder="Enter microcosm name..." autoFocus
+                <Input v-model="inputValue" large :placeholder="COPY.dialogs.joinMicrocosm.placeholder" autoFocus
                     @keydown="handleKeydown" />
 
                 <div class="message" v-if="inputValue.trim()">
                     <div class="enter-instruction">
-                        Press <kbd class="key">Enter</kbd> to {{ sanitizedInput ? 'create' : 'join' }} {{
+                        Press <kbd class="key">{{ COPY.dialogs.joinMicrocosm.keyLabel }}</kbd> to {{ sanitizedInput ? COPY.dialogs.joinMicrocosm.enterToCreate : COPY.dialogs.joinMicrocosm.enterToJoin }} {{
                             sanitizedInput }}
                     </div>
                 </div>
 
                 <div class="message" v-else>
-                    <div class="instruction">Type a microcosm name to get started</div>
+                    <div class="instruction">{{ COPY.dialogs.joinMicrocosm.instruction }}</div>
                 </div>
             </div>
         </template>

@@ -69,7 +69,6 @@ const { isType } = EntitySchema.utils
     position: relative;
     width: 100%;
     max-width: calc(256 * var(--size-2));
-    min-height: calc(var(--size-2) * 100);
     background: var(--card-yellow-50);
     color: var(--ui-mono-0);
     border-radius: var(--ui-radius);
@@ -147,16 +146,11 @@ const { isType } = EntitySchema.utils
     display: flex;
     align-items: center;
     justify-content: center;
-    color: var(--ui-0);
+    color: var(--ui-mono-0);
     transition: all 0.2s ease;
-    opacity: 0;
+    opacity: 1;
     mix-blend-mode: multiply;
 
-}
-
-.node:hover .node-menu-trigger,
-.node:focus-within .node-menu-trigger {
-    opacity: 1;
 }
 
 .node-menu-trigger:hover {

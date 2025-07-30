@@ -104,31 +104,31 @@ const elementsSelectable = computed(() => !isEditing.value)
 <template>
   <div ref="vueflowWrapper" class="vueflow-container">
     <VueFlow vueFlowRef="vueflowInstance" :nodes="nodes" class="pinia-flow" @nodes-change="handleNodeChange"
-    @node-click="handleNodeClick" @pane-click="handlePaneClick" :pan-on-drag="panOnDrag" :pan-on-scroll="panOnDrag"
-    :zoom-on-scroll="zoomOnScroll" :zoom-on-pinch="zoomOnPinch" :zoom-on-double-click="zoomOnDoubleClick"
-    :prevent-scrolling="preventScrolling" :nodes-draggable="nodesDraggable" :nodes-connectable="nodesConnectable"
-    :elements-selectable="elementsSelectable">
-    <Background variant="lines" patternColor="var(--ui-80)" />
-    <MiniMap v-if="minimap" pannable zoomable class="mini-map" title="Mini map" />
+      @node-click="handleNodeClick" @pane-click="handlePaneClick" :pan-on-drag="panOnDrag" :pan-on-scroll="panOnDrag"
+      :zoom-on-scroll="zoomOnScroll" :zoom-on-pinch="zoomOnPinch" :zoom-on-double-click="zoomOnDoubleClick"
+      :prevent-scrolling="preventScrolling" :nodes-draggable="nodesDraggable" :nodes-connectable="nodesConnectable"
+      :elements-selectable="elementsSelectable">
+      <Background variant="lines" patternColor="var(--ui-80)" />
+      <MiniMap v-if="minimap" pannable zoomable class="mini-map" title="Mini map" />
 
-    <!-- Built-in Zoom Controls -->
-    <div v-if="zoomControls" class="zoom-controls">
-      <button class="zoom-button" @click="handleZoomIn" aria-label="Zoom in">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <line x1="12" y1="5" x2="12" y2="19"></line>
-          <line x1="5" y1="12" x2="19" y2="12"></line>
-        </svg>
-      </button>
+      <!-- Built-in Zoom Controls -->
+      <div v-if="zoomControls" class="zoom-controls">
+        <button class="zoom-button" @click="handleZoomIn" aria-label="Zoom in">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="12" y1="5" x2="12" y2="19"></line>
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+          </svg>
+        </button>
 
-      <div class="zoom-level">{{ Math.round(currentZoom * 100) }}%</div>
+        <div class="zoom-level">{{ Math.round(currentZoom * 100) }}%</div>
 
-      <button class="zoom-button" @click="handleZoomOut" aria-label="Zoom out">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <line x1="5" y1="12" x2="19" y2="12"></line>
-        </svg>
-      </button>
+        <button class="zoom-button" @click="handleZoomOut" aria-label="Zoom out">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+          </svg>
+        </button>
 
-      <!-- <button class="zoom-button fit-button" @click="handleFitView" aria-label="Reset zoom">
+        <!-- <button class="zoom-button fit-button" @click="handleFitView" aria-label="Reset zoom">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <polyline points="15,3 21,3 21,9"></polyline>
           <polyline points="9,21 3,21 3,15"></polyline>
@@ -136,22 +136,22 @@ const elementsSelectable = computed(() => !isEditing.value)
           <line x1="3" y1="21" x2="10" y2="14"></line>
         </svg>
       </button> -->
-    </div>
-    <template #node-resizable="resizableNodeProps">
-      <slot name="node-resizable"
-        v-bind="{ ...resizableNodeProps, isSelected: selectedNodeId === resizableNodeProps.id }">
-        <component v-if="HTMLEntity" :is="HTMLEntity" :entity="resizableNodeProps.data"
-          :is-selected="selectedNodeId === resizableNodeProps.id" :is-editing="isNodeEditing(resizableNodeProps.id)"
-          :on-start-editing="startEditing" :on-stop-editing="stopEditing"
-          :current-user-identity-id="currentUserIdentityId" :on-emoji-create="onEmojiCreate" v-bind="$attrs" />
-      </slot>
-    </template>
-    <template #node-emoji="emojiNodeProps">
-      <slot name="node-emoji" v-bind="{ ...emojiNodeProps, isSelected: selectedNodeId === emojiNodeProps.id }">
-        <!-- Default emoji rendering can go here if needed -->
-      </slot>
-    </template>
-  </VueFlow>
+      </div>
+      <template #node-resizable="resizableNodeProps">
+        <slot name="node-resizable"
+          v-bind="{ ...resizableNodeProps, isSelected: selectedNodeId === resizableNodeProps.id }">
+          <component v-if="HTMLEntity" :is="HTMLEntity" :entity="resizableNodeProps.data"
+            :is-selected="selectedNodeId === resizableNodeProps.id" :is-editing="isNodeEditing(resizableNodeProps.id)"
+            :on-start-editing="startEditing" :on-stop-editing="stopEditing"
+            :current-user-identity-id="currentUserIdentityId" :on-emoji-create="onEmojiCreate" v-bind="$attrs" />
+        </slot>
+      </template>
+      <template #node-emoji="emojiNodeProps">
+        <slot name="node-emoji" v-bind="{ ...emojiNodeProps, isSelected: selectedNodeId === emojiNodeProps.id }">
+          <!-- Default emoji rendering can go here if needed -->
+        </slot>
+      </template>
+    </VueFlow>
   </div>
 </template>
 
@@ -174,7 +174,7 @@ const elementsSelectable = computed(() => !isEditing.value)
 
 .zoom-controls {
   position: absolute;
-  bottom: var(--size-64);
+  bottom: var(--size-16);
   right: var(--size-16);
   display: flex;
   flex-direction: column;
@@ -237,7 +237,7 @@ const elementsSelectable = computed(() => !isEditing.value)
 
 @media (prefers-color-scheme: dark) {
   .zoom-controls {
-    background: var(--ui-85);
+    background: var(--ui-90);
   }
 
   .zoom-button {

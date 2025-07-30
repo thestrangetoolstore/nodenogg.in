@@ -246,8 +246,8 @@ const handleEmojiSelect = (emoji: string) => {
 }
 
 .resizable-container.read-only .content-wrapper {
-  pointer-events: none;
-  user-select: none;
+  /* pointer-events: none;
+  user-select: none; */
 }
 
 /* Content wrapper to handle overflow */
@@ -325,7 +325,7 @@ const handleEmojiSelect = (emoji: string) => {
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--ui-0);
+  color: var(--ui-mono-0);
   transition: all 0.2s ease;
   opacity: 0;
   mix-blend-mode: multiply;

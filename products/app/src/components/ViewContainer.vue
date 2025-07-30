@@ -36,7 +36,7 @@ withDefaults(defineProps<{
 
 @media (max-width: 768px) {
     .container {
-        padding: var(--size-8);
+        padding: 0;
         border-radius: 0;
     }
 }
@@ -53,7 +53,7 @@ withDefaults(defineProps<{
 /* Floating Actions Toolbar */
 .floating-actions-toolbar {
     position: fixed;
-    bottom: var(--size-64);
+    bottom: var(--size-32);
     left: 50%;
     transform: translateX(-50%);
     z-index: 300;
