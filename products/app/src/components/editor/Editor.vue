@@ -4,6 +4,7 @@ import { FocusTrap } from 'focus-trap-vue'
 import { useEditor, EditorContent } from '@tiptap/vue-3'
 import Scrollable from './Scrollable.vue'
 import { extensions } from './tiptap-editor'
+import { MAX_CHARACTER_COUNT } from '@nodenogg.in/core'
 
 const props = defineProps({
   value: {
@@ -104,10 +105,13 @@ watch(() => props.editable, (newValue) => {
 
 <template>
   <FocusTrap v-model:active="focusActive" :disabled="!editor || !editable">
-    <div class="wrapper" :class="{ 'is-active': active }" @click="onClick">
+    <div class="wrapper" :class="{ 'is-active': active }" @click="onClick" v-if="!!editor">
       <!-- <EditorMenu :editor="editor" v-if="editor" :blur="onBlur" /> -->
       <Scrollable :scroll="scroll">
         <editor-content :editor="editor" class="tiptap-wrapper" />
+        <span class="character-count" v-if="editable"> {{ editor.storage.characterCount.characters() }} / {{
+          MAX_CHARACTER_COUNT }}
+        </span>
       </Scrollable>
     </div>
   </FocusTrap>
@@ -120,6 +124,15 @@ watch(() => props.editable, (newValue) => {
   border: 2px solid transparent;
   border-radius: var(--ui-radius);
   transition: border-color 0.2s ease;
+}
+
+.character-count {
+  position: absolute;
+  bottom: var(--size-8);
+  left: var(--size-8);
+  pointer-events: none;
+  font-size: 0.75em;
+  opacity: 0.5;
 }
 
 .wrapper.is-active {
