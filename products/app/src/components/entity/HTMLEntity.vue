@@ -325,7 +325,7 @@ const handleEmojiSelect = (emoji: string) => {
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--ui-0);
+  color: var(--ui-mono-0);
   transition: all 0.2s ease;
   opacity: 0;
   mix-blend-mode: multiply;
