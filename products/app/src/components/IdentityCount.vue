@@ -21,7 +21,7 @@ watch(() => props.count, (newCount, oldCount) => {
   previousCount.value = newCount
 })
 
-const shouldShow = computed(() => props.count > 0)
+const shouldShow = computed(() => props.count > 1)
 </script>
 
 <template>
