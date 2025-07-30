@@ -1,11 +1,13 @@
 <script setup lang="ts">
+import { COPY } from '@/constants/copy'
+
 const version = import.meta.env.VITE_APP_VERSION;
 </script>
 
 <template>
     <footer>
         <div class="footer-info">
-            <p>Made by the University of Southampton, Winchester School of Art <span>v{{ version }}</span></p>
+            <p>{{ COPY.footer.madeBy }} <span>v{{ version }}</span></p>
 
         </div>
     </footer>

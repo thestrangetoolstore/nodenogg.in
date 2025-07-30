@@ -7,6 +7,7 @@ import ActionButton from '@/components/ActionButton.vue'
 import EmptyState from '@/components/EmptyState.vue'
 import { computed } from 'vue'
 import { EntitySchema, type Entity } from '@nodenogg.in/schema'
+import { COPY } from '@/constants/copy'
 
 // Utility function to generate random position offset
 const getRandomOffset = () => Math.floor(Math.random() * 1000) - 500 // Range: -500 to 500
@@ -68,14 +69,14 @@ const handleCreateEmoji = async () => {
 
       <EmptyState 
         v-if="htmlEntities.length === 0"
-        title="This is your solo data view"
-        description="This view shows only your nodes. Other users' nodes are not visible here."
-        action-text="Add"
+        :title="COPY.emptyStates.collect.title"
+        :description="COPY.emptyStates.collect.description"
+        :action-text="COPY.emptyStates.collect.actionText"
       />
     </div>
 
     <template #actions>
-      <ActionButton icon="new" label="Add" @click="handleCreateEntity" />
+      <ActionButton icon="new" :label="COPY.buttons.add" @click="handleCreateEntity" />
     </template>
   </ViewContainer>
 </template>

@@ -10,7 +10,6 @@ import {
     AlertDialogPortal,
     AlertDialogRoot,
     AlertDialogTitle,
-    AlertDialogTrigger,
     MenubarContent,
     MenubarItem,
     MenubarMenu,
@@ -24,7 +23,6 @@ import { useApp, useAppRouter } from '@/state';
 import { client } from '@/state/app';
 import { exportAndDownloadMicrocosm, deleteAllUserEntities } from '@/utils/export';
 import { viewRegistry, getViewDefinition } from '@/views';
-import JoinMicrocosmDialog from './JoinMicrocosmDialog.vue';
 import Icon from '@/components/icon/Icon.vue';
 import Tooltip from '../Tooltip.vue';
 
@@ -168,7 +166,7 @@ const handleExport = async () => {
                 <MenubarMenu value="view">
                     <MenubarTrigger class="menubar-trigger view-trigger">
                         <Icon :type="currentViewDefinition.icon" />
-                        <span class="view-name">{{ currentViewDefinition.title }} view</span>
+                        <span class="view-name">{{ currentViewDefinition.title }}</span>
                     </MenubarTrigger>
                     <MenubarPortal>
                         <MenubarContent class="menubar-content" align="center" :side-offset="5">
