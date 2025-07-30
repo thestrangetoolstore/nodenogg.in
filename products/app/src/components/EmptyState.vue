@@ -2,7 +2,6 @@
 defineProps<{
   title: string
   description: string
-  actionText?: string
 }>()
 </script>
 
@@ -10,9 +9,7 @@ defineProps<{
   <div class="empty-state">
     <h2>{{ title }}</h2>
     <p>{{ description }}</p>
-    <p v-if="actionText">
-      Click <span class="button-style">{{ actionText }}</span> to create your first node.
-    </p>
+    <slot name="action" />
   </div>
 </template>
 
