@@ -80,6 +80,18 @@ export class MicrocosmClient<M extends MicrocosmAPI = MicrocosmAPI> {
 
   public setActive = (id: MicrocosmID) => this.active.set(id)
 
+  public getActiveMicrocosm = (): M | undefined => {
+    const activeId = this.active.get()
+    return activeId ? this.microcosms.get(activeId) : undefined
+  }
+
+  public activeMicrocosm = this.use(
+    state((get) => {
+      const activeId = get(this.active)
+      return activeId ? this.microcosms.get(activeId) : undefined
+    })
+  )
+
   public register = async (config: MicrocosmEntryRequest): Promise<M> => {
     if (!isValidMicrocosmID(config.id)) {
       throw new Error(`Invalid microcosm ID: ${config.id}`)

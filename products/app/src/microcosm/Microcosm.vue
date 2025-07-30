@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, provide, type PropType } from 'vue'
+import { computed, provide, onMounted, onBeforeUnmount, type PropType } from 'vue'
 import type { MicrocosmID } from '@nodenogg.in/schema'
 import MicrocosmContainer from './MicrocosmContainer.vue'
 import {
@@ -35,10 +35,21 @@ const ActiveViewComponent = computed(() => {
   return getViewComponent(router.value.viewType)
 })
 
+// Register this microcosm store as active when mounted
+onMounted(() => {
+  app.setActiveMicrocosmStore(microcosm)
+})
+
+// Clean up when the component is unmounted
+onBeforeUnmount(() => {
+  microcosm.leave()
+  app.setActiveMicrocosmStore(null)
+})
+
 </script>
 
 <template>
-  <MicrocosmContainer v-if="microcosm.status.ready && app.ready && app.identity">
+  <MicrocosmContainer v-if="microcosm.state.ready && app.ready && app.identity">
     <component :is="ActiveViewComponent" :ui="ui" :view_id="view_id" />
   </MicrocosmContainer>
 </template>

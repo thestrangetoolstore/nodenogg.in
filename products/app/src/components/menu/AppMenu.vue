@@ -34,6 +34,16 @@ const appRouter = useAppRouter()
 const appMenu = ref('')
 const deleteDialogOpen = ref(false)
 
+// Debug logging
+const debugIdentities = computed(() => {
+    if (app.activeMicrocosmStore) {
+        console.log('Active microcosm store:', app.activeMicrocosmStore.id)
+        console.log('State:', app.activeMicrocosmStore.state)
+        console.log('Joined identities count:', app.activeMicrocosmStore.joinedIdentitiesCount)
+    }
+    return app.activeMicrocosmStore?.joinedIdentitiesCount || 0
+})
+
 // View switching logic
 const switchView = (viewType: string) => {
     if (!viewType) return
@@ -143,7 +153,12 @@ const handleExport = async () => {
 
                 <template v-if="app.activeMicrocosm">
                     <MenubarSeparator class="breadcrumb-separator" />
-                    <span class="microcosm-name-text">{{ app.activeMicrocosm.id }}</span>
+                    <span class="microcosm-name-text">
+                        {{ app.activeMicrocosm.id }}
+                        <span v-if="debugIdentities > 0" class="identity-count">
+                            ({{ debugIdentities }})
+                        </span>
+                    </span>
                 </template>
             </MenubarRoot>
         </div>
@@ -154,7 +169,7 @@ const handleExport = async () => {
                 <MenubarMenu value="view">
                     <MenubarTrigger class="menubar-trigger view-trigger">
                         <Icon :type="currentViewDefinition.icon" />
-                        <span class="view-name">{{ currentViewDefinition.title }} view</span>
+                        <span class="view-name">{{ currentViewDefinition.title }}</span>
                     </MenubarTrigger>
                     <MenubarPortal>
                         <MenubarContent class="menubar-content" align="center" :side-offset="5">
@@ -163,7 +178,7 @@ const handleExport = async () => {
                                 @click="switchView(viewType)">
                                 <Icon :type="viewDef.icon" />
                                 <div class="view-content">
-                                    <div class="view-title">{{ viewDef.title }} view</div>
+                                    <div class="view-title">{{ viewDef.title }}</div>
                                     <div class="view-description">{{ viewDef.description }}</div>
                                 </div>
                             </MenubarItem>
@@ -344,6 +359,13 @@ nav {
     height: var(--size-32);
     display: flex;
     align-items: center;
+    gap: var(--size-4);
+}
+
+.identity-count {
+    font-weight: 400;
+    color: var(--ui-50);
+    font-size: 0.875rem;
 }
 
 /* Options trigger specific styles */

@@ -1,5 +1,11 @@
 import { type State, state, store, map, events } from '@figureland/kit/state'
-import type { Entity, EntityDataType, EntityPointer, IdentityID } from '@nodenogg.in/schema'
+import type {
+  Entity,
+  EntityDataType,
+  EntityPointer,
+  IdentityID,
+  IdentityWithStatus
+} from '@nodenogg.in/schema'
 
 export type MicrocosmAPIConfig = {
   id: string
@@ -10,11 +16,15 @@ export type MicrocosmAPIConfig = {
 export type MicrocosmAPIState = {
   ready: boolean
   connected: boolean
+  persisted: boolean
+  identities: IdentityWithStatus[]
 }
 
 const defaultAPIState = (): MicrocosmAPIState => ({
   ready: false,
-  connected: false
+  connected: false,
+  persisted: false,
+  identities: []
 })
 
 export abstract class MicrocosmAPI<Config extends MicrocosmAPIConfig = MicrocosmAPIConfig> {

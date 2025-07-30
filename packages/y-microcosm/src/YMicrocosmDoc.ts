@@ -12,10 +12,11 @@ import {
   IdentityID,
   EntityLocation,
   EntitySchema,
-  IdentitySchema,
-  createTimestamp
+  createTimestamp,
+  validateIdentityWithStatus,
+  IdentityWithStatus
 } from '@nodenogg.in/schema'
-import { MicrocosmAPIConfig, NNError, collectNNErrors } from '@nodenogg.in/core'
+import { MicrocosmAPIConfig, MicrocosmAPIState, NNError, collectNNErrors } from '@nodenogg.in/core'
 import { YMicrocosmAPIOptions } from '.'
 
 export type Signed<T> = {
@@ -30,8 +31,9 @@ export type YCollection = YMap<SignedEntity>
 export class YMicrocosmDoc {
   public readonly yDoc = new Doc()
   public readonly identities = this.yDoc.getMap<boolean>('identities')
-  public readonly state = state({
-    identities: [] as Identity[],
+  public readonly state = state<MicrocosmAPIState>({
+    ready: false,
+    identities: [],
     persisted: false,
     connected: false
   })
@@ -267,10 +269,8 @@ export class YMicrocosmDoc {
 
       this.providers = fulfilled
 
-      this.provider?.awareness?.on('change', this.handleAwareness)
-      this.provider?.awareness?.on('update', this.handleAwareness)
-
       this.providers?.forEach((p) => {
+        p.awareness?.on('update', this.handleAwareness)
         p.shouldConnect = true
         p.connect()
       })
@@ -289,12 +289,12 @@ export class YMicrocosmDoc {
   }
 
   private disconnectProviders = async () => {
-    this.provider?.awareness?.off('change', this.handleAwareness)
-    this.provider?.awareness?.off('update', this.handleAwareness)
     this.providers?.forEach((p) => {
+      p.awareness?.off('change', this.handleAwareness)
       p.shouldConnect = false
       p.disconnect()
     })
+
     this.state.set({
       identities: [],
       connected: false
@@ -311,10 +311,6 @@ export class YMicrocosmDoc {
     this.persistence?.forEach((p) => p.destroy())
   }
 
-  public get provider(): Provider | undefined {
-    return this.providers ? this.providers[0] : undefined
-  }
-
   public updatePassword = async (password: string) => {
     if (password === this.config.password) {
       await this.disconnectProviders()
@@ -323,14 +319,14 @@ export class YMicrocosmDoc {
     }
   }
 
-  private handleAwareness = () => {
-    if (!this.provider) {
+  private handleAwareness = (_: unknown, provider: string | Provider) => {
+    if (isString(provider)) {
       return
     }
 
-    const states = Array.from(this.provider?.awareness?.getStates() || new Map())
+    const states = Array.from(provider?.awareness?.getStates() || new Map())
       .map(([, state]) => state?.identity || {})
-      .filter(IdentitySchema.schema.validate)
+      .filter(validateIdentityWithStatus)
 
     this.state.set({
       identities: filterByIdentityID(states)
@@ -356,30 +352,31 @@ export class YMicrocosmDoc {
   }
 
   public join = (identity: Identity) => {
-    this.provider?.awareness?.setLocalStateField('identity', {
-      ...identity,
-      timestamp: createTimestamp(),
-      joined: true
-    } as Identity)
+    this.providers.forEach((p) => {
+      p?.awareness?.setLocalStateField('identity', {
+        identity,
+        timestamp: createTimestamp(),
+        joined: true
+      } as IdentityWithStatus)
+    })
   }
 
   public leave = (identity: Identity) => {
-    this.provider?.awareness?.setLocalStateField('identity', {
-      ...identity,
-      timestamp: createTimestamp(),
-      joined: false
-    } as Identity)
+    this.providers.forEach((p) => {
+      p?.awareness?.setLocalStateField('identity', {
+        identity,
+        timestamp: createTimestamp(),
+        joined: false
+      } as IdentityWithStatus)
+    })
   }
 }
 
-const filterByIdentityID = (array: Identity[]): Identity[] => {
-  const uniqueMap = new Map<IdentityID, Identity>()
+const filterByIdentityID = (array: IdentityWithStatus[]): IdentityWithStatus[] => {
+  const uniqueMap = new Map<IdentityID, IdentityWithStatus>()
 
   array.forEach((item) => {
-    //   const existingItem = uniqueMap.get(item.id)
-    //   if (!existingItem || item.timestamp > existingItem.timestamp) {
-    uniqueMap.set(item.id, item)
-    //   }
+    uniqueMap.set(item.identity.id, item)
   })
 
   return Array.from(uniqueMap.values())
