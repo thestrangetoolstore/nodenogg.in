@@ -24,10 +24,10 @@ defineEmits<{
   display: flex;
   align-items: center;
   gap: var(--size-4);
-  background: var(--ui-100);
+  background: var(--ui-0);
   border-radius: var(--size-24);
   box-shadow: var(--ui-shadow-10);
-  color: var(--ui-30);
+  color: var(--ui-90);
   padding-left: var(--size-8);
   cursor: pointer;
   transition: all 0.2s ease;
@@ -57,8 +57,8 @@ defineEmits<{
 
 @media (prefers-color-scheme: dark) {
   .action-button {
-    background: var(--ui-90);
-    color: var(--ui-20);
+    background: var(--ui-10);
+    color: var(--ui-90);
   }
 }
 </style>
