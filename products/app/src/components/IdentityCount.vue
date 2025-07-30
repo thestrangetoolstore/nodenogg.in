@@ -25,11 +25,7 @@ const shouldShow = computed(() => props.count > 0)
 </script>
 
 <template>
-  <span 
-    v-if="shouldShow" 
-    class="identity-count" 
-    :class="{ 'animate-join': shouldAnimate }"
-  >
+  <span v-if="shouldShow" class="identity-count" :class="{ 'animate-join': shouldAnimate }">
     {{ count }}
   </span>
 </template>
@@ -52,16 +48,18 @@ const shouldShow = computed(() => props.count > 0)
 }
 
 .identity-count.animate-join {
-  animation: joinBounce 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  animation: joinBounce 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 @keyframes joinBounce {
   0% {
     transform: scale(1) translateY(0);
   }
+
   50% {
-    transform: scale(1.3) translateY(-4px);
+    transform: scale(1.05) translateY(-4px);
   }
+
   100% {
     transform: scale(1) translateY(0);
   }
