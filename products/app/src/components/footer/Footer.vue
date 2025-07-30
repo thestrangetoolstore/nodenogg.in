@@ -14,11 +14,11 @@ const version = import.meta.env.VITE_APP_VERSION;
 <style scoped>
 .footer-info {
     position: fixed;
-    left: var(--size-24);
-    bottom: var(--size-24);
+    left: var(--size-16);
+    bottom: var(--size-16);
     pointer-events: none;
     color: var(--ui-30);
-    background-color: var(--ui-80);
+    background-color: var(--ui-90);
     padding: var(--size-2) var(--size-4);
     border-radius: var(--ui-radius);
 }
@@ -29,10 +29,12 @@ p {
 
 @media (max-width: 768px) {
     .footer-info {
-        left: var(--size-4);
-        bottom: var(--size-4);
+        left: 0;
+        bottom: 0;
         width: calc(100% - var(--size-8));
         max-width: 260px;
+        box-shadow: var(--ui-shadow-10);
+        padding: var(--size-4) var(--size-8);
     }
 }
 </style>
