@@ -1,7 +1,8 @@
-import { ref, computed } from 'vue'
+import { ref, computed, shallowRef } from 'vue'
 import { app, client } from '@/state'
 import { defineStore } from 'pinia'
 import { vue } from '@figureland/kit/state/vue'
+import type { MicrocosmStore } from './use-microcosm'
 
 export const useApp = defineStore('app', () => {
   const ready = vue(client.ready)
@@ -9,6 +10,9 @@ export const useApp = defineStore('app', () => {
   const microcosms = vue(client.references)
 
   const showCommandMenu = ref(false)
+  
+  // Track the active microcosm store
+  const activeMicrocosmStore = shallowRef<MicrocosmStore | null>(null)
 
   const toggleCommandMenu = () => (showCommandMenu.value = !showCommandMenu.value)
 
@@ -26,6 +30,11 @@ export const useApp = defineStore('app', () => {
     return null
   })
 
+  // Method to set the active microcosm store
+  const setActiveMicrocosmStore = (store: MicrocosmStore | null) => {
+    activeMicrocosmStore.value = store
+  }
+
   return {
     identity: vue(client.identity),
     // pointer: vue<Pointer>(app.pointer),
@@ -38,6 +47,8 @@ export const useApp = defineStore('app', () => {
     showCommandMenu,
     active,
     activeMicrocosm,
+    activeMicrocosmStore,
+    setActiveMicrocosmStore,
     microcosms
   }
 })

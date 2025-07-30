@@ -46,10 +46,15 @@ export class YMicrocosmAPI extends MicrocosmAPI {
         const r = get(this.ready)
         this.state.set({
           ...s,
-          ready: r
+          ready: r,
+          identities: s.identities || []
         })
       })
     )
+
+    this.state.on((e) => {
+      console.log(e)
+    })
   }
 
   public identify = async (identity_id: IdentityID) => {

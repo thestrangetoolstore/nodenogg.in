@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
+import { useWindowSize } from '@vueuse/core'
 import {
     AlertDialogAction,
     AlertDialogCancel,
@@ -33,6 +34,14 @@ const route = useRoute()
 const appRouter = useAppRouter()
 const appMenu = ref('')
 const deleteDialogOpen = ref(false)
+
+// Window size for responsive behavior
+const { width } = useWindowSize()
+const isMobile = computed(() => width.value <= 768)
+
+const debugIdentities = computed(() =>
+    app.activeMicrocosmStore?.joinedIdentitiesCount || 0
+)
 
 // View switching logic
 const switchView = (viewType: string) => {
@@ -143,13 +152,18 @@ const handleExport = async () => {
 
                 <template v-if="app.activeMicrocosm">
                     <MenubarSeparator class="breadcrumb-separator" />
-                    <span class="microcosm-name-text">{{ app.activeMicrocosm.id }}</span>
+                    <span class="microcosm-name-text">
+                        <span class="name-wrapper">{{ app.activeMicrocosm.id }}</span>
+                        <span v-if="debugIdentities > 0" class="identity-count">
+                            ({{ debugIdentities }})
+                        </span>
+                    </span>
                 </template>
             </MenubarRoot>
         </div>
 
-        <!-- Center Region: View Switcher -->
-        <div v-if="app.activeMicrocosm" class="nav-region nav-center">
+        <!-- Center Region: View Switcher (desktop only) -->
+        <div v-if="app.activeMicrocosm && !isMobile" class="nav-region nav-center">
             <MenubarRoot v-model="appMenu" class="view-menubar">
                 <MenubarMenu value="view">
                     <MenubarTrigger class="menubar-trigger view-trigger">
@@ -173,13 +187,34 @@ const handleExport = async () => {
             </MenubarRoot>
         </div>
 
-        <!-- Right Region: Options -->
+        <!-- Right Region: View Switcher (mobile) + Options -->
         <div v-if="app.activeMicrocosm" class="nav-region nav-right">
+            <!-- View Switcher (mobile only) -->
+            <MenubarRoot v-if="isMobile" v-model="appMenu" class="view-menubar">
+                <MenubarMenu value="view">
+                    <MenubarTrigger class="menubar-trigger view-trigger">
+                        <Icon :type="currentViewDefinition.icon" />
+                    </MenubarTrigger>
+                    <MenubarPortal>
+                        <MenubarContent class="menubar-content" align="center" :side-offset="5">
+                            <MenubarItem v-for="(viewDef, viewType) in viewRegistry" :key="viewType"
+                                class="menubar-item view-item" :class="{ active: currentViewType === viewType }"
+                                @click="switchView(viewType)">
+                                <Icon :type="viewDef.icon" />
+                                <div class="view-content">
+                                    <div class="view-title">{{ viewDef.title }} view</div>
+                                    <div class="view-description">{{ viewDef.description }}</div>
+                                </div>
+                            </MenubarItem>
+                        </MenubarContent>
+                    </MenubarPortal>
+                </MenubarMenu>
+            </MenubarRoot>
             <MenubarRoot v-model="appMenu" class="options-menubar">
                 <MenubarMenu value="options">
                     <MenubarTrigger class="menubar-trigger options-trigger">
                         <Tooltip tooltip="Options" side="bottom" align="center" disableClosingTrigger>
-                            Options
+                            <span class="options-text">Options</span>
                             <Icon type="ellipsis" />
                         </Tooltip>
                     </MenubarTrigger>
@@ -269,7 +304,9 @@ nav {
 .nav-right {
     justify-content: flex-end;
     flex: 1;
+    gap: var(--size-8);
 }
+
 
 /* Menubar styling for each region */
 .breadcrumb-menubar,
@@ -344,11 +381,46 @@ nav {
     height: var(--size-32);
     display: flex;
     align-items: center;
+    gap: var(--size-4);
+}
+
+.name-wrapper {
+    max-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+}
+
+.identity-count {
+    font-weight: 400;
+    color: var(--ui-50);
+    font-size: 0.875rem;
+    flex-shrink: 0;
 }
 
 /* Options trigger specific styles */
 .options-trigger {
     padding: 0 0 0 var(--size-8);
+}
+
+.options-text {
+    display: inline;
+}
+
+@media (max-width: 768px) {
+    .options-text {
+        display: none;
+    }
+
+    .options-trigger {
+        padding: 0;
+    }
+
+    /* Hide view name text on mobile */
+    .view-name {
+        display: none;
+    }
 }
 
 /* Warning style for destructive actions */

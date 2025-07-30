@@ -7,7 +7,14 @@ import {
   type EntityUpdate,
   EntitySchema
 } from './Entity.schema'
-import { IdentitySchema, type Identity, type IdentityID } from './Identity.schema'
+import {
+  IdentitySchema,
+  type Identity,
+  type IdentityID,
+  type IdentityWithStatus,
+  IdentityWithStatusSchema,
+  validateIdentityWithStatus
+} from './Identity.schema'
 import { MicrocosmSchema, type Microcosm, type MicrocosmID } from './Microcosm.schema'
 export { createTimestamp } from './utils'
 export {
@@ -23,5 +30,8 @@ export {
   type EntityUpdate,
   MicrocosmSchema,
   type Microcosm,
-  type MicrocosmID
+  type MicrocosmID,
+  type IdentityWithStatus,
+  type IdentityWithStatusSchema,
+  validateIdentityWithStatus
 }

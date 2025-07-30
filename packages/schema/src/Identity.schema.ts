@@ -1,5 +1,5 @@
 import { createVersionedSchema, type InferVersionedSchema } from '@figureland/versioned-schema'
-import { string, optional, custom } from 'valibot'
+import { string, optional, custom, object, boolean, InferInput, parse, number } from 'valibot'
 import { createUUID, isValidUUID } from './uuid'
 import { isString } from './utils'
 import { freeze } from '@figureland/kit/tools/object'
@@ -42,3 +42,20 @@ export const IdentitySchema = freeze({
     isValidIdentityID
   }
 })
+
+export const IdentityWithStatusSchema = object({
+  identity: schema.schema,
+  timestamp: number(),
+  joined: boolean()
+})
+
+export const validateIdentityWithStatus = (o: unknown) => {
+  try {
+    parse(IdentityWithStatusSchema, o)
+    return true
+  } catch {
+    return false
+  }
+}
+
+export type IdentityWithStatus = InferInput<typeof IdentityWithStatusSchema>
