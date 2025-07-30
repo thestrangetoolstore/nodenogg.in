@@ -198,7 +198,6 @@ const handleEmojiSelect = (emoji: string) => {
 
 <style scoped>
 .resizable-container {
-  /* box-shadow: var(--ui-shadow-10); */
   color: var(--ui-mono-0);
   border-radius: var(--ui-radius);
   width: 100%;
