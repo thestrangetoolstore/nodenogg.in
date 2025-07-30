@@ -4,6 +4,7 @@ import CollectNode from './CollectNode.vue'
 import { storeToRefs } from 'pinia'
 import ViewContainer from '@/components/ViewContainer.vue'
 import ActionButton from '@/components/ActionButton.vue'
+import EmptyState from '@/components/EmptyState.vue'
 import { computed } from 'vue'
 import { EntitySchema, type Entity } from '@nodenogg.in/schema'
 
@@ -65,11 +66,12 @@ const handleCreateEmoji = async () => {
         :onDelete="() => deleteEntity(e)" :isEditing="isEditing(e.id)" :onDuplicate="() => handleDuplicateEntity(e)"
         @startEditing="setEditingNode(e.id)" @stopEditing="setEditingNode(null)" />
 
-      <div v-if="htmlEntities.length === 0" class="empty-state">
-        <h2>This is your solo data view</h2>
-        <p>This view shows only your nodes. Other users' nodes are not visible here.</p>
-        <p>Click <span class="button-style">Add</span> to create your first node.</p>
-      </div>
+      <EmptyState 
+        v-if="htmlEntities.length === 0"
+        title="This is your solo data view"
+        description="This view shows only your nodes. Other users' nodes are not visible here."
+        action-text="Add"
+      />
     </div>
 
     <template #actions>
@@ -94,46 +96,4 @@ const handleCreateEmoji = async () => {
   overflow-y: auto;
 }
 
-.empty-state {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  margin-top: 10vh;
-  max-width: 400px;
-  gap: var(--size-8);
-}
-
-.empty-state h2 {
-  color: var(--ui-20);
-  font-size: 1.5rem;
-  font-weight: 600;
-  margin: 0;
-}
-
-.empty-state p {
-  color: var(--ui-40);
-  font-size: 1rem;
-  margin: 0;
-}
-
-.button-style {
-  display: inline-flex;
-  align-items: center;
-  background: var(--ui-100);
-  border-radius: var(--size-24);
-  box-shadow: var(--ui-shadow-10);
-  color: var(--ui-30);
-  padding: var(--size-4) var(--size-12);
-  white-space: nowrap;
-  border: none;
-}
-
-@media (prefers-color-scheme: dark) {
-  .button-style {
-    background: var(--ui-90);
-    color: var(--ui-20);
-  }
-}
 </style>
