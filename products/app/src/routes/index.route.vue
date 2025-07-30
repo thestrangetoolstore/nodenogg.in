@@ -74,6 +74,7 @@ const sortedMicrocosms = computed(() => {
 
 /* Grid view */
 .microcosm-grid {
+  padding: var(--size-8);
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: var(--size-8);

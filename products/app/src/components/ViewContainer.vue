@@ -36,7 +36,7 @@ withDefaults(defineProps<{
 
 @media (max-width: 768px) {
     .container {
-        padding: var(--size-8);
+        padding: 0;
         border-radius: 0;
     }
 }
