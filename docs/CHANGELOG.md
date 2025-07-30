@@ -1,5 +1,29 @@
 # Changelog
 
+## v0.3.8
+
+[compare changes](https://github.com/thestrangetoolstore/nodenogg.in/compare/v0.3.6...v0.3.8)
+
+### 🚀 Features
+
+- User count ([dbf6d8f9](https://github.com/thestrangetoolstore/nodenogg.in/commit/dbf6d8f9))
+- Improvements to mobile nav ([285e674c](https://github.com/thestrangetoolstore/nodenogg.in/commit/285e674c))
+
+### 🐛 Bug Fixes
+
+- Text color visibility in darkmode ([ef10482c](https://github.com/thestrangetoolstore/nodenogg.in/commit/ef10482c))
+
+### 🏠 Chore
+
+- Bump dependencies ([a3a8e063](https://github.com/thestrangetoolstore/nodenogg.in/commit/a3a8e063))
+- Bumped vue dependencies ([71300745](https://github.com/thestrangetoolstore/nodenogg.in/commit/71300745))
+- **release:** V0.3.7 ([2bb73694](https://github.com/thestrangetoolstore/nodenogg.in/commit/2bb73694))
+- Rm inaccurate and unnecessary claude file ([b93bea61](https://github.com/thestrangetoolstore/nodenogg.in/commit/b93bea61))
+
+### ❤️ Contributors
+
+- Toby Milner-Gulland <toby@figure.land>
+
 ## v0.3.7
 
 [compare changes](https://github.com/thestrangetoolstore/nodenogg.in/compare/v0.3.6...v0.3.7)
