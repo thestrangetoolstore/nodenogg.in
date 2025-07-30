@@ -16,7 +16,6 @@ const app = useApp()
 const inputValue = ref<string>('')
 
 const handleConfirm = (microcosm_id: MicrocosmID) => {
-    console.log(microcosm_id)
     app.showCommandMenu = false
     router.push({
         name: 'microcosm',
@@ -60,7 +59,8 @@ const newMicrocosmID = computed(() => createMicrocosmID(inputValue.value))
 
                 <div class="message" v-if="inputValue.trim()">
                     <div class="enter-instruction">
-                        Press <kbd class="key">{{ COPY.dialogs.joinMicrocosm.keyLabel }}</kbd> to {{ sanitizedInput ? COPY.dialogs.joinMicrocosm.enterToCreate : COPY.dialogs.joinMicrocosm.enterToJoin }} {{
+                        Press <kbd class="key">{{ COPY.dialogs.joinMicrocosm.keyLabel }}</kbd> to {{ sanitizedInput ?
+                            COPY.dialogs.joinMicrocosm.enterToCreate : COPY.dialogs.joinMicrocosm.enterToJoin }} {{
                             sanitizedInput }}
                     </div>
                 </div>

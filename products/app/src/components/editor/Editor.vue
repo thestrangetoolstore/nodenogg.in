@@ -2,7 +2,6 @@
 import { type PropType, ref, watch, computed, nextTick } from 'vue'
 import { FocusTrap } from 'focus-trap-vue'
 import { useEditor, EditorContent } from '@tiptap/vue-3'
-import EditorMenu from './EditorMenu.vue'
 import Scrollable from './Scrollable.vue'
 import { extensions } from './tiptap-editor'
 
@@ -27,9 +26,6 @@ const props = defineProps({
   }
 })
 
-watch(() => props, () => {
-  console.log(props.value)
-})
 
 const emit = defineEmits(['cancel'])
 
