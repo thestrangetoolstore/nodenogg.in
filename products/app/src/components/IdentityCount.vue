@@ -26,7 +26,7 @@ const shouldShow = computed(() => props.count > 1)
 
 <template>
   <span v-if="shouldShow" class="identity-count" :class="{ 'animate-join': shouldAnimate }">
-    {{ count }}
+    {{ count - 1 }}
   </span>
 </template>
 

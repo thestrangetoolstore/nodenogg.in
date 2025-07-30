@@ -14,8 +14,12 @@ const props = withDefaults(defineProps<{
   minimap?: boolean;
   zoomControls?: boolean;
   HTMLEntity?: any;
+  Editor?: any;
   currentUserIdentityId?: string;
   onEmojiCreate?: (emoji: string, entity: any) => void;
+  onStartEditing?: (entityId: string) => void;
+  onStopEditing?: () => void;
+  onSplit?: (beforeContent: string, afterContent: string) => void;
 }>(), {
   ui: false,
   minimap: false,
@@ -26,6 +30,18 @@ const emit = defineEmits<MicrocosmSpatialViewEmits>()
 
 const { onNodesChange, viewport, zoomIn, zoomOut, zoomTo } = useVueFlow()
 const { selectedNodeId, isEditing, selectNode, clearSelection, startEditing, stopEditing, isNodeEditing } = useSpatialSelection()
+
+// Wrapper functions to call both internal and parent handlers
+const handleStartEditing = (entityId: string) => {
+  console.log('SpatialView internal handleStartEditing:', { entityId, hasOnSplit: '$attrs' in props && 'onSplit' in props.$attrs })
+  startEditing(entityId)
+  props.onStartEditing?.(entityId)
+}
+
+const handleStopEditing = () => {
+  stopEditing()
+  props.onStopEditing?.()
+}
 
 // Zoom controls functionality
 const currentZoom = computed(() => viewport.value.zoom)
@@ -91,14 +107,15 @@ const handlePaneClick = () => {
 onNodesChange(handleNodeChange)
 
 // Computed properties for controlling interactions
-const panOnDrag = computed(() => !isEditing.value)
-const zoomOnScroll = computed(() => !isEditing.value)
-const zoomOnPinch = computed(() => !isEditing.value)
-const zoomOnDoubleClick = computed(() => !isEditing.value)
-const preventScrolling = computed(() => isEditing.value)
-const nodesDraggable = computed(() => !isEditing.value)
-const nodesConnectable = computed(() => !isEditing.value)
-const elementsSelectable = computed(() => !isEditing.value)
+// Only disable interactions when actively editing text, allow normal spatial interactions
+const panOnDrag = computed(() => true) // Always allow panning
+const zoomOnScroll = computed(() => true) // Always allow zoom
+const zoomOnPinch = computed(() => true) // Always allow pinch zoom
+const zoomOnDoubleClick = computed(() => !isEditing.value) // Prevent double-click zoom when editing
+const preventScrolling = computed(() => false) // Allow scrolling
+const nodesDraggable = computed(() => !isEditing.value) // Prevent dragging when editing
+const nodesConnectable = computed(() => !isEditing.value) // Prevent connections when editing
+const elementsSelectable = computed(() => true) // Always allow selection
 </script>
 
 <template>
@@ -142,8 +159,10 @@ const elementsSelectable = computed(() => !isEditing.value)
           v-bind="{ ...resizableNodeProps, isSelected: selectedNodeId === resizableNodeProps.id }">
           <component v-if="HTMLEntity" :is="HTMLEntity" :entity="resizableNodeProps.data"
             :is-selected="selectedNodeId === resizableNodeProps.id" :is-editing="isNodeEditing(resizableNodeProps.id)"
-            :on-start-editing="startEditing" :on-stop-editing="stopEditing"
-            :current-user-identity-id="currentUserIdentityId" :on-emoji-create="onEmojiCreate" v-bind="$attrs" />
+            :on-start-editing="handleStartEditing" :on-stop-editing="handleStopEditing"
+            :current-user-identity-id="currentUserIdentityId" :on-emoji-create="onEmojiCreate" 
+            :on-update="$attrs.onUpdate" :on-delete="$attrs.onDelete" :on-duplicate="$attrs.onDuplicate" 
+            :on-split="onSplit" :editable="true" :Editor="Editor" />
         </slot>
       </template>
       <template #node-emoji="emojiNodeProps">

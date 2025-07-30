@@ -27,6 +27,7 @@ const props = defineProps<{
   isEditing?: boolean
   onStartEditing?: (id: string) => void
   onStopEditing?: () => void
+  onSplit?: (beforeContent: string, afterContent: string) => void
   currentUserIdentityId?: string
 }>()
 
@@ -145,7 +146,8 @@ const handleEmojiSelect = (emoji: string) => {
         :on-change="handleContentChange" :on-cancel="handleCancel">
         <!-- Default content if no slot provided -->
         <component v-if="Editor" :is="Editor" :value="entity?.data.content" :onChange="handleContentChange"
-          :editable="isEditing && isEditable" @cancel="handleCancel" />
+          :editable="isEditing && isEditable" @cancel="handleCancel" 
+          @split="(before, after) => props.onSplit?.(before, after)" />
       </slot>
     </div>
 

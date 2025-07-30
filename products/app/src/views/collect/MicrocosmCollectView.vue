@@ -58,6 +58,34 @@ const handleCreateEmoji = async () => {
     content: `❤️`
   })
 }
+
+const handleEntitySplit = async (entity: Entity, beforeContent: string, afterContent: string) => {
+  
+  console.log('CollectView handleEntitySplit called:', { 
+    entityId: entity.id, 
+    beforeContent, 
+    afterContent,
+    beforeLength: beforeContent.length,
+    afterLength: afterContent.length
+  })
+  
+  // Update current entity with content before split
+  await update(entity.id, { content: beforeContent })
+  
+  // Always create new entity (even if blank) and give it focus
+  const newEntity = await create({
+    type: 'html',
+    x: entity.data.x, // Same X position as parent
+    y: entity.data.y + entity.data.height + 20, // Position below parent with 20px gap
+    width: entity.data.width, // Same width as parent
+    height: 200, // Default height
+    content: afterContent,
+    backgroundColor: entity.data.backgroundColor // Inherit background color
+  })
+  
+  // Give focus to the new entity (create() already sets editingNodeId)
+  console.log('New entity created:', newEntity?.id)
+}
 </script>
 
 <template>
@@ -65,6 +93,7 @@ const handleCreateEmoji = async () => {
     <div class="entities">
       <CollectNode v-for="e in htmlEntities" v-bind:key="`entity/${e.id}`" :entity="e" :onChange="u => update(e.id, u)"
         :onDelete="() => deleteEntity(e)" :isEditing="isEditing(e.id)" :onDuplicate="() => handleDuplicateEntity(e)"
+        :onSplit="(before, after) => handleEntitySplit(e, before, after)"
         @startEditing="setEditingNode(e.id)" @stopEditing="setEditingNode(null)" />
 
       <EmptyState v-if="htmlEntities.length === 0" :title="COPY.emptyStates.collect.title"

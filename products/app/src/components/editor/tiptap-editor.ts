@@ -4,6 +4,7 @@ import { CharacterCount } from '@tiptap/extension-character-count'
 import { Placeholder } from '@tiptap/extension-placeholder'
 import type { Extensions } from '@tiptap/core'
 import { MAX_CHARACTER_COUNT } from '@nodenogg.in/core'
+import { EntitySplitter } from './extensions/entity-splitter'
 // import { Document } from '@tiptap/extension-document'
 
 // import { TaskList } from '@tiptap/extension-task-list'
@@ -17,10 +18,15 @@ import { MAX_CHARACTER_COUNT } from '@nodenogg.in/core'
 //   content: 'heading block*'
 // })
 
-export const extensions: Extensions = [
+export const createExtensions = (options?: {
+  onSplit?: (beforeContent: string, afterContent: string) => void
+}): Extensions => [
   // NodeDocument,
   StarterKit.configure({
-    // document: false
+    // document: false,
+    // Disable default horizontal rule to prevent conflicts
+    link: false,
+    horizontalRule: false
   }),
   Link.configure({
     HTMLAttributes: {
@@ -40,5 +46,11 @@ export const extensions: Extensions = [
       }
       return ''
     }
+  }),
+  EntitySplitter.configure({
+    onSplit: options?.onSplit
   })
 ]
+
+// Backward compatibility
+export const extensions: Extensions = createExtensions()

@@ -282,6 +282,9 @@ importers:
       '@tiptap/extension-task-list':
         specifier: ^3.0.7
         version: 3.0.7(@tiptap/extension-list@3.0.7(@tiptap/core@3.0.7(@tiptap/pm@3.0.7))(@tiptap/pm@3.0.7))
+      '@tiptap/pm':
+        specifier: ^3.0.7
+        version: 3.0.7
       '@tiptap/starter-kit':
         specifier: ^3.0.7
         version: 3.0.7

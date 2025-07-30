@@ -17,6 +17,7 @@ defineProps<{
     onChange: (update: EntityUpdate) => void
     onDelete: () => void
     onDuplicate: () => void
+    onSplit: (beforeContent: string, afterContent: string) => void
     entity: Entity
     isEditing: boolean
 }>()
@@ -40,7 +41,7 @@ const { isType } = EntitySchema.utils
     <div class="node" :style="`background-color: ${getColor(entity.data.backgroundColor || 'yellow')}`"
         v-if="isType(entity, 'html')" :class="{ 'is-editing': isEditing }" tabindex="0">
         <Editor :value="entity.data.content" :onChange="content => onChange({ content })" :editable="isEditing"
-            @click="onStartEditing" @cancel="onStopEditing" />
+            @click="onStartEditing" @cancel="onStopEditing" @split="(before, after) => onSplit(before, after)" />
         <DropdownMenuRoot :modal="true">
             <DropdownMenuTrigger class="node-menu-trigger">
                 <Icon type="ellipsis" />

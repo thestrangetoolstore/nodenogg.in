@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed, ref, inject } from 'vue'
 import { SpatialView, EmojiEntity } from '@nodenogg.in/spatial-view'
 import HTMLEntity from '@/components/entity/HTMLEntity.vue'
 import { useCurrentMicrocosm } from '@/state'
@@ -48,7 +48,7 @@ const isOwnedByCurrentUser = (entity: Entity) => {
 }
 
 // Access vue-flow instance for coordinate transformation and interaction control
-const { screenToFlowCoordinate, panOnDrag, zoomOnScroll, zoomOnPinch, project, dimensions } = useVueFlow()
+const { screenToFlowCoordinate, panOnDrag, zoomOnScroll, zoomOnPinch, project, dimensions, setCenter, viewport } = useVueFlow()
 
 // Compute positioned nodes for the spatial view
 const positionedNodes = computed(() => {
@@ -272,6 +272,64 @@ const handleEmojiCreateFromEntity = (emoji: string, entity: Entity) => {
   }
 }
 
+// Store reference to the currently editing entity for split handler
+const currentEditingEntity = ref<Entity | null>(null)
+
+const handleEntitySplit = async (beforeContent: string, afterContent: string) => {
+  const entity = currentEditingEntity.value
+  if (!entity || !EntitySchema.utils.isType(entity, 'html')) {
+    console.log('No current editing entity for split:', { entity: currentEditingEntity.value })
+    return
+  }
+  
+  console.log('SpatialView handleEntitySplit called:', { 
+    entityId: entity.id, 
+    beforeContent, 
+    afterContent,
+    originalPosition: { x: entity.data.x, y: entity.data.y, width: entity.data.width, height: entity.data.height }
+  })
+  
+  // Update current entity with content before split
+  await update(entity.id, { content: beforeContent })
+  
+  // Create new entity positioned directly underneath with 16px padding
+  const newEntity = await create({
+    type: 'html',
+    x: entity.data.x, // Same X position as parent
+    y: entity.data.y + entity.data.height + 16, // Position below parent with 16px gap
+    width: entity.data.width, // Same width as parent
+    height: entity.data.height, // Same height as parent
+    content: afterContent,
+    backgroundColor: entity.data.backgroundColor // Inherit background color
+  })
+  
+  console.log('New spatial entity created:', newEntity?.id)
+  
+  if (newEntity?.id) {
+    // Focus the new entity for editing
+    handleStartEditing(newEntity.id)
+    
+    // Center the canvas on the new entity with a slight delay to ensure it's rendered
+    setTimeout(() => {
+      const centerX = entity.data.x + entity.data.width / 2
+      const centerY = entity.data.y + entity.data.height + 16 + entity.data.height / 2
+      const currentZoom = viewport.value.zoom
+      setCenter(centerX, centerY, { duration: 300, zoom: currentZoom })
+      console.log('Centering view on new entity:', { centerX, centerY, zoom: currentZoom })
+    }, 100)
+  }
+}
+
+const handleStartEditing = (entityId: string) => {
+  const entity = entities.value.find(e => e.id === entityId)
+  currentEditingEntity.value = entity || null
+  console.log('SpatialView handleStartEditing:', { entityId, entity: currentEditingEntity.value })
+}
+
+const handleStopEditing = () => {
+  currentEditingEntity.value = null
+}
+
 </script>
 
 <template>
@@ -280,7 +338,11 @@ const handleEmojiCreateFromEntity = (emoji: string, entity: Entity) => {
       <SpatialView :view_id="view_id" :ui="ui" :nodes="positionedNodes" :HTMLEntity="HTMLEntity" :Editor="Editor"
         :onUpdate="update" :onDelete="deleteEntity" :onDuplicate="create" :editable="true"
         :current-user-identity-id="currentIdentity?.id" :zoom-controls="true" 
-        :on-emoji-create="handleEmojiCreateFromEntity" @nodes-change="handleNodeChange">
+        :on-emoji-create="handleEmojiCreateFromEntity"
+        :on-start-editing="handleStartEditing"
+        :on-stop-editing="handleStopEditing"
+        :on-split="handleEntitySplit"
+        @nodes-change="handleNodeChange">
         <template #node-resizable="resizableNodeProps">
           <!-- HTML entities with resizable handles will now use the app's HTMLEntity -->
         </template>

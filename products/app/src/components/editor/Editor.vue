@@ -3,7 +3,7 @@ import { type PropType, ref, watch, computed, nextTick } from 'vue'
 import { FocusTrap } from 'focus-trap-vue'
 import { useEditor, EditorContent } from '@tiptap/vue-3'
 import Scrollable from './Scrollable.vue'
-import { extensions } from './tiptap-editor'
+import { createExtensions } from './tiptap-editor'
 import { MAX_CHARACTER_COUNT } from '@nodenogg.in/core'
 
 const props = defineProps({
@@ -18,6 +18,9 @@ const props = defineProps({
   onCancel: {
     type: Function as PropType<() => void>
   },
+  onSplit: {
+    type: Function as PropType<(beforeContent: string, afterContent: string) => void>
+  },
   scroll: {
     type: Boolean
   },
@@ -28,15 +31,22 @@ const props = defineProps({
 })
 
 
-const emit = defineEmits(['cancel', 'click'])
+const emit = defineEmits(['cancel', 'click', 'split'])
 
 const focusActive = ref(false)
 const isInitialized = ref(false)
 const lastEmittedContent = ref(props.value)
 
+// Handle entity splitting
+const handleSplit = (beforeContent: string, afterContent: string) => {
+  console.log('Editor handleSplit called:', { beforeContent, afterContent })
+  // Only use emit, not both prop callback and emit
+  emit('split', beforeContent, afterContent)
+}
+
 const editor = useEditor({
   editable: props.editable,
-  extensions,
+  extensions: createExtensions({ onSplit: handleSplit }),
   injectCSS: false,
   content: props.value,
   onCreate: () => {
@@ -123,6 +133,7 @@ watch(() => props.editable, (newValue) => {
 <style>
 .wrapper {
   width: 100%;
+  height: 100%;
   padding-bottom: var(--size-16);
   border: 2px solid transparent;
   border-radius: var(--ui-radius);
