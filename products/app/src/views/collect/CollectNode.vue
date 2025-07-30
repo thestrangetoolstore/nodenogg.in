@@ -71,7 +71,7 @@ const { isType } = EntitySchema.utils
     max-width: calc(256 * var(--size-2));
     min-height: calc(var(--size-2) * 100);
     background: var(--card-yellow-50);
-    color: var(--ui-0);
+    color: var(--ui-mono-0);
     border-radius: var(--ui-radius);
     display: inline-block;
     transition: border-color 0.2s ease, outline 0.2s ease;
