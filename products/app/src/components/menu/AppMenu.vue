@@ -25,6 +25,7 @@ import { exportAndDownloadMicrocosm, deleteAllUserEntities } from '@/utils/expor
 import { viewRegistry, getViewDefinition } from '@/views';
 import Icon from '@/components/icon/Icon.vue';
 import Tooltip from '../Tooltip.vue';
+import IdentityCount from '@/components/IdentityCount.vue';
 
 const app = useApp()
 const router = useRouter()
@@ -62,12 +63,6 @@ const currentViewType = computed({
 
 // Get view display information
 const currentViewDefinition = computed(() => getViewDefinition(currentViewType.value))
-
-// Microcosm menu actions
-const handleLeave = () => {
-    // TODO: Implement leave functionality
-    console.log('Leave microcosm')
-}
 
 const handleDeleteData = () => {
     deleteDialogOpen.value = true
@@ -152,9 +147,7 @@ const handleExport = async () => {
                     <MenubarSeparator class="breadcrumb-separator" />
                     <span class="microcosm-name-text">
                         <span class="name-wrapper">{{ app.activeMicrocosm.id }}</span>
-                        <span v-if="debugIdentities > 0" class="identity-count">
-                            ({{ debugIdentities }})
-                        </span>
+                        <IdentityCount :count="debugIdentities" />
                     </span>
                 </template>
             </MenubarRoot>
@@ -387,15 +380,8 @@ nav {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-
 }
 
-.identity-count {
-    font-weight: 400;
-    color: var(--ui-50);
-    font-size: 0.875rem;
-    flex-shrink: 0;
-}
 
 /* Options trigger specific styles */
 .options-trigger {
