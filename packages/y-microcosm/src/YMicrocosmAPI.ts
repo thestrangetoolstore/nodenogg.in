@@ -51,10 +51,6 @@ export class YMicrocosmAPI extends MicrocosmAPI {
         })
       })
     )
-
-    this.state.on((e) => {
-      console.log(e)
-    })
   }
 
   public identify = async (identity_id: IdentityID) => {
