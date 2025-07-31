@@ -4,6 +4,7 @@ import { useApp } from '@/state'
 import Select from '@/components/select/Select.vue'
 import SelectItem from '@/components/select/SelectItem.vue'
 import MicrocosmCard from '@/components/MicrocosmCard.vue'
+import CreateMicrocosmCard from '@/components/CreateMicrocosmCard.vue'
 
 const app = useApp()
 
@@ -42,9 +43,7 @@ const sortedMicrocosms = computed(() => {
     <!-- Grid view -->
     <div class="microcosm-grid">
       <!-- Create New Card -->
-      <div class="create-new-card">
-        <span class="create-new-text">Create new microcosm</span>
-      </div>
+      <CreateMicrocosmCard />
 
       <MicrocosmCard v-for="microcosm of sortedMicrocosms" :key="microcosm.id" :microcosm="microcosm" />
     </div>
@@ -67,50 +66,4 @@ const sortedMicrocosms = computed(() => {
   width: 100%;
 }
 
-/* Create New Card */
-.create-new-card {
-  border: 1px dashed var(--ui-70);
-  border-radius: var(--size-4);
-  padding: var(--size-16);
-  min-height: 140px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  background: transparent;
-  padding: var(--size-16);
-  min-height: 140px;
-  color: var(--ui-50);
-}
-
-.create-new-card:hover {
-  border-color: var(--ui-primary-100);
-  background: var(--ui-95);
-}
-
-.create-new-content {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: var(--size-8);
-  color: var(--ui-40);
-  transition: color 0.2s ease;
-}
-
-.create-new-card:hover .create-new-content {
-  color: var(--ui-primary-100);
-}
-
-.create-new-text {
-  font-weight: 500;
-  font-size: 1rem;
-}
-
-@media (prefers-color-scheme: dark) {
-  .create-new-card {
-    border-color: var(--ui-60);
-  }
-
-  .create-new-card:hover {
-    background: var(--ui-85);
-  }
-}
 </style>

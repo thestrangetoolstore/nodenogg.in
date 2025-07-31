@@ -39,7 +39,7 @@ export const COPY = {
       buttonText: 'Join or Create Microcosm',
       title: 'Join or Create Microcosm',
       description: 'Enter a microcosm name and press enter to join or create',
-      placeholder: 'Enter microcosm name...',
+      placeholder: 'Create microcosm...',
       instruction: 'Type a microcosm name to get started',
       enterToCreate: 'create',
       enterToJoin: 'join',
