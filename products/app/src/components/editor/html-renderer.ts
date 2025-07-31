@@ -18,13 +18,7 @@ export const renderHTML = (
     return generateHTML(
       {
         type: 'doc',
-        content: content.filter((node: Node, i: number) => {
-          if ((options.trimStart && i === 0) || options.trim) {
-            return 'content' in node
-          } else {
-            return true
-          }
-        })
+        content
       },
       baseExtensions
     )

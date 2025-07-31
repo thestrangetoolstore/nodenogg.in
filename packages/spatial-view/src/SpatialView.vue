@@ -54,7 +54,9 @@ const isNodeSelectedInVueFlow = (nodeId: string) => {
 
 // Wrapper functions to call both internal and parent handlers
 const handleStartEditing = (entityId: string) => {
+  console.log('SpatialView handleStartEditing called for:', entityId)
   startEditing(entityId)
+  console.log('editingNodeId after startEditing:', isEditing.value, 'isNodeEditing:', isNodeEditing.value(entityId))
   props.onStartEditing?.(entityId)
 }
 
@@ -110,7 +112,8 @@ onNodesChange(handleNodeChange)
 
 // Computed properties for controlling interactions
 // Only disable interactions when actively editing text, allow normal spatial interactions
-const panOnDrag = computed(() => true) // Always allow panning
+const panOnDrag = computed(() => false) // Disable pan on drag
+const panOnScroll = computed(() => true) // Always allow panning
 const zoomOnScroll = computed(() => true) // Always allow zoom
 const zoomOnPinch = computed(() => true) // Always allow pinch zoom
 const zoomOnDoubleClick = computed(() => !isEditing.value) // Prevent double-click zoom when editing
@@ -118,12 +121,22 @@ const preventScrolling = computed(() => false) // Allow scrolling
 const nodesDraggable = computed(() => !isEditing.value) // Prevent dragging when editing
 const nodesConnectable = computed(() => !isEditing.value) // Prevent connections when editing
 const elementsSelectable = computed(() => true) // Always allow selection
+
+// Cursor management based on interaction state
+const canvasCursor = computed(() => {
+  if (isEditing.value) {
+    return 'text' // Text cursor when editing or selecting text
+  }
+  return 'default' // Default cursor for normal canvas interactions
+})
 </script>
 
 <template>
   <div ref="vueflowWrapper" class="vueflow-container">
-    <VueFlow vueFlowRef="vueflowInstance" :nodes="nodes" class="pinia-flow" @nodes-change="handleNodeChange"
-      @node-click="handleNodeClick" @pane-click="handlePaneClick" :pan-on-drag="panOnDrag" :pan-on-scroll="panOnDrag"
+    <VueFlow vueFlowRef="vueflowInstance" :nodes="nodes" class="pinia-flow" 
+      :style="{ cursor: canvasCursor }"
+      @nodes-change="handleNodeChange"
+      @node-click="handleNodeClick" @pane-click="handlePaneClick" :pan-on-drag="panOnDrag" :pan-on-scroll="panOnScroll"
       :zoom-on-scroll="zoomOnScroll" :zoom-on-pinch="zoomOnPinch" :zoom-on-double-click="zoomOnDoubleClick"
       :prevent-scrolling="preventScrolling" :nodes-draggable="nodesDraggable" :nodes-connectable="nodesConnectable"
       :elements-selectable="elementsSelectable">
@@ -138,7 +151,7 @@ const elementsSelectable = computed(() => true) // Always allow selection
             :on-start-editing="handleStartEditing" :on-stop-editing="handleStopEditing"
             :current-user-identity-id="currentUserIdentityId" :on-emoji-create="onEmojiCreate"
             :on-update="$attrs.onUpdate" :on-delete="$attrs.onDelete" :on-duplicate="$attrs.onDuplicate"
-            :on-split="onSplit" :editable="true" />
+            :on-split="onSplit" :editable="true" :auto-focus="resizableNodeProps.data.autoFocus" />
         </slot>
       </template>
       <template #node-emoji="emojiNodeProps">

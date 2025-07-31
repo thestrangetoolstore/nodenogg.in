@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, watch } from 'vue'
+import { computed, watch, ref } from 'vue'
 import {
   DropdownMenuRoot,
   DropdownMenuTrigger,
@@ -31,6 +31,7 @@ const props = defineProps<{
   onStopEditing?: () => void
   onSplit?: (beforeContent: string, afterContent: string) => void
   currentUserIdentityId?: string
+  autoFocus?: boolean
 }>()
 
 // Check if current user owns this entity
@@ -43,9 +44,92 @@ const isEditable = computed(() => {
   return (props.editable !== false && isOwner.value) as boolean
 })
 
+// Track editor focus state to know when user is actively editing
+const isEditorFocused = ref(false)
+const editorRef = ref(null)
+
+const handleEditorFocusChange = (isFocused: boolean) => {
+  isEditorFocused.value = isFocused
+  if (isFocused) {
+    // If editor gets focus but node isn't selected, we need to select it
+    if (!props.isSelected) {
+      console.log('Editor focused but node not selected - triggering selection')
+      // We need to trigger a click on the node to select it in VueFlow
+      // The parent container should handle this
+    }
+    if (props.onStartEditing) {
+      props.onStartEditing(props.entity.id)
+    }
+  } else if (!isFocused && props.onStopEditing) {
+    props.onStopEditing()
+  }
+}
+
+// Method to programmatically focus the editor
+const focusEditor = () => {
+  console.log('focusEditor called:', {
+    editorRef: editorRef.value,
+    isEditable: isEditable.value,
+    focusMethod: editorRef.value?.focus,
+    entityId: props.entity.id
+  })
+  if (editorRef.value && isEditable.value) {
+    console.log('Calling editor focus method')
+    editorRef.value.focus?.()
+  } else {
+    console.log('Cannot focus editor - missing ref or not editable')
+  }
+}
+
+// Watch for when entity becomes editing and auto-focus
+watch(() => props.isEditing, (newValue) => {
+  console.log(`Entity ${props.entity.id} isEditing changed to:`, newValue, 'isEditable:', isEditable.value)
+  if (newValue && isEditable.value && !isEditorFocused.value) {
+    console.log(`Focusing editor for entity ${props.entity.id}`)
+    focusEditor()
+  }
+})
+
+// Watch for autoFocus changes (for new entities)
+watch(() => props.autoFocus, (shouldFocus) => {
+  console.log(`Entity ${props.entity.id} autoFocus changed to:`, shouldFocus, {
+    isEditable: isEditable.value,
+    isSelected: props.isSelected,
+    shouldProceed: shouldFocus && isEditable.value,
+    isEditorFocused: isEditorFocused.value,
+    editorEditable: isEditorFocused.value || !!shouldFocus
+  })
+  if (shouldFocus && isEditable.value) {
+    console.log(`Auto-focusing editor for new entity ${props.entity.id}`)
+    focusEditor()
+  }
+})
+
+// Watch for when editor ref becomes available and autoFocus is true
+watch([editorRef, () => props.autoFocus], ([editor, shouldFocus]) => {
+  if (editor && shouldFocus && isEditable.value) {
+    console.log(`Editor ref available, auto-focusing for entity ${props.entity.id}`)
+    focusEditor()
+  }
+})
+
+// Debug selection state for toolbar visibility
+watch(() => props.isSelected, (newValue) => {
+  console.log(`Entity ${props.entity.id} isSelected changed to:`, newValue, {
+    isEditable: isEditable.value,
+    shouldShowToolbar: newValue && isEditable.value
+  })
+})
+
 // Show resizer only when single selection (no multi-selection) and is selected and editable
 const showResizer = computed(() => {
-  return isEditable.value && props.isSelected && !props.hasMultiSelection
+  const result = isEditable.value && props.isSelected && !props.hasMultiSelection
+  console.log(`Entity ${props.entity.id} showResizer:`, result, {
+    isEditable: isEditable.value,
+    isSelected: props.isSelected,
+    hasMultiSelection: props.hasMultiSelection
+  })
+  return result
 })
 
 // Show outline when selected OR editing
@@ -53,10 +137,7 @@ const showOutline = computed(() => {
   return props.isSelected || props.isEditing
 })
 
-// Debug selection state
-watch(() => props.isSelected, (newVal) => {
-  console.log('HTMLEntity selection changed:', props.entity.id, 'isSelected:', newVal, 'isEditable:', isEditable.value, 'hasMultiSelection:', props.hasMultiSelection)
-})
+// Debug selection state - removed to prevent setup errors
 
 // Handler for content changes
 const handleContentChange = (html: string) => {
@@ -79,30 +160,39 @@ const handleCancel = () => {
   }
 }
 
-// Handler for double-clicking to edit
+// Handler for double-clicking - removed editing functionality
 const handleDoubleClick = (event: MouseEvent) => {
   event.stopPropagation()
-  if (isEditable.value && props.onStartEditing) {
-    props.onStartEditing(props.entity.id)
-  }
+  // Double-click no longer triggers editing
 }
 
-// Handler for single click (prevent propagation when editing)
+// Handler for single click - simplified to ensure proper selection
 const handleClick = (event: MouseEvent) => {
-  console.log('HTMLEntity clicked:', props.entity.id, 'isEditing:', props.isEditing)
-  if (props.isEditing) {
+  const targetElement = event.target as Element
+  const isInEditor = targetElement?.closest('.tiptap-wrapper')
+
+  console.log('handleClick:', {
+    isInEditor,
+    isSelected: props.isSelected,
+    isEditorFocused: isEditorFocused.value,
+    target: targetElement.className
+  })
+
+  // Only prevent propagation if we're already editing AND focused
+  // This ensures selection always works properly
+  if (isEditorFocused.value && isInEditor && props.isSelected) {
     event.stopPropagation()
+    return
   }
-  // Let the click bubble up to VueFlow for selection
+
+  // For all other cases, let the click bubble up to VueFlow for proper selection
+  // This includes first-time clicks on tiptap-wrapper
 }
 
 const handleKeydown = (event: KeyboardEvent) => {
-  if ((event.key === 'Enter' || event.key === ' ') && !props.isEditing && isEditable.value && props.onStartEditing) {
-    event.preventDefault()
-    props.onStartEditing(props.entity.id)
-  }
+  // Remove Enter/Space to edit functionality
   // ESC key to stop editing
-  if (event.key === 'Escape' && props.isEditing && props.onStopEditing) {
+  if (event.key === 'Escape' && isEditorFocused.value && props.onStopEditing) {
     event.preventDefault()
     props.onStopEditing()
   }
@@ -110,14 +200,16 @@ const handleKeydown = (event: KeyboardEvent) => {
 
 // Stop propagation of mouse events when editing to prevent node dragging
 const handleMouseDown = (event: MouseEvent) => {
-  if (props.isEditing) {
+  // Only stop propagation if the mousedown is within the editor content
+  if (isEditorFocused.value && (event.target as Element)?.closest('.tiptap-wrapper')) {
     event.stopPropagation()
   }
 }
 
 // Prevent wheel events from bubbling when editing
 const handleWheel = (event: WheelEvent) => {
-  if (props.isEditing) {
+  // Only stop wheel propagation if over the editor content
+  if (isEditorFocused.value && (event.target as Element)?.closest('.tiptap-wrapper')) {
     event.stopPropagation()
   }
 }
@@ -134,8 +226,8 @@ const handleDuplicate = () => {
     // For spatial view, we need to create a duplicate with offset position
     const newEntity = {
       ...props.entity.data,
-      x: props.entity.data.x + 20,
-      y: props.entity.data.y + 20
+      x: props.entity.data.x,
+      y: props.entity.data.y + props.entity.data.height + 16
     }
     props.onDuplicate(newEntity)
   }
@@ -147,13 +239,36 @@ const handleEmojiSelect = (emoji: string) => {
     props.onEmojiCreate(emoji, props.entity)
   }
 }
+
+// Handlers for read-only content
+const handleReadOnlyClick = (event: MouseEvent) => {
+  // Allow text selection in read-only content
+  if (props.isSelected && !isEditorFocused.value) {
+    isEditorFocused.value = true
+    if (props.onStartEditing) {
+      props.onStartEditing(props.entity.id)
+    }
+    event.stopPropagation()
+  }
+  // Don't stop propagation for initial selection - let VueFlow handle it
+}
+
+const handleReadOnlyBlur = () => {
+  // Stop text selection mode
+  if (isEditorFocused.value) {
+    isEditorFocused.value = false
+    if (props.onStopEditing) {
+      props.onStopEditing()
+    }
+  }
+}
 </script>
 
 <template>
-  <NodeResizer v-if="showResizer" :min-width="50" :min-height="50" :node-id="entity.id" />
+  <NodeResizer v-if="props.isSelected" :min-width="50" :min-height="50" :node-id="entity.id" />
   <div class="resizable-container" :class="{
-    'is-selected': isSelected,
-    'is-editing': isEditing,
+    'is-selected': props.isSelected,
+    'is-editing': props.isEditing,
     'read-only': !isEditable,
     'show-outline': showOutline
   }" :style="`background-color: ${getColor(entity.data.backgroundColor || 'yellow', isEditable ? 50 : 50)}`"
@@ -165,13 +280,22 @@ const handleEmojiSelect = (emoji: string) => {
       <slot name="content" :entity="entity" :is-editing="isEditing" :is-editable="isEditable"
         :on-change="handleContentChange" :on-cancel="handleCancel">
         <!-- Default content if no slot provided -->
-        <Editor :value="entity?.data.content" :onChange="handleContentChange" :editable="(isEditing && isEditable)"
-          @cancel="handleCancel" @split="(before: string, after: string) => props.onSplit?.(before, after)" />
+        <template v-if="isEditable">
+          <!-- Editable entities use Editor component -->
+          <Editor ref="editorRef" :value="entity?.data.content" :onChange="handleContentChange"
+            :editable="isEditorFocused || !!props.autoFocus" :onFocusChange="handleEditorFocusChange"
+            @cancel="handleCancel" @split="(before: string, after: string) => props.onSplit?.(before, after)" />
+        </template>
+        <template v-else>
+          <!-- Read-only entities render as plain HTML with text selection -->
+          <div class="read-only-content tiptap-wrapper" :class="{ 'is-focused': isEditorFocused }"
+            v-html="entity?.data.content" @click="handleReadOnlyClick" @blur="handleReadOnlyBlur" tabindex="-1"></div>
+        </template>
       </slot>
     </div>
 
-    <!-- Entity Toolbar - show for all entities -->
-    <div class="entity-toolbar">
+    <!-- Entity Toolbar - show only when selected -->
+    <div v-if="props.isSelected" class="entity-toolbar">
       <slot name="toolbar" :entity="entity" :on-delete="handleDelete" :on-duplicate="handleDuplicate"
         :on-color-change="handleColorChange" :is-owner="isOwner">
         <!-- Default toolbar based on ownership -->
@@ -179,7 +303,8 @@ const handleEmojiSelect = (emoji: string) => {
           <!-- Color picker dropdown -->
           <DropdownMenuRoot :modal="true">
             <DropdownMenuTrigger class="toolbar-button color-button">
-              <div class="color-circle" :style="`background-color: ${getColor(entity.data.backgroundColor || 'yellow')}`"></div>
+              <div class="color-circle"
+                :style="`background-color: ${getColor(entity.data.backgroundColor || 'yellow')}`"></div>
             </DropdownMenuTrigger>
             <DropdownMenuPortal>
               <DropdownMenuContent class="color-dropdown-content" :side-offset="5" :align="'start'">
@@ -353,14 +478,12 @@ const handleEmojiSelect = (emoji: string) => {
   gap: var(--size-4);
   opacity: 0;
   transform-origin: 0% 100%;
-  background-color: red;
-  padding: var(--size-8);
   transform: scale(calc(1 / var(--zoom-value)));
   transition: opacity 0.2s ease;
 }
 
-.resizable-container:hover .entity-toolbar,
-.resizable-container:focus-within .entity-toolbar {
+/* Show toolbar when entity is selected */
+.entity-toolbar {
   opacity: 1;
 }
 
@@ -432,6 +555,7 @@ const handleEmojiSelect = (emoji: string) => {
 }
 
 @media (prefers-color-scheme: dark) {
+
   .color-dropdown-content,
   .emoji-dropdown-content {
     background: var(--ui-95);
@@ -464,5 +588,19 @@ const handleEmojiSelect = (emoji: string) => {
 
 .emoji-selector-item:hover {
   background: transparent !important;
+}
+
+/* Read-only content styles */
+.read-only-content {
+  width: 100%;
+  height: 100%;
+  padding: var(--size-12);
+  outline: none;
+  user-select: text;
+  cursor: text;
+}
+
+.read-only-content.is-focused {
+  user-select: text;
 }
 </style>

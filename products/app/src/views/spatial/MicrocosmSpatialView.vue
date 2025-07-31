@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref, inject } from 'vue'
+import { computed, ref, inject, nextTick } from 'vue'
 import { SpatialView, EmojiEntity } from '@nodenogg.in/spatial-view'
 import HTMLEntity from '@/components/entity/HTMLEntity.vue'
 import { useCurrentMicrocosm } from '@/state'
@@ -48,7 +48,7 @@ const isOwnedByCurrentUser = (entity: Entity) => {
 }
 
 // Access vue-flow instance for coordinate transformation and interaction control
-const { screenToFlowCoordinate, panOnDrag, zoomOnScroll, zoomOnPinch, project, dimensions, setCenter, viewport } = useVueFlow()
+const { screenToFlowCoordinate, panOnDrag, zoomOnScroll, zoomOnPinch, project, dimensions, setCenter, viewport, updateNodeData, getSelectedNodes } = useVueFlow()
 
 // Compute positioned nodes for the spatial view
 const positionedNodes = computed(() => {
@@ -201,8 +201,8 @@ const handleDeleteEntity = (entity: Entity) => {
   deleteEntity(entity)
 }
 
-const handleCreateNodeAtPosition = () => {
-  create({
+const handleCreateNodeAtPosition = async () => {
+  const newEntity = await create({
     type: 'html',
     x: contextMenuPosition.value.x - 100, // Center the node
     y: contextMenuPosition.value.y - 100,
@@ -210,6 +210,19 @@ const handleCreateNodeAtPosition = () => {
     height: 200,
     content: ''
   })
+  
+  if (newEntity?.id) {
+    // Wait for Vue to render the new entity
+    await nextTick()
+    
+    // Select the new entity by updating its selected state
+    updateNodeData(newEntity.id, { selected: true })
+    
+    // Focus the new entity for editing after a short delay
+    setTimeout(() => {
+      handleStartEditing(newEntity.id)
+    }, 50)
+  }
 }
 
 const handleCreateEmojiAtPosition = () =>
@@ -232,7 +245,7 @@ const handleCreateNode = async () => {
   })
 
   // Create node at viewport center
-  await create({
+  const newEntity = await create({
     type: 'html',
     x: flowPosition.x - 100, // Subtract half the width to center the node
     y: flowPosition.y - 100, // Subtract half the height to center the node
@@ -240,6 +253,19 @@ const handleCreateNode = async () => {
     height: 200,
     content: ''
   })
+  
+  if (newEntity?.id) {
+    // Wait for Vue to render the new entity
+    await nextTick()
+    
+    // Select the new entity by updating its selected state
+    updateNodeData(newEntity.id, { selected: true, autoFocus: true })
+    
+    // Clear autoFocus after a delay to prevent it from triggering again
+    setTimeout(() => {
+      updateNodeData(newEntity.id, { autoFocus: false })
+    }, 1000)
+  }
 }
 
 // Handler for emoji creation from HTMLEntity dropdown
@@ -276,9 +302,17 @@ const handleEmojiCreateFromEntity = (emoji: string, entity: Entity) => {
 const currentEditingEntity = ref<Entity | null>(null)
 
 const handleEntitySplit = async (beforeContent: string, afterContent: string) => {
-  const entity = currentEditingEntity.value
+  // Find the currently selected entity instead of relying on currentEditingEntity
+  const selectedNodes = getSelectedNodes.value
+  const selectedEntity = selectedNodes.length === 1 ? selectedNodes[0].data : null
+  
+  const entity = selectedEntity || currentEditingEntity.value
   if (!entity || !EntitySchema.utils.isType(entity, 'html')) {
-    console.log('No current editing entity for split:', { entity: currentEditingEntity.value })
+    console.log('No entity available for split:', { 
+      selectedEntity, 
+      currentEditingEntity: currentEditingEntity.value,
+      selectedNodesCount: selectedNodes.length 
+    })
     return
   }
 
@@ -306,8 +340,17 @@ const handleEntitySplit = async (beforeContent: string, afterContent: string) =>
   console.log('New spatial entity created:', newEntity?.id)
 
   if (newEntity?.id) {
-    // Focus the new entity for editing
-    handleStartEditing(newEntity.id)
+    // Wait for Vue to render the new entity
+    await nextTick()
+    
+    // Select the new entity by updating its selected state
+    // VueFlow will handle the selection when the node data updates
+    updateNodeData(newEntity.id, { selected: true, autoFocus: true })
+    
+    // Clear autoFocus after a delay to prevent it from triggering again
+    setTimeout(() => {
+      updateNodeData(newEntity.id, { autoFocus: false })
+    }, 1000)
 
     // Center the canvas on the new entity with a slight delay to ensure it's rendered
     setTimeout(() => {
@@ -327,6 +370,7 @@ const handleStartEditing = (entityId: string) => {
 }
 
 const handleStopEditing = () => {
+  console.log('handleStopEditing called, clearing currentEditingEntity')
   currentEditingEntity.value = null
 }
 

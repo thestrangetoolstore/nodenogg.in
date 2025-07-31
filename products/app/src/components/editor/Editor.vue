@@ -21,6 +21,9 @@ const props = defineProps({
   onSplit: {
     type: Function as PropType<(beforeContent: string, afterContent: string) => void>
   },
+  onFocusChange: {
+    type: Function as PropType<(isFocused: boolean) => void>
+  },
   scroll: {
     type: Boolean
   },
@@ -58,25 +61,47 @@ const editor = useEditor({
     }
   },
   onBlur: () => {
-    if (!props.editable) return
-
     focusActive.value = false
-    props.onCancel?.()
-    emit('cancel')
+    props.onFocusChange?.(false)
+
+    if (props.editable) {
+      props.onCancel?.()
+      emit('cancel')
+    }
+  },
+  onFocus: () => {
+    focusActive.value = true
+    props.onFocusChange?.(true)
   }
 })
 
 const active = computed(() => props.editable && focusActive.value)
 
 const focus = () => {
-  if (!props.editable || !editor.value) return
+  console.log('Editor focus method called:', {
+    editor: editor.value,
+    editable: props.editable,
+    focusActive: focusActive.value
+  })
+  if (!editor.value) {
+    console.log('No editor instance available')
+    return
+  }
 
   focusActive.value = true
-  editor.value.chain().focus('start').run()
+  if (props.editable) {
+    console.log('Focusing editable editor at start')
+    editor.value.chain().focus('start').run()
+  } else {
+    console.log('Focusing read-only editor')
+    // For read-only, just set focus without editing cursor
+    editor.value.chain().focus().run()
+  }
+  props.onFocusChange?.(true)
 }
 
 const onClick = () => {
-  if (!active.value && props.editable) {
+  if (!focusActive.value) {
     focus()
   }
   emit('click')
@@ -99,11 +124,17 @@ watch(() => props.editable, (newValue) => {
 
   editor.value.setEditable(newValue)
 
-  if (newValue) {
-    nextTick(() => focus())
-  } else {
+  // Don't auto-focus when becoming editable
+  // User will click within editor content to start editing
+  if (!newValue) {
     focusActive.value = false
+    props.onFocusChange?.(false)
   }
+})
+
+// Expose methods for parent components
+defineExpose({
+  focus
 })
 </script>
 
@@ -128,6 +159,11 @@ watch(() => props.editable, (newValue) => {
   width: 100%;
   height: 100%;
   padding-bottom: var(--size-16);
+  outline: 1px solid blue important;
+}
+
+.wrapper * {
+  outline: 1px solid red;
 }
 
 .character-count {
@@ -141,6 +177,9 @@ watch(() => props.editable, (newValue) => {
 
 .tiptap-wrapper {
   outline: none;
+  background: green;
+  outline: 1px solid blue important;
+
 }
 
 .tiptap {
