@@ -24,6 +24,7 @@ const props = defineProps<{
   onDuplicate?: (id: string) => void
   onEmojiCreate?: (emoji: string, entity: EntityOfType<'html'>) => void
   isSelected?: boolean
+  hasMultiSelection?: boolean
   editable?: boolean
   isEditing?: boolean
   onStartEditing?: (id: string) => void
@@ -217,7 +218,6 @@ const handleEmojiSelect = (emoji: string) => {
   outline: none;
   transition: outline 0.2s ease;
   box-sizing: border-box;
-  overflow: hidden;
   display: flex;
   flex-direction: column;
 }
@@ -324,10 +324,12 @@ const handleEmojiSelect = (emoji: string) => {
 /* Menu trigger button styles */
 .entity-menu-trigger {
   position: absolute;
-  top: var(--size-4);
-  right: var(--size-4);
-  padding: var(--size-4);
-  background: transparent;
+  left: 0;
+  bottom: calc(100% + var(--size-8));
+  padding: var(--size-0);
+  /* background-color: var(--ui-95); */
+  background: var(--ui-95);
+  box-shadow: var(--ui-shadow-25);
   border: none;
   border-radius: var(--ui-radius);
   cursor: pointer;
@@ -336,8 +338,7 @@ const handleEmojiSelect = (emoji: string) => {
   justify-content: center;
   color: var(--ui-mono-0);
   opacity: 0;
-  mix-blend-mode: multiply;
-  transform-origin: 100% 0%;
+  transform-origin: 0% 100%;
   transform: scale(calc(1 / var(--zoom-value)));
 }
 

@@ -1,4 +1,4 @@
-import { type State, state, store, map, events } from '@figureland/kit/state'
+import { state, store, map, events } from '@figureland/kit/state'
 import type {
   Entity,
   EntityDataType,
@@ -35,7 +35,7 @@ export abstract class MicrocosmAPI<Config extends MicrocosmAPIConfig = Microcosm
   public readonly data = this.store.use(events<Record<string, Entity | undefined>>())
 
   public readonly id: string
-  public readonly state: State<MicrocosmAPIState> = this.use(state(defaultAPIState))
+  public readonly state = this.use(state(defaultAPIState))
   constructor(config: Config) {
     this.id = config.id
     this.store.use(() => {

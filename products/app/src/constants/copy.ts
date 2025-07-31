@@ -56,7 +56,7 @@ export const COPY = {
 
   editor: {
     placeholders: {
-      default: 'Start writing...',
+      default: '...',
       heading: 'Heading'
     }
   }

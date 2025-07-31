@@ -25,6 +25,7 @@ const props = withDefaults(defineProps<{
   onEmojiCreate?: (emoji: string, entity: any) => void;
   onStartEditing?: (entityId: string) => void;
   onStopEditing?: () => void;
+  onSplit?: (beforeContent: string, afterContent: string) => void;
 }>(), {
   ui: false,
   minimap: false,
@@ -41,6 +42,9 @@ const emit = defineEmits<MicrocosmSpatialViewEmits>()
 
 const { onNodesChange, viewport, getSelectedNodes } = useVueFlow()
 const { selectedNodeId, isEditing, selectNode, clearSelection, startEditing, stopEditing, isNodeEditing } = useSpatialSelection()
+
+// Track selected nodes count for multi-selection handling
+const selectedNodesCount = computed(() => getSelectedNodes.value.length)
 
 // Sync VueFlow selection with our custom selection state
 watch(() => getSelectedNodes.value, (selectedNodes) => {
@@ -135,10 +139,11 @@ const elementsSelectable = computed(() => true) // Always allow selection
           v-bind="{ ...resizableNodeProps, isSelected: selectedNodeId === resizableNodeProps.id }">
           <component v-if="HTMLEntity" :is="HTMLEntity" :entity="resizableNodeProps.data"
             :is-selected="selectedNodeId === resizableNodeProps.id" :is-editing="isNodeEditing(resizableNodeProps.id)"
+            :has-multi-selection="selectedNodesCount > 1"
             :on-start-editing="handleStartEditing" :on-stop-editing="handleStopEditing"
             :current-user-identity-id="currentUserIdentityId" :on-emoji-create="onEmojiCreate"
             :on-update="$attrs.onUpdate" :on-delete="$attrs.onDelete" :on-duplicate="$attrs.onDuplicate"
-            :on-split="$attrs.onSplit" :editable="true" />
+            :on-split="onSplit" :editable="true" />
         </slot>
       </template>
       <template #node-emoji="emojiNodeProps">
