@@ -5,6 +5,7 @@ import { Placeholder } from '@tiptap/extension-placeholder'
 import type { Extensions } from '@tiptap/core'
 import { MAX_CHARACTER_COUNT } from '@nodenogg.in/core'
 import { EntitySplitter } from './extensions/entity-splitter'
+import { COPY } from '@/constants/copy'
 
 const UNDO_REDO = false
 
@@ -36,15 +37,16 @@ export const createExtensions = (options?: {
   ...baseExtensions,
   Placeholder.configure({
     placeholder: ({ node }) => {
-      if (node.type.name === 'heading') {
-        return 'Heading'
+      const placeholderKey = node.type.name as keyof typeof COPY.editor.placeholders
+
+      if (placeholderKey in COPY.editor.placeholders) {
+        return COPY.editor.placeholders[placeholderKey]
       }
-      return ''
+
+      return COPY.editor.placeholders.default
     }
   }),
   EntitySplitter.configure({
     onSplit: options?.onSplit
   })
 ]
-
-export const extensions: Extensions = createExtensions()

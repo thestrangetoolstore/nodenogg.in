@@ -2,7 +2,6 @@
 import { onMounted, ref, watch, computed, nextTick, toRef } from 'vue'
 import { VueFlow, useVueFlow, type NodeChange } from '@vue-flow/core'
 import { Background } from '@vue-flow/background'
-import { MiniMap } from '@vue-flow/minimap'
 
 import type { MicrocosmSpatialViewEmits, VueFlowEntity } from './types'
 import { useSpatialSelection } from './composables/useSpatialSelection'
@@ -130,9 +129,7 @@ const elementsSelectable = computed(() => true) // Always allow selection
       :prevent-scrolling="preventScrolling" :nodes-draggable="nodesDraggable" :nodes-connectable="nodesConnectable"
       :elements-selectable="elementsSelectable">
       <Background variant="lines" patternColor="var(--ui-80)" />
-      <MiniMap v-if="minimap" pannable zoomable class="mini-map" :title="zoomControlsCopy.miniMap"
-        node-color="var(--ui-10)" mask-color="rgba(0,0,0,0.25)" />
-      <ZoomControls v-if="zoomControls" :copy="zoomControlsCopy" />
+      <ZoomControls v-if="zoomControls" :copy="zoomControlsCopy" :initial-minimap-visible="minimap" />
       <template #node-resizable="resizableNodeProps">
         <slot name="node-resizable"
           v-bind="{ ...resizableNodeProps, isSelected: selectedNodeId === resizableNodeProps.id }">
@@ -160,15 +157,6 @@ const elementsSelectable = computed(() => true) // Always allow selection
   position: relative;
 }
 
-.mini-map {
-  position: absolute;
-  bottom: 0;
-  right: 0;
-  background: var(--ui-90);
-  box-shadow: var(--ui-container-shadow);
-  border-radius: var(--ui-radius);
-  padding: 0;
-}
 
 
 .button {

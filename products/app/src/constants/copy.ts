@@ -6,11 +6,11 @@ export const COPY = {
   emptyStates: {
     collect: {
       title: 'This is your solo data view',
-      description: 'This view shows only your nodes. Other users\' nodes are not visible here.',
+      description: "This view shows only your nodes. Other users' nodes are not visible here.",
       actionText: 'Add'
     }
   },
-  
+
   buttons: {
     add: 'Add',
     delete: 'Delete',
@@ -18,7 +18,7 @@ export const COPY = {
     save: 'Save',
     cancel: 'Cancel'
   },
-  
+
   views: {
     collect: {
       title: 'Collect',
@@ -29,11 +29,11 @@ export const COPY = {
       description: 'Collaborative spatial view'
     }
   },
-  
+
   footer: {
     madeBy: 'Made by the University of Southampton, Winchester School of Art'
   },
-  
+
   dialogs: {
     joinMicrocosm: {
       buttonText: 'Join or Create Microcosm',
@@ -46,13 +46,18 @@ export const COPY = {
       keyLabel: 'Enter'
     }
   },
-  
+
   zoomControls: {
     zoomIn: 'Zoom in',
     zoomOut: 'Zoom out',
     resetZoom: 'Reset zoom',
     miniMap: 'Mini map'
-  }
-} as const
+  },
 
-export type CopyKeys = typeof COPY
+  editor: {
+    placeholders: {
+      default: '',
+      heading: 'Heading'
+    }
+  }
+}
