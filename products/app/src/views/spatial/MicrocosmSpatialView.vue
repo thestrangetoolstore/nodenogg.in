@@ -12,7 +12,6 @@ import { storeToRefs } from 'pinia'
 import ViewContainer from '@/components/ViewContainer.vue'
 import ActionButton from '@/components/ActionButton.vue'
 import Icon from '@/components/icon/Icon.vue'
-import ZoomControls from './components/ZoomControls.vue'
 import {
   ContextMenuContent,
   // ContextMenuItem,
