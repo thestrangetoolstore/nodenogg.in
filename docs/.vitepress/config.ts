@@ -6,7 +6,15 @@ export default defineConfig({
   description: "Guide to the nodenogg.in project",
   ignoreDeadLinks: true,
   cleanUrls: true,
+  lastUpdated: true,
   themeConfig: {
+    lastUpdated: {
+      text: "Last updated",
+      formatOptions: {
+        dateStyle: "full",
+        timeStyle: "medium"
+      }
+    },
     footer: {
       copyright: "Made by Winchester School of Art, University of Southampton. All rights reserved.",
     },
