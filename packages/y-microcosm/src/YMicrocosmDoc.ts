@@ -1,5 +1,4 @@
 import { state } from '@figureland/kit/state'
-import { settle } from '@figureland/kit/tools/async'
 import { Doc, UndoManager, Map as YMap } from 'yjs'
 
 import type { Persistence, PersistenceFactory } from './persistence'
@@ -18,6 +17,17 @@ import {
 } from '@nodenogg.in/schema'
 import { MicrocosmAPIConfig, MicrocosmAPIState, NNError, collectNNErrors } from '@nodenogg.in/core'
 import { YMicrocosmAPIOptions } from '.'
+
+const resolvePromises = async <T>(promises: Promise<T>[]) => {
+  const results: PromiseSettledResult<T>[] = await Promise.allSettled(promises)
+
+  return {
+    rejected: results.filter((r): r is PromiseRejectedResult => r.status === 'rejected'),
+    fulfilled: results
+      .filter((r): r is PromiseFulfilledResult<T> => r.status === 'fulfilled')
+      .map((i) => i.value)
+  }
+}
 
 export type Signed<T> = {
   content: T
@@ -217,7 +227,7 @@ export class YMicrocosmDoc {
           level: 'warn'
         })
       }
-      const { fulfilled, rejected } = await settle(
+      const { fulfilled, rejected } = await resolvePromises(
         this.persistenceFactories.map(this.createPersistence)
       )
 
@@ -255,7 +265,7 @@ export class YMicrocosmDoc {
           level: 'warn'
         })
       }
-      const { fulfilled, rejected } = await settle(this.providerFactories.map(this.createProvider))
+      const { fulfilled, rejected } = await resolvePromises(this.providerFactories.map(this.createProvider))
 
       if (fulfilled.length === 0) {
         const reasons = collectNNErrors(rejected)

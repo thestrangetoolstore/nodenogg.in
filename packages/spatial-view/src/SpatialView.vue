@@ -45,6 +45,12 @@ const { selectedNodeId, isEditing, selectNode, clearSelection, startEditing, sto
 
 // Track selected nodes count for multi-selection handling
 const selectedNodesCount = computed(() => getSelectedNodes.value.length)
+const selectedNodeIds = computed(() => getSelectedNodes.value.map(node => node.id))
+
+// Helper function to check if a node is selected in VueFlow
+const isNodeSelectedInVueFlow = (nodeId: string) => {
+  return selectedNodeIds.value.includes(nodeId)
+}
 
 // Sync VueFlow selection with our custom selection state
 watch(() => getSelectedNodes.value, (selectedNodes) => {
@@ -136,9 +142,9 @@ const elementsSelectable = computed(() => true) // Always allow selection
       <ZoomControls v-if="zoomControls" :copy="zoomControlsCopy" :initial-minimap-visible="minimap" />
       <template #node-resizable="resizableNodeProps">
         <slot name="node-resizable"
-          v-bind="{ ...resizableNodeProps, isSelected: selectedNodeId === resizableNodeProps.id }">
+          v-bind="{ ...resizableNodeProps, isSelected: isNodeSelectedInVueFlow(resizableNodeProps.id) }">
           <component v-if="HTMLEntity" :is="HTMLEntity" :entity="resizableNodeProps.data"
-            :is-selected="selectedNodeId === resizableNodeProps.id" :is-editing="isNodeEditing(resizableNodeProps.id)"
+            :is-selected="isNodeSelectedInVueFlow(resizableNodeProps.id)" :is-editing="isNodeEditing(resizableNodeProps.id)"
             :has-multi-selection="selectedNodesCount > 1"
             :on-start-editing="handleStartEditing" :on-stop-editing="handleStopEditing"
             :current-user-identity-id="currentUserIdentityId" :on-emoji-create="onEmojiCreate"
@@ -147,7 +153,7 @@ const elementsSelectable = computed(() => true) // Always allow selection
         </slot>
       </template>
       <template #node-emoji="emojiNodeProps">
-        <slot name="node-emoji" v-bind="{ ...emojiNodeProps, isSelected: selectedNodeId === emojiNodeProps.id }">
+        <slot name="node-emoji" v-bind="{ ...emojiNodeProps, isSelected: isNodeSelectedInVueFlow(emojiNodeProps.id) }">
           <!-- Default emoji rendering can go here if needed -->
         </slot>
       </template>

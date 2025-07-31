@@ -43,9 +43,19 @@ const isEditable = computed(() => {
   return (props.editable !== false && isOwner.value) as boolean
 })
 
+// Show resizer only when single selection (no multi-selection) and is selected and editable
+const showResizer = computed(() => {
+  return isEditable.value && props.isSelected && !props.hasMultiSelection
+})
+
+// Show outline when selected OR editing
+const showOutline = computed(() => {
+  return props.isSelected || props.isEditing
+})
+
 // Debug selection state
 watch(() => props.isSelected, (newVal) => {
-  console.log('HTMLEntity selection changed:', props.entity.id, 'isSelected:', newVal, 'isEditable:', isEditable.value)
+  console.log('HTMLEntity selection changed:', props.entity.id, 'isSelected:', newVal, 'isEditable:', isEditable.value, 'hasMultiSelection:', props.hasMultiSelection)
 })
 
 // Handler for content changes
@@ -140,11 +150,12 @@ const handleEmojiSelect = (emoji: string) => {
 </script>
 
 <template>
-  <NodeResizer v-if="isEditable && isSelected" :min-width="50" :min-height="50" :node-id="entity.id" />
+  <NodeResizer v-if="showResizer" :min-width="50" :min-height="50" :node-id="entity.id" />
   <div class="resizable-container" :class="{
     'is-selected': isSelected,
     'is-editing': isEditing,
-    'read-only': !isEditable
+    'read-only': !isEditable,
+    'show-outline': showOutline
   }" :style="`background-color: ${getColor(entity.data.backgroundColor || 'yellow', isEditable ? 50 : 50)}`"
     tabindex="0" @keydown="handleKeydown" @dblclick="handleDoubleClick" @click="handleClick"
     @mousedown="handleMouseDown" @wheel="handleWheel">
@@ -227,31 +238,23 @@ const handleEmojiSelect = (emoji: string) => {
   /* outline-offset: 2px; */
 }
 
-/* Selection state */
-.resizable-container.is-selected {
-  /* outline: 2px solid var(--ui-primary-100); */
-  /* outline-offset: 2px; */
+/* Outline for selected or editing entities */
+.resizable-container.show-outline {
+  box-shadow: 0 0 0 calc(2px / var(--zoom-value)) var(--ui-primary-100);
 }
 
-/* Editing state */
+/* Special styling for editing state */
 .resizable-container.is-editing {
-  /* outline: 3px solid var(--ui-primary-100); */
-  /* outline-offset: 2px; */
-  box-shadow: 0 0 0 4px rgba(var(--ui-primary-100-rgb), 0.2);
+  box-shadow: 0 0 0 calc(3px / var(--zoom-value)) var(--ui-primary-100);
 }
 
 .resizable-container.read-only {
   opacity: 0.8;
 }
 
-.resizable-container.read-only:focus {
-  /* outline: 2px solid var(--ui-60); */
-  /* outline-offset: 2px; */
-}
-
-.resizable-container.read-only.is-selected {
-  /* outline: 2px solid var(--ui-60); */
-  /* outline-offset: 2px; */
+/* Read-only entities have dimmed outline when selected */
+.resizable-container.read-only.show-outline {
+  box-shadow: 0 0 0 calc(2px / var(--zoom-value)) var(--ui-60);
 }
 
 .resizable-container.read-only .content-wrapper {
