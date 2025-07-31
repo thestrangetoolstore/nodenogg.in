@@ -41,7 +41,7 @@ const props = withDefaults(defineProps<{
 const emit = defineEmits<MicrocosmSpatialViewEmits>()
 
 const { onNodesChange, viewport, getSelectedNodes } = useVueFlow()
-const { selectedNodeId, isEditing, selectNode, clearSelection, startEditing, stopEditing, isNodeEditing } = useSpatialSelection()
+const { isEditing, startEditing, stopEditing, isNodeEditing } = useSpatialSelection()
 
 // Track selected nodes count for multi-selection handling
 const selectedNodesCount = computed(() => getSelectedNodes.value.length)
@@ -51,16 +51,6 @@ const selectedNodeIds = computed(() => getSelectedNodes.value.map(node => node.i
 const isNodeSelectedInVueFlow = (nodeId: string) => {
   return selectedNodeIds.value.includes(nodeId)
 }
-
-// Sync VueFlow selection with our custom selection state
-watch(() => getSelectedNodes.value, (selectedNodes) => {
-  console.log('VueFlow selected nodes changed:', selectedNodes)
-  if (selectedNodes.length > 0) {
-    selectNode(selectedNodes[0].id)
-  } else {
-    clearSelection()
-  }
-})
 
 // Wrapper functions to call both internal and parent handlers
 const handleStartEditing = (entityId: string) => {
@@ -76,8 +66,6 @@ const handleStopEditing = () => {
 
 // Reactive reference to track the wrapper DOM element
 const vueflowWrapper = ref<HTMLElement | null>(null)
-// Reactive reference for VueFlow instance
-const vueflowInstance = ref(null)
 
 const setCSSVariables = (newZoom: string | number) => {
   if (vueflowWrapper.value && vueflowWrapper.value.style) {
@@ -104,15 +92,16 @@ const handleNodeChange = (changes: NodeChange[]) => {
   emit('nodes-change', changes)
 }
 
-// Handle node clicks for selection
+// Handle node clicks for selection - VueFlow handles this automatically
 const handleNodeClick = (event: MouseEvent, node: any) => {
-  // VueFlow handles selection internally, we sync via the watcher
+  // No custom logic needed, VueFlow handles selection
 }
 
-// Handle pane clicks for deselection
+// Handle pane clicks for deselection - VueFlow handles this automatically
 const handlePaneClick = () => {
-  if (!isEditing.value) {
-    clearSelection()
+  // Only stop editing when clicking on empty pane
+  if (isEditing.value) {
+    stopEditing()
   }
 }
 
@@ -144,8 +133,8 @@ const elementsSelectable = computed(() => true) // Always allow selection
         <slot name="node-resizable"
           v-bind="{ ...resizableNodeProps, isSelected: isNodeSelectedInVueFlow(resizableNodeProps.id) }">
           <component v-if="HTMLEntity" :is="HTMLEntity" :entity="resizableNodeProps.data"
-            :is-selected="isNodeSelectedInVueFlow(resizableNodeProps.id)" :is-editing="isNodeEditing(resizableNodeProps.id)"
-            :has-multi-selection="selectedNodesCount > 1"
+            :is-selected="isNodeSelectedInVueFlow(resizableNodeProps.id)"
+            :is-editing="isNodeEditing(resizableNodeProps.id)" :has-multi-selection="selectedNodesCount > 1"
             :on-start-editing="handleStartEditing" :on-stop-editing="handleStopEditing"
             :current-user-identity-id="currentUserIdentityId" :on-emoji-create="onEmojiCreate"
             :on-update="$attrs.onUpdate" :on-delete="$attrs.onDelete" :on-duplicate="$attrs.onDuplicate"

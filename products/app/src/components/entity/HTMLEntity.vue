@@ -240,12 +240,12 @@ const handleEmojiSelect = (emoji: string) => {
 
 /* Outline for selected or editing entities */
 .resizable-container.show-outline {
-  box-shadow: 0 0 0 calc(2px / var(--zoom-value)) var(--ui-primary-100);
+  box-shadow: 0 0 0 calc(var(--ui-weight) / var(--zoom-value)) var(--ui-0);
 }
 
 /* Special styling for editing state */
 .resizable-container.is-editing {
-  box-shadow: 0 0 0 calc(3px / var(--zoom-value)) var(--ui-primary-100);
+  box-shadow: 0 0 0 calc(var(--ui-weight) / var(--zoom-value)) var(--ui-0);
 }
 
 .resizable-container.read-only {
@@ -254,7 +254,7 @@ const handleEmojiSelect = (emoji: string) => {
 
 /* Read-only entities have dimmed outline when selected */
 .resizable-container.read-only.show-outline {
-  box-shadow: 0 0 0 calc(2px / var(--zoom-value)) var(--ui-60);
+  box-shadow: 0 0 0 calc(var(--ui-weight) / var(--zoom-value)) var(--ui-60);
 }
 
 .resizable-container.read-only .content-wrapper {

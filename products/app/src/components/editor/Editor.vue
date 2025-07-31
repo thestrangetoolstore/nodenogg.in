@@ -37,16 +37,9 @@ const focusActive = ref(false)
 const isInitialized = ref(false)
 const lastEmittedContent = ref(props.value)
 
-// Handle entity splitting
-const handleSplit = (beforeContent: string, afterContent: string) => {
-  console.log('Editor handleSplit called:', { beforeContent, afterContent })
-  // Only use emit, not both prop callback and emit
-  emit('split', beforeContent, afterContent)
-}
-
 const editor = useEditor({
   editable: props.editable,
-  extensions: createExtensions({ onSplit: handleSplit }),
+  extensions: createExtensions({ onSplit: (b, a) => emit('split', b, a) }),
   injectCSS: false,
   content: props.value,
   onCreate: () => {
@@ -135,9 +128,6 @@ watch(() => props.editable, (newValue) => {
   width: 100%;
   height: 100%;
   padding-bottom: var(--size-16);
-  border: 2px solid transparent;
-  border-radius: var(--ui-radius);
-  transition: border-color 0.2s ease;
 }
 
 .character-count {
@@ -147,10 +137,6 @@ watch(() => props.editable, (newValue) => {
   pointer-events: none;
   font-size: 0.75em;
   opacity: 0.5;
-}
-
-.wrapper.is-active {
-  border-color: var(--ui-0);
 }
 
 .tiptap-wrapper {

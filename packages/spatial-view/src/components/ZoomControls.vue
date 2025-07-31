@@ -50,7 +50,7 @@ const toggleMinimap = () => {
   <div class="zoom-controls-container" :class="{ expanded: showMinimap }">
     <div v-if="showMinimap" class="minimap-container">
       <MiniMap pannable zoomable :title="copy.miniMap" node-color="var(--ui-50)" mask-color="rgba(150,150,150,0.0)"
-        :mask-stroke-width=12 :mask-stroke-color="'var(--ui-60)'" />
+        :mask-stroke-width=20 :mask-stroke-color="'var(--ui-0)'" />
     </div>
 
     <div class="zoom-controls">

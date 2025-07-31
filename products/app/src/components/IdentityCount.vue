@@ -40,7 +40,7 @@ const shouldShow = computed(() => props.count > 1)
   height: var(--size-16);
   font-weight: 500;
   background-color: var(--ui-0);
-  color: var(--ui-mono-0);
+  color: var(--ui-100);
   margin-left: 0.2em;
   font-size: 0.7rem;
   text-align: center;
