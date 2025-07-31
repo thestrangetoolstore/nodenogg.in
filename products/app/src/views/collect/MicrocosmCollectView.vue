@@ -5,11 +5,10 @@ import { storeToRefs } from 'pinia'
 import ViewContainer from '@/components/ViewContainer.vue'
 import ActionButton from '@/components/ActionButton.vue'
 import EmptyState from '@/components/EmptyState.vue'
-import { computed } from 'vue'
-import { EntitySchema, type Entity } from '@nodenogg.in/schema'
+import { computed, nextTick } from 'vue'
+import { EntitySchema, type Entity, type EntityOfType } from '@nodenogg.in/schema'
 import { COPY } from '@/constants/copy'
 
-// Utility function to generate random position offset
 const getRandomOffset = () => Math.floor(Math.random() * 1000) - 500 // Range: -500 to 500
 
 defineProps({
@@ -50,41 +49,18 @@ const handleDuplicateEntity = async (e: Entity) => {
   await duplicateEntity(e)
 }
 
-const handleCreateEmoji = async () => {
-  await create({
-    type: 'emoji',
-    x: getRandomOffset(),
-    y: getRandomOffset(),
-    content: `❤️`
-  })
-}
-
-const handleEntitySplit = async (entity: Entity, beforeContent: string, afterContent: string) => {
-  
-  console.log('CollectView handleEntitySplit called:', { 
-    entityId: entity.id, 
-    beforeContent, 
-    afterContent,
-    beforeLength: beforeContent.length,
-    afterLength: afterContent.length
-  })
-  
-  // Update current entity with content before split
+const handleEntitySplit = async (entity: EntityOfType<'html'>, beforeContent: string, afterContent: string) => {
   await update(entity.id, { content: beforeContent })
-  
-  // Always create new entity (even if blank) and give it focus
   const newEntity = await create({
-    type: 'html',
-    x: entity.data.x, // Same X position as parent
-    y: entity.data.y + entity.data.height + 20, // Position below parent with 20px gap
-    width: entity.data.width, // Same width as parent
-    height: 200, // Default height
+    ...entity.data,
+    x: entity.data.x,
+    y: entity.data.y + entity.data.height + 16,
     content: afterContent,
-    backgroundColor: entity.data.backgroundColor // Inherit background color
   })
-  
-  // Give focus to the new entity (create() already sets editingNodeId)
-  console.log('New entity created:', newEntity?.id)
+
+  if (newEntity?.id) {
+    await nextTick()
+  }
 }
 </script>
 
@@ -93,8 +69,7 @@ const handleEntitySplit = async (entity: Entity, beforeContent: string, afterCon
     <div class="entities">
       <CollectNode v-for="e in htmlEntities" v-bind:key="`entity/${e.id}`" :entity="e" :onChange="u => update(e.id, u)"
         :onDelete="() => deleteEntity(e)" :isEditing="isEditing(e.id)" :onDuplicate="() => handleDuplicateEntity(e)"
-        :onSplit="(before, after) => handleEntitySplit(e, before, after)"
-        @startEditing="setEditingNode(e.id)" @stopEditing="setEditingNode(null)" />
+        :onSplit="handleEntitySplit" @startEditing="setEditingNode(e.id)" @stopEditing="setEditingNode(null)" />
 
       <EmptyState v-if="htmlEntities.length === 0" :title="COPY.emptyStates.collect.title"
         :description="COPY.emptyStates.collect.description">

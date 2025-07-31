@@ -9,7 +9,7 @@ import {
 } from 'reka-ui'
 import Editor from '@/components/editor/Editor.vue'
 import Icon from '@/components/icon/Icon.vue'
-import { EntitySchema, type Entity, type EntityUpdate } from '@nodenogg.in/schema'
+import { EntitySchema, type Entity, type EntityOfType, type EntityUpdate } from '@nodenogg.in/schema'
 import ColorSelector from '@/components/color-selector/ColorSelector.vue'
 import { getColor } from '@/utils/color'
 
@@ -17,8 +17,8 @@ defineProps<{
     onChange: (update: EntityUpdate) => void
     onDelete: () => void
     onDuplicate: () => void
-    onSplit: (beforeContent: string, afterContent: string) => void
-    entity: Entity
+    onSplit: (entity: EntityOfType<'html'>, beforeContent: string, afterContent: string) => void
+    entity: EntityOfType<'html'>
     isEditing: boolean
 }>()
 
@@ -41,7 +41,8 @@ const { isType } = EntitySchema.utils
     <div class="node" :style="`background-color: ${getColor(entity.data.backgroundColor || 'yellow')}`"
         v-if="isType(entity, 'html')" :class="{ 'is-editing': isEditing }" tabindex="0">
         <Editor :value="entity.data.content" :onChange="content => onChange({ content })" :editable="isEditing"
-            @click="onStartEditing" @cancel="onStopEditing" @split="(before, after) => onSplit(before, after)" />
+            @click="onStartEditing" @cancel="onStopEditing"
+            @split="(before, after) => onSplit(entity, before, after)" />
         <DropdownMenuRoot :modal="true">
             <DropdownMenuTrigger class="node-menu-trigger">
                 <Icon type="ellipsis" />
@@ -76,11 +77,6 @@ const { isType } = EntitySchema.utils
     display: inline-block;
     transition: border-color 0.2s ease, outline 0.2s ease;
     outline: none;
-}
-
-.node:focus {
-    /* outline: 2px solid var(--ui-primary-100);
-    outline-offset: 2px; */
 }
 
 .node.is-editing {

@@ -29,7 +29,7 @@ const props = defineProps<{
   isEditing?: boolean
   onStartEditing?: (id: string) => void
   onStopEditing?: () => void
-  onSplit?: (beforeContent: string, afterContent: string) => void
+  onSplit?: (entity: EntityOfType<'html'>, beforeContent: string, afterContent: string) => void
   currentUserIdentityId?: string
   autoFocus?: boolean
 }>()
@@ -265,7 +265,7 @@ const handleReadOnlyBlur = () => {
 </script>
 
 <template>
-  <NodeResizer v-if="props.isSelected" :min-width="50" :min-height="50" :node-id="entity.id" />
+  <NodeResizer v-if="props.isSelected && isEditable" :min-width="50" :min-height="50" :node-id="entity.id" />
   <div class="resizable-container" :class="{
     'is-selected': props.isSelected,
     'is-editing': props.isEditing,
@@ -284,7 +284,7 @@ const handleReadOnlyBlur = () => {
           <!-- Editable entities use Editor component -->
           <Editor ref="editorRef" :value="entity?.data.content" :onChange="handleContentChange"
             :editable="isEditorFocused || !!props.autoFocus" :onFocusChange="handleEditorFocusChange"
-            @cancel="handleCancel" @split="(before: string, after: string) => props.onSplit?.(before, after)" />
+            @cancel="handleCancel" @split="(before: string, after: string) => props.onSplit?.(entity, before, after)" />
         </template>
         <template v-else>
           <!-- Read-only entities render as plain HTML with text selection -->

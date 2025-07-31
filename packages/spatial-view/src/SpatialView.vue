@@ -6,6 +6,7 @@ import { Background } from '@vue-flow/background'
 import type { MicrocosmSpatialViewEmits, VueFlowEntity } from './types'
 import { useSpatialSelection } from './composables/useSpatialSelection'
 import ZoomControls from './components/ZoomControls.vue'
+import { EntityOfType } from '@nodenogg.in/schema'
 
 const props = withDefaults(defineProps<{
   view_id: string;
@@ -25,7 +26,7 @@ const props = withDefaults(defineProps<{
   onEmojiCreate?: (emoji: string, entity: any) => void;
   onStartEditing?: (entityId: string) => void;
   onStopEditing?: () => void;
-  onSplit?: (beforeContent: string, afterContent: string) => void;
+  onSplit?: (entity: EntityOfType<'html'>, beforeContent: string, afterContent: string) => void;
 }>(), {
   ui: false,
   minimap: false,
@@ -133,13 +134,11 @@ const canvasCursor = computed(() => {
 
 <template>
   <div ref="vueflowWrapper" class="vueflow-container">
-    <VueFlow vueFlowRef="vueflowInstance" :nodes="nodes" class="pinia-flow" 
-      :style="{ cursor: canvasCursor }"
-      @nodes-change="handleNodeChange"
-      @node-click="handleNodeClick" @pane-click="handlePaneClick" :pan-on-drag="panOnDrag" :pan-on-scroll="panOnScroll"
-      :zoom-on-scroll="zoomOnScroll" :zoom-on-pinch="zoomOnPinch" :zoom-on-double-click="zoomOnDoubleClick"
-      :prevent-scrolling="preventScrolling" :nodes-draggable="nodesDraggable" :nodes-connectable="nodesConnectable"
-      :elements-selectable="elementsSelectable">
+    <VueFlow vueFlowRef="vueflowInstance" :nodes="nodes" class="pinia-flow" :style="{ cursor: canvasCursor }"
+      @nodes-change="handleNodeChange" @node-click="handleNodeClick" @pane-click="handlePaneClick"
+      :pan-on-drag="panOnDrag" :pan-on-scroll="panOnScroll" :zoom-on-scroll="zoomOnScroll" :zoom-on-pinch="zoomOnPinch"
+      :zoom-on-double-click="zoomOnDoubleClick" :prevent-scrolling="preventScrolling" :nodes-draggable="nodesDraggable"
+      :nodes-connectable="nodesConnectable" :elements-selectable="elementsSelectable">
       <Background variant="lines" patternColor="var(--ui-80)" />
       <ZoomControls v-if="zoomControls" :copy="zoomControlsCopy" :initial-minimap-visible="minimap" />
       <template #node-resizable="resizableNodeProps">

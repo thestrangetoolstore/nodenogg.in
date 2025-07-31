@@ -3,7 +3,7 @@ import { computed, ref, inject, nextTick } from 'vue'
 import { SpatialView, EmojiEntity } from '@nodenogg.in/spatial-view'
 import HTMLEntity from '@/components/entity/HTMLEntity.vue'
 import { useCurrentMicrocosm } from '@/state'
-import { EntitySchema, type Entity } from '@nodenogg.in/schema'
+import { EntitySchema, type Entity, type EntityOfType } from '@nodenogg.in/schema'
 import { client } from '@/state/app'
 import Editor from '@/components/editor/Editor.vue'
 import type { NodeChange } from '@vue-flow/core'
@@ -167,68 +167,6 @@ const handleContextMenuTrigger = (event: MouseEvent) => {
   contextMenuPosition.value = flowPosition
 }
 
-// Context menu actions
-const handleAddReactionToEntity = (entity: Entity) => {
-  if (EntitySchema.utils.isType(entity, 'html')) {
-    // Generate random position around the entity
-    const entityWidth = entity.data.width || 200
-    const entityHeight = entity.data.height || 200
-    const entityCenterX = entity.data.x + entityWidth / 2
-    const entityCenterY = entity.data.y + entityHeight / 2
-
-    // Random angle around the entity (0 to 2π)
-    const angle = Math.random() * 2 * Math.PI
-
-    // Random distance from edge of entity (50-100 pixels outside)
-    const minDistance = Math.max(entityWidth, entityHeight) / 2 + 50
-    const maxDistance = Math.max(entityWidth, entityHeight) / 2 + 100
-    const distance = minDistance + Math.random() * (maxDistance - minDistance)
-
-    // Calculate position using polar coordinates
-    const emojiX = entityCenterX + Math.cos(angle) * distance - 25 // -25 to center the 50px emoji
-    const emojiY = entityCenterY + Math.sin(angle) * distance - 25
-
-    create({
-      type: 'emoji',
-      content: '❤️',
-      x: emojiX,
-      y: emojiY
-    })
-  }
-}
-
-const handleDeleteEntity = (entity: Entity) => {
-  deleteEntity(entity)
-}
-
-const handleCreateNodeAtPosition = async () => {
-  const newEntity = await create({
-    type: 'html',
-    x: contextMenuPosition.value.x - 100, // Center the node
-    y: contextMenuPosition.value.y - 100,
-    width: 200,
-    height: 200,
-    content: ''
-  })
-  
-  if (newEntity?.id) {
-    // Wait for Vue to render the new entity
-    await nextTick()
-    
-    // Select the new entity by updating its selected state
-    updateNodeData(newEntity.id, { selected: true })
-    
-    // Focus the new entity for editing after a short delay
-    setTimeout(() => {
-      handleStartEditing(newEntity.id)
-    }, 50)
-  }
-}
-
-const handleCreateEmojiAtPosition = () =>
-  create({ type: 'emoji', content: '❤️', x: contextMenuPosition.value.x, y: contextMenuPosition.value.y })
-
-
 // Action handlers for spatial view
 const handleCreateNode = async () => {
   // Get the viewport dimensions
@@ -253,14 +191,14 @@ const handleCreateNode = async () => {
     height: 200,
     content: ''
   })
-  
+
   if (newEntity?.id) {
     // Wait for Vue to render the new entity
     await nextTick()
-    
+
     // Select the new entity by updating its selected state
     updateNodeData(newEntity.id, { selected: true, autoFocus: true })
-    
+
     // Clear autoFocus after a delay to prevent it from triggering again
     setTimeout(() => {
       updateNodeData(newEntity.id, { autoFocus: false })
@@ -301,52 +239,27 @@ const handleEmojiCreateFromEntity = (emoji: string, entity: Entity) => {
 // Store reference to the currently editing entity for split handler
 const currentEditingEntity = ref<Entity | null>(null)
 
-const handleEntitySplit = async (beforeContent: string, afterContent: string) => {
-  // Find the currently selected entity instead of relying on currentEditingEntity
-  const selectedNodes = getSelectedNodes.value
-  const selectedEntity = selectedNodes.length === 1 ? selectedNodes[0].data : null
-  
-  const entity = selectedEntity || currentEditingEntity.value
-  if (!entity || !EntitySchema.utils.isType(entity, 'html')) {
-    console.log('No entity available for split:', { 
-      selectedEntity, 
-      currentEditingEntity: currentEditingEntity.value,
-      selectedNodesCount: selectedNodes.length 
-    })
-    return
-  }
-
-  console.log('SpatialView handleEntitySplit called:', {
-    entityId: entity.id,
-    beforeContent,
-    afterContent,
-    originalPosition: { x: entity.data.x, y: entity.data.y, width: entity.data.width, height: entity.data.height }
-  })
-
+const handleEntitySplit = async (entity: EntityOfType<'html'>, beforeContent: string, afterContent: string) => {
+  // Find the currently selected entity instead of relying on currentEditingEntity  
   // Update current entity with content before split
   await update(entity.id, { content: beforeContent })
 
   // Create new entity positioned directly underneath with 16px padding
   const newEntity = await create({
-    type: 'html',
-    x: entity.data.x, // Same X position as parent
-    y: entity.data.y + entity.data.height + 16, // Position below parent with 16px gap
-    width: entity.data.width, // Same width as parent
-    height: entity.data.height, // Same height as parent
+    ...entity.data,
+    x: entity.data.x,
+    y: entity.data.y + entity.data.height + 16,
     content: afterContent,
-    backgroundColor: entity.data.backgroundColor // Inherit background color
   })
 
-  console.log('New spatial entity created:', newEntity?.id)
 
   if (newEntity?.id) {
-    // Wait for Vue to render the new entity
     await nextTick()
-    
+
     // Select the new entity by updating its selected state
     // VueFlow will handle the selection when the node data updates
     updateNodeData(newEntity.id, { selected: true, autoFocus: true })
-    
+
     // Clear autoFocus after a delay to prevent it from triggering again
     setTimeout(() => {
       updateNodeData(newEntity.id, { autoFocus: false })

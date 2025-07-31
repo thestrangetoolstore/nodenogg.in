@@ -40,9 +40,16 @@ const focusActive = ref(false)
 const isInitialized = ref(false)
 const lastEmittedContent = ref(props.value)
 
+// Create a stable reference for the split handler that can access current props
+const handleSplit = (beforeContent: string, afterContent: string) => {
+  console.log('EntitySplitter called, emitting split event and calling prop callback')
+  emit('split', beforeContent, afterContent)
+  props.onSplit?.(beforeContent, afterContent)
+}
+
 const editor = useEditor({
   editable: props.editable,
-  extensions: createExtensions({ onSplit: (b, a) => emit('split', b, a) }),
+  extensions: createExtensions({ onSplit: handleSplit }),
   injectCSS: false,
   content: props.value,
   onCreate: () => {
@@ -159,12 +166,8 @@ defineExpose({
   width: 100%;
   height: 100%;
   padding-bottom: var(--size-16);
-  outline: 1px solid blue important;
 }
 
-.wrapper * {
-  outline: 1px solid red;
-}
 
 .character-count {
   position: absolute;
@@ -173,13 +176,12 @@ defineExpose({
   pointer-events: none;
   font-size: 0.75em;
   opacity: 0.5;
+  transform: scale(calc(1 / var(--zoom-value)));
+  transform-origin: 0% 100%;
 }
 
 .tiptap-wrapper {
   outline: none;
-  background: green;
-  outline: 1px solid blue important;
-
 }
 
 .tiptap {
