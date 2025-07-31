@@ -2,20 +2,25 @@
 title: Getting started
 ---
 
-nodenogg.in is a tool that increases participation in feedback and critiques. It is deliberately made to improve student and staff confidence, project outcomes and enhance a community of practice.
+# Fantastic text and videos guides
 
-nodenogg.in was designed with privacy in mind, to be simple and quick to use.
+::: danger Welcome
+This site is very much WIP.
+:::
 
-nodenogg.in supports your education practice by using networked technologies to enhance social learning spaces.
-
-nodenogg.in embraces text only input, coupled with multi views to foster inclusive, fast and intuitive feedback.
-
-nodenogg.in is radical in it’s simplicity and focus on practice based pedagogy.
-
-nodenogg.in was created to embrace the wonderful slowness of human thought.
-
-nodenogg.in is purposefully small.
-
-![nodenogg.in being used](../assets/studio1.png)
+## What was the problem and why you need nodenogg.in
+Why did Dr. Adam Procter create nodenogg.in, find out here and see how it could help you.
 ![nodenogg.in being used](../assets/studio2.png)
+
+## Running a large crit with nodenogg.in
+Want to run a session with up to 50 particpants this is for you.
 ![nodenogg.in being used](../assets/studio3.png)
+
+## Running small crits with nodenogg.in
+Running a crit with groups of students/ researches this is for you.
+![nodenogg.in being used](../assets/studio1.png)
+
+## Gathering timely Feedback with nodenogg.in
+Want to gather thoughts, feedback and state of play with groups large or small check this out.
+![nodenogg.in being used](../assets/studio2.png)
+

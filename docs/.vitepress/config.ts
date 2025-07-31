@@ -8,13 +8,29 @@ export default defineConfig({
   cleanUrls: true,
   themeConfig: {
     footer: {
-      copyright: "© 2024 University of Southampton. All rights reserved.",
+      copyright: "Made by Winchester School of Art, University of Southampton. All rights reserved.",
     },
     search: {
       provider: "local",
     },
     sidebar: [
-      { text: "Introduction", link: "/introduction" },
+      {
+        text: "Welcome",
+        items: [
+          {
+            text: "Introduction", link: "/introduction",
+          },
+          {
+            text: "Roadmap", link: "/roadmap",
+          },
+          {
+            text: "History", link: "/history",
+          },
+          {
+            text: "About", link: "/about",
+          },
+        ]
+      },
       {
         text: "Guides",
         items: [
