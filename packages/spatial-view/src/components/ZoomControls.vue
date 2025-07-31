@@ -45,7 +45,7 @@ const handleFitView = () => {
       </svg>
     </button>
 
-    <div class="zoom-level">{{ Math.round(currentZoom * 100) }}%</div>
+    <button class="zoom-level" @click="handleFitView" :aria-label="copy.resetZoom">{{ Math.round(currentZoom * 100) }}%</button>
 
     <button class="zoom-button" @click="handleZoomOut" :aria-label="copy.zoomOut">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -113,6 +113,19 @@ const handleFitView = () => {
   text-align: center;
   padding: var(--size-4) 0;
   font-weight: 600;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: color 0.2s ease;
+  outline: none;
+}
+
+.zoom-level:hover {
+  color: var(--ui-20);
+}
+
+.zoom-level:active {
+  transform: scale(0.95);
 }
 
 @media (prefers-color-scheme: dark) {
