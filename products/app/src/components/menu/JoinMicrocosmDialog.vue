@@ -83,7 +83,8 @@ const newMicrocosmID = computed(() => createMicrocosmID(inputValue.value))
 }
 
 .menu-button {
-    background: var(--ui-80);
+    background: var(--ui-0);
+    color: var(--ui-100);
     padding-left: var(--size-4);
     padding-right: var(--size-16);
 }

@@ -5,28 +5,17 @@ import { Placeholder } from '@tiptap/extension-placeholder'
 import type { Extensions } from '@tiptap/core'
 import { MAX_CHARACTER_COUNT } from '@nodenogg.in/core'
 import { EntitySplitter } from './extensions/entity-splitter'
-// import { Document } from '@tiptap/extension-document'
 
-// import { TaskList } from '@tiptap/extension-task-list'
-// import { TaskItem } from '@tiptap/extension-task-item'
+const UNDO_REDO = false
 
-// Todo: allow these items to be sanitised? Allows ability for check lists
-// TaskList,
-// TaskItem,
-
-// const NodeDocument = Document.extend({
-//   content: 'heading block*'
-// })
-
-export const createExtensions = (options?: {
-  onSplit?: (beforeContent: string, afterContent: string) => void
-}): Extensions => [
-  // NodeDocument,
+export const baseExtensions: Extensions = [
   StarterKit.configure({
-    // document: false,
-    // Disable default horizontal rule to prevent conflicts
+    heading: {
+      levels: [1, 2, 3]
+    },
     link: false,
-    horizontalRule: false
+    horizontalRule: false,
+    undoRedo: UNDO_REDO
   }),
   Link.configure({
     HTMLAttributes: {
@@ -38,7 +27,13 @@ export const createExtensions = (options?: {
   }),
   CharacterCount.configure({
     limit: MAX_CHARACTER_COUNT
-  }),
+  })
+]
+
+export const createExtensions = (options?: {
+  onSplit?: (beforeContent: string, afterContent: string) => void
+}): Extensions => [
+  ...baseExtensions,
   Placeholder.configure({
     placeholder: ({ node }) => {
       if (node.type.name === 'heading') {
@@ -52,5 +47,4 @@ export const createExtensions = (options?: {
   })
 ]
 
-// Backward compatibility
 export const extensions: Extensions = createExtensions()

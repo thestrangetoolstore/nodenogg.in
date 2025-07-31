@@ -119,7 +119,7 @@ const handleEntitySplit = async (entity: Entity, beforeContent: string, afterCon
   justify-content: flex-start;
   align-items: center;
   position: absolute;
-  gap: 1em;
+  gap: var(--size-4);
   width: 100%;
   height: 100%;
   padding: var(--size-12);

@@ -22,6 +22,7 @@ import {
   ContextMenuTrigger,
 } from 'reka-ui'
 import ContextMenuItem from '@/components/context-menu/ContextMenuItem.vue'
+import { COPY } from '@/constants/copy'
 
 defineProps({
   view_id: {
@@ -250,19 +251,19 @@ const handleEmojiCreateFromEntity = (emoji: string, entity: Entity) => {
     const entityHeight = entity.data.height || 200
     const entityCenterX = entity.data.x + entityWidth / 2
     const entityCenterY = entity.data.y + entityHeight / 2
-    
+
     // Random angle around the entity (0 to 2π)
     const angle = Math.random() * 2 * Math.PI
-    
+
     // Random distance from edge of entity (50-100 pixels outside)
     const minDistance = Math.max(entityWidth, entityHeight) / 2 + 50
     const maxDistance = Math.max(entityWidth, entityHeight) / 2 + 100
     const distance = minDistance + Math.random() * (maxDistance - minDistance)
-    
+
     // Calculate position using polar coordinates
     const emojiX = entityCenterX + Math.cos(angle) * distance - 25 // -25 to center the 50px emoji
     const emojiY = entityCenterY + Math.sin(angle) * distance - 25
-    
+
     create({
       type: 'emoji',
       content: emoji,
@@ -281,17 +282,17 @@ const handleEntitySplit = async (beforeContent: string, afterContent: string) =>
     console.log('No current editing entity for split:', { entity: currentEditingEntity.value })
     return
   }
-  
-  console.log('SpatialView handleEntitySplit called:', { 
-    entityId: entity.id, 
-    beforeContent, 
+
+  console.log('SpatialView handleEntitySplit called:', {
+    entityId: entity.id,
+    beforeContent,
     afterContent,
     originalPosition: { x: entity.data.x, y: entity.data.y, width: entity.data.width, height: entity.data.height }
   })
-  
+
   // Update current entity with content before split
   await update(entity.id, { content: beforeContent })
-  
+
   // Create new entity positioned directly underneath with 16px padding
   const newEntity = await create({
     type: 'html',
@@ -302,13 +303,13 @@ const handleEntitySplit = async (beforeContent: string, afterContent: string) =>
     content: afterContent,
     backgroundColor: entity.data.backgroundColor // Inherit background color
   })
-  
+
   console.log('New spatial entity created:', newEntity?.id)
-  
+
   if (newEntity?.id) {
     // Focus the new entity for editing
     handleStartEditing(newEntity.id)
-    
+
     // Center the canvas on the new entity with a slight delay to ensure it's rendered
     setTimeout(() => {
       const centerX = entity.data.x + entity.data.width / 2
@@ -337,27 +338,20 @@ const handleStopEditing = () => {
     <div class="spatial-canvas">
       <SpatialView :view_id="view_id" :ui="ui" :nodes="positionedNodes" :HTMLEntity="HTMLEntity" :Editor="Editor"
         :onUpdate="update" :onDelete="deleteEntity" :onDuplicate="create" :editable="true"
-        :current-user-identity-id="currentIdentity?.id" :zoom-controls="true" 
-        :on-emoji-create="handleEmojiCreateFromEntity"
-        :on-start-editing="handleStartEditing"
-        :on-stop-editing="handleStopEditing"
-        :on-split="handleEntitySplit"
-        @nodes-change="handleNodeChange">
+        :current-user-identity-id="currentIdentity?.id" :zoom-controls="true" :zoom-controls-copy="COPY.zoomControls"
+        :on-emoji-create="handleEmojiCreateFromEntity" :on-start-editing="handleStartEditing"
+        :on-stop-editing="handleStopEditing" :on-split="handleEntitySplit" @nodes-change="handleNodeChange">
         <template #node-resizable="resizableNodeProps">
           <!-- HTML entities with resizable handles will now use the app's HTMLEntity -->
         </template>
 
         <template #node-emoji="emojiNodeProps">
           <!-- Emoji entities without resizable handles -->
-          <EmojiEntity 
-            :entity="emojiNodeProps.data" 
-            :is-selected="emojiNodeProps.isSelected"
-            :current-user-identity-id="currentIdentity?.id"
-            :on-delete="deleteEntity" 
-          />
+          <EmojiEntity :entity="emojiNodeProps.data" :is-selected="emojiNodeProps.isSelected"
+            :current-user-identity-id="currentIdentity?.id" :on-delete="deleteEntity" />
         </template>
       </SpatialView>
-      
+
       <!-- Enhanced Zoom Controls -->
       <!-- <ZoomControls /> -->
     </div>

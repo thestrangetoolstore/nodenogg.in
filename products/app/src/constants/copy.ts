@@ -45,6 +45,13 @@ export const COPY = {
       enterToJoin: 'join',
       keyLabel: 'Enter'
     }
+  },
+  
+  zoomControls: {
+    zoomIn: 'Zoom in',
+    zoomOut: 'Zoom out',
+    resetZoom: 'Reset zoom',
+    miniMap: 'Mini map'
   }
 } as const
 

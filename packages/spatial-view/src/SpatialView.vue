@@ -13,17 +13,28 @@ const props = withDefaults(defineProps<{
   ui?: boolean;
   minimap?: boolean;
   zoomControls?: boolean;
+  zoomControlsCopy?: {
+    zoomIn: string;
+    zoomOut: string;
+    resetZoom: string;
+    miniMap: string;
+  };
   HTMLEntity?: any;
   Editor?: any;
   currentUserIdentityId?: string;
   onEmojiCreate?: (emoji: string, entity: any) => void;
   onStartEditing?: (entityId: string) => void;
   onStopEditing?: () => void;
-  onSplit?: (beforeContent: string, afterContent: string) => void;
 }>(), {
   ui: false,
   minimap: false,
-  zoomControls: true
+  zoomControls: true,
+  zoomControlsCopy: () => ({
+    zoomIn: 'Zoom in',
+    zoomOut: 'Zoom out',
+    resetZoom: 'Reset zoom',
+    miniMap: 'Mini map'
+  })
 })
 
 const emit = defineEmits<MicrocosmSpatialViewEmits>()
@@ -33,7 +44,6 @@ const { selectedNodeId, isEditing, selectNode, clearSelection, startEditing, sto
 
 // Wrapper functions to call both internal and parent handlers
 const handleStartEditing = (entityId: string) => {
-  console.log('SpatialView internal handleStartEditing:', { entityId, hasOnSplit: '$attrs' in props && 'onSplit' in props.$attrs })
   startEditing(entityId)
   props.onStartEditing?.(entityId)
 }
@@ -126,11 +136,11 @@ const elementsSelectable = computed(() => true) // Always allow selection
       :prevent-scrolling="preventScrolling" :nodes-draggable="nodesDraggable" :nodes-connectable="nodesConnectable"
       :elements-selectable="elementsSelectable">
       <Background variant="lines" patternColor="var(--ui-80)" />
-      <MiniMap v-if="minimap" pannable zoomable class="mini-map" title="Mini map" />
+      <MiniMap v-if="minimap" pannable zoomable class="mini-map" :title="zoomControlsCopy.miniMap" />
 
       <!-- Built-in Zoom Controls -->
       <div v-if="zoomControls" class="zoom-controls">
-        <button class="zoom-button" @click="handleZoomIn" aria-label="Zoom in">
+        <button class="zoom-button" @click="handleZoomIn" :aria-label="zoomControlsCopy.zoomIn">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <line x1="12" y1="5" x2="12" y2="19"></line>
             <line x1="5" y1="12" x2="19" y2="12"></line>
@@ -139,13 +149,13 @@ const elementsSelectable = computed(() => true) // Always allow selection
 
         <div class="zoom-level">{{ Math.round(currentZoom * 100) }}%</div>
 
-        <button class="zoom-button" @click="handleZoomOut" aria-label="Zoom out">
+        <button class="zoom-button" @click="handleZoomOut" :aria-label="zoomControlsCopy.zoomOut">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <line x1="5" y1="12" x2="19" y2="12"></line>
           </svg>
         </button>
 
-        <!-- <button class="zoom-button fit-button" @click="handleFitView" aria-label="Reset zoom">
+        <!-- <button class="zoom-button fit-button" @click="handleFitView" :aria-label="zoomControlsCopy.resetZoom">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <polyline points="15,3 21,3 21,9"></polyline>
           <polyline points="9,21 3,21 3,15"></polyline>
@@ -162,7 +172,7 @@ const elementsSelectable = computed(() => true) // Always allow selection
             :on-start-editing="handleStartEditing" :on-stop-editing="handleStopEditing"
             :current-user-identity-id="currentUserIdentityId" :on-emoji-create="onEmojiCreate" 
             :on-update="$attrs.onUpdate" :on-delete="$attrs.onDelete" :on-duplicate="$attrs.onDuplicate" 
-            :on-split="onSplit" :editable="true" :Editor="Editor" />
+            :on-split="$attrs.onSplit" :editable="true" />
         </slot>
       </template>
       <template #node-emoji="emojiNodeProps">

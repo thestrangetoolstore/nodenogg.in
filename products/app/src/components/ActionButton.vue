@@ -26,9 +26,10 @@ defineEmits<{
   gap: var(--size-4);
   background: var(--ui-0);
   border-radius: var(--size-24);
-  box-shadow: var(--ui-shadow-10);
+  box-shadow: 0 0 0 var(--ui-weight) hsla(var(--mono-base-hue), 8%, 20%, 0.1);
   color: var(--ui-90);
-  padding-left: var(--size-8);
+  padding: var(--size-8);
+  padding-left: var(--size-12);
   cursor: pointer;
   transition: all 0.2s ease;
   user-select: none;
@@ -51,8 +52,9 @@ defineEmits<{
 }
 
 .action-label {
-  padding: var(--size-8) var(--size-12) var(--size-8) 0;
+  padding: 0 var(--size-12) 0 0;
   white-space: nowrap;
+  font-size: 1.1em;
 }
 
 @media (prefers-color-scheme: dark) {

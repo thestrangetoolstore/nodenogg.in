@@ -3,7 +3,7 @@ import { type PropType, ref, watch, computed, nextTick } from 'vue'
 import { FocusTrap } from 'focus-trap-vue'
 import { useEditor, EditorContent } from '@tiptap/vue-3'
 import Scrollable from './Scrollable.vue'
-import { createExtensions } from './tiptap-editor'
+import { createExtensions } from './tiptap-extensions'
 import { MAX_CHARACTER_COUNT } from '@nodenogg.in/core'
 
 const props = defineProps({
