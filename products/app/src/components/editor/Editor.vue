@@ -2,9 +2,9 @@
 import { type PropType, ref, watch, computed, nextTick } from 'vue'
 import { FocusTrap } from 'focus-trap-vue'
 import { useEditor, EditorContent } from '@tiptap/vue-3'
-import EditorMenu from './EditorMenu.vue'
 import Scrollable from './Scrollable.vue'
 import { extensions } from './tiptap-editor'
+import { MAX_CHARACTER_COUNT } from '@nodenogg.in/core'
 
 const props = defineProps({
   value: {
@@ -27,11 +27,8 @@ const props = defineProps({
   }
 })
 
-watch(() => props, () => {
-  console.log(props.value)
-})
 
-const emit = defineEmits(['cancel'])
+const emit = defineEmits(['cancel', 'click'])
 
 const focusActive = ref(false)
 const isInitialized = ref(false)
@@ -79,6 +76,7 @@ const onClick = () => {
   if (!active.value && props.editable) {
     focus()
   }
+  emit('click')
 }
 
 // Handle external content changes
@@ -109,10 +107,15 @@ watch(() => props.editable, (newValue) => {
 <template>
   <FocusTrap v-model:active="focusActive" :disabled="!editor || !editable">
     <div class="wrapper" :class="{ 'is-active': active }" @click="onClick">
-      <!-- <EditorMenu :editor="editor" v-if="editor" :blur="onBlur" /> -->
-      <Scrollable :scroll="scroll">
-        <editor-content :editor="editor" class="tiptap-wrapper" />
-      </Scrollable>
+      <template v-if="!!editor">
+        <!-- <EditorMenu :editor="editor" v-if="editor" :blur="onBlur" /> -->
+        <Scrollable :scroll="scroll">
+          <editor-content :editor="editor" class="tiptap-wrapper" />
+          <span class="character-count" v-if="editable"> {{ editor.storage.characterCount.characters() }} / {{
+            MAX_CHARACTER_COUNT }}
+          </span>
+        </Scrollable>
+      </template>
     </div>
   </FocusTrap>
 </template>
@@ -120,10 +123,19 @@ watch(() => props.editable, (newValue) => {
 <style>
 .wrapper {
   width: 100%;
-  min-height: 100%;
+  padding-bottom: var(--size-16);
   border: 2px solid transparent;
   border-radius: var(--ui-radius);
   transition: border-color 0.2s ease;
+}
+
+.character-count {
+  position: absolute;
+  bottom: var(--size-8);
+  left: var(--size-12);
+  pointer-events: none;
+  font-size: 0.75em;
+  opacity: 0.5;
 }
 
 .wrapper.is-active {
