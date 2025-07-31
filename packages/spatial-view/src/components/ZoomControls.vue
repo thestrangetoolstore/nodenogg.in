@@ -49,15 +49,10 @@ const toggleMinimap = () => {
 <template>
   <div class="zoom-controls-container" :class="{ expanded: showMinimap }">
     <div v-if="showMinimap" class="minimap-container">
-      <MiniMap 
-        pannable 
-        zoomable 
-        :title="copy.miniMap"
-        node-color="var(--ui-10)" 
-        mask-color="rgba(0,0,0,0.25)" 
-      />
+      <MiniMap pannable zoomable :title="copy.miniMap" node-color="var(--ui-50)" mask-color="rgba(150,150,150,0.0)"
+        :mask-stroke-width=12 :mask-stroke-color="'var(--ui-60)'" />
     </div>
-    
+
     <div class="zoom-controls">
       <button class="zoom-button" @click="handleZoomIn" :aria-label="copy.zoomIn">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -66,7 +61,8 @@ const toggleMinimap = () => {
         </svg>
       </button>
 
-      <button class="zoom-level" @click="handleFitView" :aria-label="copy.resetZoom">{{ Math.round(currentZoom * 100) }}%</button>
+      <button class="zoom-level" @click="handleFitView" :aria-label="copy.resetZoom">{{ Math.round(currentZoom * 100)
+        }}%</button>
 
       <button class="zoom-button" @click="handleZoomOut" :aria-label="copy.zoomOut">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -74,7 +70,8 @@ const toggleMinimap = () => {
         </svg>
       </button>
 
-      <button class="zoom-button expand-button" @click="toggleMinimap" :aria-label="copy.miniMap" :class="{ active: showMinimap }">
+      <button class="zoom-button expand-button" @click="toggleMinimap" :aria-label="copy.miniMap"
+        :class="{ active: showMinimap }">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
           <rect x="9" y="9" width="6" height="6"></rect>
@@ -99,7 +96,8 @@ const toggleMinimap = () => {
   padding: var(--size-4);
   box-shadow: var(--ui-container-shadow);
   transition: width 0.3s ease;
-  height: 158px; /* Fixed height: 150px minimap + 8px padding */
+  height: 158px;
+  /* Fixed height: 150px minimap + 8px padding */
 }
 
 .zoom-controls {

@@ -14,6 +14,7 @@ import EmojiSelector from '@/components/emoji-selector/EmojiSelector.vue'
 import type { EntityOfType } from '@nodenogg.in/schema'
 import { getColor } from '@/utils/color'
 import { NodeResizer } from '@nodenogg.in/spatial-view'
+import Editor from '../editor/Editor.vue'
 
 const props = defineProps<{
   entity: EntityOfType<'html'>
@@ -38,7 +39,7 @@ const isOwner = computed(() => {
 
 // Entity is editable if explicitly allowed AND user owns the entity
 const isEditable = computed(() => {
-  return props.editable !== false && isOwner.value
+  return (props.editable !== false && isOwner.value) as boolean
 })
 
 // Debug selection state
@@ -152,9 +153,8 @@ const handleEmojiSelect = (emoji: string) => {
       <slot name="content" :entity="entity" :is-editing="isEditing" :is-editable="isEditable"
         :on-change="handleContentChange" :on-cancel="handleCancel">
         <!-- Default content if no slot provided -->
-        <component v-if="Editor" :is="Editor" :value="entity?.data.content" :onChange="handleContentChange"
-          :editable="isEditing && isEditable" @cancel="handleCancel" 
-          @split="(before, after) => props.onSplit?.(before, after)" />
+        <Editor :value="entity?.data.content" :onChange="handleContentChange" :editable="(isEditing && isEditable)"
+          @cancel="handleCancel" @split="(before: string, after: string) => props.onSplit?.(before, after)" />
       </slot>
     </div>
 
@@ -335,9 +335,10 @@ const handleEmojiSelect = (emoji: string) => {
   align-items: center;
   justify-content: center;
   color: var(--ui-mono-0);
-  transition: all 0.2s ease;
   opacity: 0;
   mix-blend-mode: multiply;
+  transform-origin: 100% 0%;
+  transform: scale(calc(1 / var(--zoom-value)));
 }
 
 .resizable-container:hover .entity-menu-trigger,
