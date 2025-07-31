@@ -336,7 +336,7 @@ const handleStopEditing = () => {
   <ViewContainer>
     <div class="spatial-canvas">
       <SpatialView :view_id="view_id" :ui="ui" :nodes="positionedNodes" :HTMLEntity="HTMLEntity" :Editor="Editor"
-        :onUpdate="update" :onDelete="deleteEntity" :onDuplicate="create" :editable="true"
+        :onUpdate="update" :onDelete="deleteEntity" :onDuplicate="create" :editable="true" minimap
         :current-user-identity-id="currentIdentity?.id" :zoom-controls="true" :zoom-controls-copy="COPY.zoomControls"
         :on-emoji-create="handleEmojiCreateFromEntity" :on-start-editing="handleStartEditing"
         :on-stop-editing="handleStopEditing" :on-split="handleEntitySplit" @nodes-change="handleNodeChange">

@@ -64,9 +64,6 @@ const handleStopEditing = () => {
   props.onStopEditing?.()
 }
 
-// Current zoom level for CSS variable
-const currentZoom = computed(() => viewport.value.zoom)
-
 
 // Reactive reference to track the wrapper DOM element
 const vueflowWrapper = ref<HTMLElement | null>(null)
@@ -133,7 +130,8 @@ const elementsSelectable = computed(() => true) // Always allow selection
       :prevent-scrolling="preventScrolling" :nodes-draggable="nodesDraggable" :nodes-connectable="nodesConnectable"
       :elements-selectable="elementsSelectable">
       <Background variant="lines" patternColor="var(--ui-80)" />
-      <MiniMap v-if="minimap" pannable zoomable class="mini-map" :title="zoomControlsCopy.miniMap" />
+      <MiniMap v-if="minimap" pannable zoomable class="mini-map" :title="zoomControlsCopy.miniMap"
+        node-color="var(--ui-10)" mask-color="rgba(0,0,0,0.25)" />
       <ZoomControls v-if="zoomControls" :copy="zoomControlsCopy" />
       <template #node-resizable="resizableNodeProps">
         <slot name="node-resizable"
@@ -141,8 +139,8 @@ const elementsSelectable = computed(() => true) // Always allow selection
           <component v-if="HTMLEntity" :is="HTMLEntity" :entity="resizableNodeProps.data"
             :is-selected="selectedNodeId === resizableNodeProps.id" :is-editing="isNodeEditing(resizableNodeProps.id)"
             :on-start-editing="handleStartEditing" :on-stop-editing="handleStopEditing"
-            :current-user-identity-id="currentUserIdentityId" :on-emoji-create="onEmojiCreate" 
-            :on-update="$attrs.onUpdate" :on-delete="$attrs.onDelete" :on-duplicate="$attrs.onDuplicate" 
+            :current-user-identity-id="currentUserIdentityId" :on-emoji-create="onEmojiCreate"
+            :on-update="$attrs.onUpdate" :on-delete="$attrs.onDelete" :on-duplicate="$attrs.onDuplicate"
             :on-split="$attrs.onSplit" :editable="true" />
         </slot>
       </template>
