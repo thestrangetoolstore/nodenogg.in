@@ -7,8 +7,13 @@ import { COPY } from '@/constants/copy'
 const router = useRouter()
 const inputValue = ref('')
 const isActive = ref(false)
+const inputRef = ref<HTMLInputElement>()
 
 const { createMicrocosmID, sanitizeMicrocosmIDTitle } = MicrocosmSchema.utils
+
+const focusInput = () => {
+  inputRef.value?.focus()
+}
 
 const handleFocus = () => {
   isActive.value = true
@@ -45,22 +50,16 @@ const handleKeydown = (event: KeyboardEvent) => {
   if (event.key === 'Escape') {
     inputValue.value = ''
     isActive.value = false
-    ;(event.target as HTMLInputElement).blur()
+      ; (event.target as HTMLInputElement).blur()
   }
 }
 </script>
 
 <template>
-  <div class="create-microcosm-card" :class="{ active: isActive || inputValue.trim() }">
-    <input 
-      v-model="inputValue" 
-      :placeholder="COPY.dialogs.joinMicrocosm.placeholder"
-      class="microcosm-input" 
-      @focus="handleFocus"
-      @blur="handleBlur"
-      @keydown="handleKeydown"
-    />
-    
+  <div class="create-microcosm-card" :class="{ active: isActive || inputValue.trim() }" @click="focusInput">
+    <input ref="inputRef" v-model="inputValue" :placeholder="COPY.dialogs.joinMicrocosm.placeholder"
+      class="microcosm-input" @focus="handleFocus" @blur="handleBlur" @keydown="handleKeydown" />
+
     <div v-if="inputValue.trim()" class="input-message">
       Press <kbd class="key">Enter</kbd> to join or create {{ sanitizeMicrocosmIDTitle(inputValue) }}
     </div>
@@ -81,6 +80,7 @@ const handleKeydown = (event: KeyboardEvent) => {
   min-height: 140px;
   transition: all 0.2s ease;
   color: inherit;
+  cursor: text;
 }
 
 /* .create-microcosm-card:hover {
@@ -101,7 +101,10 @@ const handleKeydown = (event: KeyboardEvent) => {
   font-size: 1rem;
   color: inherit;
   width: 100%;
+  height: 100%;
   padding: 0;
+  flex: 1;
+  resize: none;
 }
 
 .input-message {
@@ -113,14 +116,11 @@ const handleKeydown = (event: KeyboardEvent) => {
 
 .key {
   display: inline-block;
-  padding: var(--size-2) var(--size-6);
+  padding: var(--size-2) var(--size-4);
   background: var(--ui-80);
-  border: 1px solid var(--ui-70);
   border-radius: var(--ui-radius);
-  font-size: 0.75rem;
   font-weight: 600;
   color: var(--ui-20);
-  font-family: monospace;
+  font-family: inherit;
 }
-
 </style>
