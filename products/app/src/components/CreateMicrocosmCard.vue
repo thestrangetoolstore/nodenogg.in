@@ -20,9 +20,8 @@ const handleFocus = () => {
 }
 
 const handleBlur = () => {
-  if (!inputValue.value.trim()) {
-    isActive.value = false
-  }
+  inputValue.value = ''
+  isActive.value = false
 }
 
 const handleJoinConfirm = () => {
