@@ -96,7 +96,7 @@ watch(() => props.value, (newValue) => {
   const currentContent = editor.value.getHTML()
   if (newValue !== currentContent && newValue !== lastEmittedContent.value) {
     lastEmittedContent.value = newValue
-    editor.value.commands.setContent(newValue, false)
+    editor.value.commands.setContent(newValue)
   }
 })
 
@@ -163,19 +163,22 @@ watch(() => props.editable, (newValue) => {
   padding: var(--size-12);
 }
 
+.tiptap .is-empty::before,
 .tiptap p.is-editor-empty:first-child::before {
   content: attr(data-placeholder);
   float: left;
   color: var(--ui-50);
+  mix-blend-mode: multiply;
   pointer-events: none;
   height: 0;
 }
 
-.tiptap .is-empty::before {
+/* .tiptap .is-empty::before {
   content: attr(data-placeholder);
   float: left;
   color: var(--ui-50);
   pointer-events: none;
+  mix-blend-mode: multiply;
   height: 0;
-}
+} */
 </style>
