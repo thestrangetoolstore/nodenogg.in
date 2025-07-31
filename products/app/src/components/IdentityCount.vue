@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watch, computed } from 'vue'
+import { ref, watch } from 'vue'
 
 const props = defineProps<{
   count: number
@@ -21,15 +21,11 @@ watch(() => props.count, (newCount, oldCount) => {
   previousCount.value = newCount
 })
 
-const shouldShow = computed(() => props.count > 0)
+const shouldShow = true
 </script>
 
 <template>
-  <span 
-    v-if="shouldShow" 
-    class="identity-count" 
-    :class="{ 'animate-join': shouldAnimate }"
-  >
+  <span v-if="shouldShow" class="identity-count" :class="{ 'animate-join': shouldAnimate }">
     {{ count }}
   </span>
 </template>
@@ -44,7 +40,7 @@ const shouldShow = computed(() => props.count > 0)
   height: var(--size-16);
   font-weight: 500;
   background-color: var(--ui-0);
-  color: var(--ui-mono-0);
+  color: var(--ui-100);
   margin-left: 0.2em;
   font-size: 0.7rem;
   text-align: center;
@@ -59,9 +55,11 @@ const shouldShow = computed(() => props.count > 0)
   0% {
     transform: scale(1) translateY(0);
   }
+
   50% {
     transform: scale(1.3) translateY(-4px);
   }
+
   100% {
     transform: scale(1) translateY(0);
   }
