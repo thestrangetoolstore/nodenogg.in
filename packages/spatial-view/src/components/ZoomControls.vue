@@ -49,8 +49,7 @@ const toggleMinimap = () => {
 <template>
   <div class="zoom-controls-container" :class="{ expanded: showMinimap }">
     <div v-if="showMinimap" class="minimap-container">
-      <MiniMap pannable zoomable :title="copy.miniMap" node-color="var(--ui-50)" mask-color="rgba(150,150,150,0.0)"
-        :mask-stroke-width=20 :mask-stroke-color="'var(--ui-0)'" />
+      <MiniMap pannable zoomable :title="copy.miniMap" node-color="var(--ui-50)" mask-color="rgba(150,150,150,0.5)" />
     </div>
 
     <div class="zoom-controls">
@@ -62,7 +61,7 @@ const toggleMinimap = () => {
       </button>
 
       <button class="zoom-level" @click="handleFitView" :aria-label="copy.resetZoom">{{ Math.round(currentZoom * 100)
-        }}%</button>
+      }}%</button>
 
       <button class="zoom-button" @click="handleZoomOut" :aria-label="copy.zoomOut">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">

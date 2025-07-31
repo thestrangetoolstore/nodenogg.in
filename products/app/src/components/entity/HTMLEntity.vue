@@ -170,50 +170,70 @@ const handleEmojiSelect = (emoji: string) => {
       </slot>
     </div>
 
-    <!-- Menu trigger slot with default implementation - show for all entities -->
-    <DropdownMenuRoot :modal="true">
-      <DropdownMenuTrigger class="entity-menu-trigger">
-        <slot name="menu-trigger">
-          <Icon type="ellipsis" />
-        </slot>
-      </DropdownMenuTrigger>
-      <DropdownMenuPortal>
-        <DropdownMenuContent class="dropdown-menu-content" :side-offset="5" :align="'end'">
-          <!-- Menu items slot with default implementation -->
-          <slot name="menu-items" :entity="entity" :on-delete="handleDelete" :on-duplicate="handleDuplicate"
-            :on-color-change="handleColorChange" :is-owner="isOwner">
-            <!-- Default menu items based on ownership -->
-            <template v-if="isOwner">
-              <!-- Owner actions: full control -->
-              <DropdownMenuItem class="dropdown-menu-item">
+    <!-- Entity Toolbar - show for all entities -->
+    <div class="entity-toolbar">
+      <slot name="toolbar" :entity="entity" :on-delete="handleDelete" :on-duplicate="handleDuplicate"
+        :on-color-change="handleColorChange" :is-owner="isOwner">
+        <!-- Default toolbar based on ownership -->
+        <template v-if="isOwner">
+          <!-- Color picker dropdown -->
+          <DropdownMenuRoot :modal="true">
+            <DropdownMenuTrigger class="toolbar-button color-button">
+              <div class="color-circle" :style="`background-color: ${getColor(entity.data.backgroundColor || 'yellow')}`"></div>
+            </DropdownMenuTrigger>
+            <DropdownMenuPortal>
+              <DropdownMenuContent class="color-dropdown-content" :side-offset="5" :align="'start'">
                 <ColorSelector :value="entity.data.backgroundColor" :onUpdate="handleColorChange" />
-              </DropdownMenuItem>
-              <DropdownMenuSeparator class="dropdown-menu-separator" />
-              <DropdownMenuItem class="dropdown-menu-item emoji-selector-item">
+              </DropdownMenuContent>
+            </DropdownMenuPortal>
+          </DropdownMenuRoot>
+
+          <!-- Emoji selector dropdown -->
+          <DropdownMenuRoot :modal="true">
+            <DropdownMenuTrigger class="toolbar-button">
+              <Icon type="home" />
+            </DropdownMenuTrigger>
+            <DropdownMenuPortal>
+              <DropdownMenuContent class="emoji-dropdown-content" :side-offset="5" :align="'center'">
                 <EmojiSelector :onEmojiSelect="handleEmojiSelect" />
-              </DropdownMenuItem>
-              <DropdownMenuSeparator class="dropdown-menu-separator" />
-              <DropdownMenuItem class="dropdown-menu-item" @click="handleDuplicate">
-                Duplicate
-              </DropdownMenuItem>
-              <DropdownMenuItem class="dropdown-menu-item" @click="handleDelete">
-                Delete
-              </DropdownMenuItem>
-            </template>
-            <template v-else>
-              <!-- Non-owner actions: limited -->
-              <DropdownMenuItem class="dropdown-menu-item emoji-selector-item">
+              </DropdownMenuContent>
+            </DropdownMenuPortal>
+          </DropdownMenuRoot>
+
+          <!-- Duplicate button -->
+          <button class="toolbar-button" @click="handleDuplicate">
+            <Icon type="home" />
+            <span class="button-label">Duplicate</span>
+          </button>
+
+          <!-- Delete button -->
+          <button class="toolbar-button delete-button" @click="handleDelete">
+            <Icon type="close" />
+            <span class="button-label">Delete</span>
+          </button>
+        </template>
+        <template v-else>
+          <!-- Non-owner actions: limited -->
+          <!-- Emoji selector dropdown -->
+          <DropdownMenuRoot :modal="true">
+            <DropdownMenuTrigger class="toolbar-button">
+              <Icon type="smile" />
+            </DropdownMenuTrigger>
+            <DropdownMenuPortal>
+              <DropdownMenuContent class="emoji-dropdown-content" :side-offset="5" :align="'center'">
                 <EmojiSelector :onEmojiSelect="handleEmojiSelect" />
-              </DropdownMenuItem>
-              <DropdownMenuSeparator class="dropdown-menu-separator" />
-              <DropdownMenuItem class="dropdown-menu-item" @click="handleDuplicate">
-                Duplicate
-              </DropdownMenuItem>
-            </template>
-          </slot>
-        </DropdownMenuContent>
-      </DropdownMenuPortal>
-    </DropdownMenuRoot>
+              </DropdownMenuContent>
+            </DropdownMenuPortal>
+          </DropdownMenuRoot>
+
+          <!-- Duplicate button -->
+          <button class="toolbar-button" @click="handleDuplicate">
+            <Icon type="copy" />
+            <span class="button-label">Duplicate</span>
+          </button>
+        </template>
+      </slot>
+    </div>
   </div>
 </template>
 
@@ -324,13 +344,29 @@ const handleEmojiSelect = (emoji: string) => {
   }
 }
 
-/* Menu trigger button styles */
-.entity-menu-trigger {
+/* Entity Toolbar styles */
+.entity-toolbar {
   position: absolute;
   left: 0;
   bottom: calc(100% + var(--size-8));
-  padding: var(--size-0);
-  /* background-color: var(--ui-95); */
+  display: flex;
+  gap: var(--size-4);
+  opacity: 0;
+  transform-origin: 0% 100%;
+  background-color: red;
+  padding: var(--size-8);
+  transform: scale(calc(1 / var(--zoom-value)));
+  transition: opacity 0.2s ease;
+}
+
+.resizable-container:hover .entity-toolbar,
+.resizable-container:focus-within .entity-toolbar {
+  opacity: 1;
+}
+
+/* Toolbar button styles */
+.toolbar-button {
+  padding: var(--size-6);
   background: var(--ui-95);
   box-shadow: var(--ui-shadow-25);
   border: none;
@@ -340,25 +376,66 @@ const handleEmojiSelect = (emoji: string) => {
   align-items: center;
   justify-content: center;
   color: var(--ui-mono-0);
-  opacity: 0;
-  transform-origin: 0% 100%;
-  transform: scale(calc(1 / var(--zoom-value)));
+  min-width: var(--size-28);
+  height: var(--size-28);
+  gap: var(--size-4);
+  transition: all 0.2s ease;
+  white-space: nowrap;
 }
 
-.resizable-container:hover .entity-menu-trigger,
-.resizable-container:focus-within .entity-menu-trigger {
-  opacity: 1;
-}
-
-.entity-menu-trigger:hover {
+.toolbar-button:hover {
   background: var(--ui-90);
   color: var(--ui-0);
 }
 
-.entity-menu-trigger[data-state="open"] {
+.toolbar-button[data-state="open"] {
   background: var(--ui-90);
   color: var(--ui-0);
-  opacity: 1;
+}
+
+/* Color button specific styles */
+.color-button {
+  background: var(--ui-95) !important;
+}
+
+.color-button:hover {
+  background: var(--ui-90) !important;
+}
+
+.color-circle {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 1px solid var(--ui-80);
+}
+
+.button-label {
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+/* Delete button warning style */
+.delete-button:hover {
+  background: var(--ui-red);
+  color: var(--ui-100);
+}
+
+/* Toolbar dropdown content styles */
+.color-dropdown-content,
+.emoji-dropdown-content {
+  z-index: 500;
+  border-radius: var(--ui-radius);
+  overflow: hidden;
+  background: var(--ui-95);
+  box-shadow: var(--ui-container-shadow);
+  padding: var(--size-8);
+}
+
+@media (prefers-color-scheme: dark) {
+  .color-dropdown-content,
+  .emoji-dropdown-content {
+    background: var(--ui-95);
+  }
 }
 
 /* Dropdown menu separator */

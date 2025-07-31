@@ -26,6 +26,7 @@ const schema = createVersionedSchema({
           type: literal('html'),
           x: number(),
           y: number(),
+          z: optional(number()),
           width: number(),
           height: number(),
           content: string(),
