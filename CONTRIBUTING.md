@@ -10,9 +10,9 @@ All pull request should be assigned to Toby, do not merge anything, you will not
 
 main: the main branch into which other branches are merged. this is what's deployed to Azure
 docs/_: changes to documentation of the repo
-guides/_: changes to the vitepress more public facing guides for using nodenogg.in
-feature/_: a new feature
-fix/_: a small hotfix for bugs or minor quick changes
+guides/_: changes to the public facing guides for at docs.nodenogg.in
+feat/_: a new feature
+fix/_: a small fix for bugs or very minor quick changes
 
 ## Next Steps
 
