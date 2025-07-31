@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref, watch, computed, nextTick } from 'vue'
+import { onMounted, ref, watch, computed, nextTick, toRef } from 'vue'
 import { VueFlow, useVueFlow, type NodeChange } from '@vue-flow/core'
 import { Background } from '@vue-flow/background'
 import { MiniMap } from '@vue-flow/minimap'
@@ -40,8 +40,18 @@ const props = withDefaults(defineProps<{
 
 const emit = defineEmits<MicrocosmSpatialViewEmits>()
 
-const { onNodesChange, viewport } = useVueFlow()
+const { onNodesChange, viewport, getSelectedNodes } = useVueFlow()
 const { selectedNodeId, isEditing, selectNode, clearSelection, startEditing, stopEditing, isNodeEditing } = useSpatialSelection()
+
+// Sync VueFlow selection with our custom selection state
+watch(() => getSelectedNodes.value, (selectedNodes) => {
+  console.log('VueFlow selected nodes changed:', selectedNodes)
+  if (selectedNodes.length > 0) {
+    selectNode(selectedNodes[0].id)
+  } else {
+    clearSelection()
+  }
+})
 
 // Wrapper functions to call both internal and parent handlers
 const handleStartEditing = (entityId: string) => {
@@ -90,9 +100,7 @@ const handleNodeChange = (changes: NodeChange[]) => {
 
 // Handle node clicks for selection
 const handleNodeClick = (event: MouseEvent, node: any) => {
-  if (node && node.id) {
-    selectNode(node.id)
-  }
+  // VueFlow handles selection internally, we sync via the watcher
 }
 
 // Handle pane clicks for deselection

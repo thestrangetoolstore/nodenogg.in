@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, watch } from 'vue'
 import {
   DropdownMenuRoot,
   DropdownMenuTrigger,
@@ -41,6 +41,11 @@ const isEditable = computed(() => {
   return props.editable !== false && isOwner.value
 })
 
+// Debug selection state
+watch(() => props.isSelected, (newVal) => {
+  console.log('HTMLEntity selection changed:', props.entity.id, 'isSelected:', newVal, 'isEditable:', isEditable.value)
+})
+
 // Handler for content changes
 const handleContentChange = (html: string) => {
   if (props.onUpdate && props.entity) {
@@ -72,9 +77,11 @@ const handleDoubleClick = (event: MouseEvent) => {
 
 // Handler for single click (prevent propagation when editing)
 const handleClick = (event: MouseEvent) => {
+  console.log('HTMLEntity clicked:', props.entity.id, 'isEditing:', props.isEditing)
   if (props.isEditing) {
     event.stopPropagation()
   }
+  // Let the click bubble up to VueFlow for selection
 }
 
 const handleKeydown = (event: KeyboardEvent) => {
@@ -131,7 +138,7 @@ const handleEmojiSelect = (emoji: string) => {
 </script>
 
 <template>
-  <NodeResizer v-if="isEditable" :min-width="50" :min-height="50" :node-id="entity.id" />
+  <NodeResizer v-if="isEditable && isSelected" :min-width="50" :min-height="50" :node-id="entity.id" />
   <div class="resizable-container" :class="{
     'is-selected': isSelected,
     'is-editing': isEditing,

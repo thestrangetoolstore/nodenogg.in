@@ -133,14 +133,11 @@ export default {
 
 /* handle styles */
 .vue-flow__resize-control.handle {
-  width: var(--size-8);
-  height: var(--size-8);
-  /* border: 1px solid var(--ui-90); */
-  /* border-radius: 1px; */
-  background-color: var(--ui-0);
-  transform: translate(-50%, -50%) scale(1.0);
-  /* transform: translate(-50%, -50%) scale(calc(1 / var(--zoom-value))); */
-
+  width: var(--size-12);
+  height: var(--size-12);
+  box-shadow: var(--ui-shadow-100);
+  background-color: var(--ui-100);
+  transform: translate(-50%, -50%) scale(calc(1 / var(--zoom-value)));
   z-index: 1;
 }
 
