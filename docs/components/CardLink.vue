@@ -7,7 +7,7 @@ defineProps({
 </script>
 
 <template>
-  <a :href="href" class="card-link" target="_blank" rel="noopener noreferrer">
+  <a :href="href" class="card-link">
     <div class="card-link-content">
       <h3 class="card-link-title">{{ title }}</h3>
       <p class="card-link-description">{{ description }}</p>
