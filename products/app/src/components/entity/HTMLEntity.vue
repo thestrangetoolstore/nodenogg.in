@@ -208,8 +208,17 @@ const handleMouseDown = (event: MouseEvent) => {
 
 // Prevent wheel events from bubbling when editing
 const handleWheel = (event: WheelEvent) => {
-  // Only stop wheel propagation if over the editor content
-  if (isEditorFocused.value && (event.target as Element)?.closest('.tiptap-wrapper')) {
+  const targetElement = event.target as Element
+  const isInEditor = targetElement?.closest('.tiptap-wrapper') || targetElement?.closest('.content-wrapper')
+  
+  // Prevent pinch-to-zoom on trackpad (ctrl + wheel)
+  if (event.ctrlKey && isInEditor) {
+    event.preventDefault()
+    return
+  }
+  
+  // Only stop wheel propagation if over the editor content and editing
+  if (isEditorFocused.value && isInEditor) {
     event.stopPropagation()
   }
 }
@@ -414,6 +423,7 @@ const handleReadOnlyBlur = () => {
   overflow: auto;
   word-wrap: break-word;
   overflow-wrap: break-word;
+  touch-action: pan-y; /* Allow vertical scrolling but prevent pinch-to-zoom */
 }
 
 /* Ensure editor content respects container */
@@ -598,6 +608,7 @@ const handleReadOnlyBlur = () => {
   outline: none;
   user-select: text;
   cursor: text;
+  touch-action: pan-y; /* Allow vertical scrolling but prevent pinch-to-zoom */
 }
 
 .read-only-content.is-focused {

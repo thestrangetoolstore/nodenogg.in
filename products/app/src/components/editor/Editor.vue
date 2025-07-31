@@ -182,6 +182,7 @@ defineExpose({
 
 .tiptap-wrapper {
   outline: none;
+  touch-action: pan-y; /* Allow vertical scrolling but prevent pinch-to-zoom */
 }
 
 .tiptap {
