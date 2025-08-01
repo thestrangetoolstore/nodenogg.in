@@ -9,5 +9,6 @@ export const cardColors = [
   'purple',
   'pink',
   'turquoise',
-  'putty'
+  'putty',
+  'bone'
 ]

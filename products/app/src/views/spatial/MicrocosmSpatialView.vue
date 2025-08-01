@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref, inject, nextTick } from 'vue'
+import { computed, ref, nextTick } from 'vue'
 import { SpatialView, EmojiEntity } from '@nodenogg.in/spatial-view'
 import HTMLEntity from '@/components/entity/HTMLEntity.vue'
 import { useCurrentMicrocosm } from '@/state'
@@ -11,16 +11,6 @@ import { useVueFlow } from '@vue-flow/core'
 import { storeToRefs } from 'pinia'
 import ViewContainer from '@/components/ViewContainer.vue'
 import ActionButton from '@/components/ActionButton.vue'
-import Icon from '@/components/icon/Icon.vue'
-import {
-  ContextMenuContent,
-  // ContextMenuItem,
-  ContextMenuPortal,
-  ContextMenuRoot,
-  ContextMenuSeparator,
-  ContextMenuTrigger,
-} from 'reka-ui'
-import ContextMenuItem from '@/components/context-menu/ContextMenuItem.vue'
 import { COPY } from '@/constants/copy'
 
 defineProps({

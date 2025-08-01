@@ -138,7 +138,8 @@ const canvasCursor = computed(() => {
       @nodes-change="handleNodeChange" @node-click="handleNodeClick" @pane-click="handlePaneClick"
       :pan-on-drag="panOnDrag" :pan-on-scroll="panOnScroll" :zoom-on-scroll="zoomOnScroll" :zoom-on-pinch="zoomOnPinch"
       :zoom-on-double-click="zoomOnDoubleClick" :prevent-scrolling="preventScrolling" :nodes-draggable="nodesDraggable"
-      :nodes-connectable="nodesConnectable" :elements-selectable="elementsSelectable">
+      :nodes-connectable="nodesConnectable" :elements-selectable="elementsSelectable"
+      :only-render-visible-elements="true">
       <Background variant="lines" patternColor="var(--ui-80)" />
       <ZoomControls v-if="zoomControls" :copy="zoomControlsCopy" :initial-minimap-visible="minimap" />
       <template #node-resizable="resizableNodeProps">
