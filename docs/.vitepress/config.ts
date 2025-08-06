@@ -3,10 +3,10 @@ import { defineConfig } from "vitepress";
 export default defineConfig({
   title: "nodenogg.in",
   lang: "en-GB",
-  description: "Guide to the nodenogg.in project",
+  description: "Guides for using nodenogg.in",
   ignoreDeadLinks: true,
   cleanUrls: true,
-  lastUpdated: true,
+  // lastUpdated: true,
   themeConfig: {
     // lastUpdated: {
     //   text: "Last updated",
