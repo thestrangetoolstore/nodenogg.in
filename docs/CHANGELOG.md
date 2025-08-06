@@ -10,7 +10,6 @@
 - Fixed focus trap bug and udpated character count ([23f3c06b](https://github.com/thestrangetoolstore/nodenogg.in/commit/23f3c06b))
 - Added manual release option in github ([0ba48232](https://github.com/thestrangetoolstore/nodenogg.in/commit/0ba48232))
 - Identity count always visible ([e1e3cae3](https://github.com/thestrangetoolstore/nodenogg.in/commit/e1e3cae3))
-- Added a last updated timestamp to each page ([377d9846](https://github.com/thestrangetoolstore/nodenogg.in/commit/377d9846))
 
 ### 🐛 Bug Fixes
 

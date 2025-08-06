@@ -8,13 +8,13 @@ export default defineConfig({
   cleanUrls: true,
   lastUpdated: true,
   themeConfig: {
-    lastUpdated: {
-      text: "Last updated",
-      formatOptions: {
-        dateStyle: "full",
-        timeStyle: "medium"
-      }
-    },
+    // lastUpdated: {
+    //   text: "Last updated",
+    //   formatOptions: {
+    //     dateStyle: "full",
+    //     timeStyle: "medium"
+    //   }
+    // },
     footer: {
       copyright: "Made by Winchester School of Art, University of Southampton. All rights reserved.",
     },
