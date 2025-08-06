@@ -1,5 +1,17 @@
 # Changelog
 
+## v0.3.11
+
+[compare changes](https://github.com/thestrangetoolstore/nodenogg.in/compare/v0.3.10...v0.3.11)
+
+### 🐛 Bug Fixes
+
+- Removed last updated timestamp for now ([73c3ea21](https://github.com/thestrangetoolstore/nodenogg.in/commit/73c3ea21))
+
+### ❤️ Contributors
+
+- Adam Procter ([@adamprocter](https://github.com/adamprocter))
+
 ## v0.3.10
 
 [compare changes](https://github.com/thestrangetoolstore/nodenogg.in/compare/v0.3.9...v0.3.10)
