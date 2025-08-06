@@ -1,5 +1,31 @@
 # Changelog
 
+## v0.3.10
+
+[compare changes](https://github.com/thestrangetoolstore/nodenogg.in/compare/v0.3.9...v0.3.10)
+
+### 🚀 Features
+
+- Added character count ([af9a69c9](https://github.com/thestrangetoolstore/nodenogg.in/commit/af9a69c9))
+- Fixed focus trap bug and udpated character count ([23f3c06b](https://github.com/thestrangetoolstore/nodenogg.in/commit/23f3c06b))
+- Added manual release option in github ([0ba48232](https://github.com/thestrangetoolstore/nodenogg.in/commit/0ba48232))
+- Identity count always visible ([e1e3cae3](https://github.com/thestrangetoolstore/nodenogg.in/commit/e1e3cae3))
+- Added a last updated timestamp to each page ([377d9846](https://github.com/thestrangetoolstore/nodenogg.in/commit/377d9846))
+
+### 🐛 Bug Fixes
+
+- Changed recommended branch name feature/_ to feat/_ ([c88531ae](https://github.com/thestrangetoolstore/nodenogg.in/commit/c88531ae))
+- Removed stray console.log ([a246768e](https://github.com/thestrangetoolstore/nodenogg.in/commit/a246768e))
+
+### 📖 Documentation
+
+- Have started work on updating guides ([cef8005b](https://github.com/thestrangetoolstore/nodenogg.in/commit/cef8005b))
+
+### ❤️ Contributors
+
+- Adam Procter ([@adamprocter](https://github.com/adamprocter))
+- Toby Milner-Gulland <toby@figure.land>
+
 ## v0.3.9
 
 [compare changes](https://github.com/thestrangetoolstore/nodenogg.in/compare/v0.3.6...v0.3.9)
