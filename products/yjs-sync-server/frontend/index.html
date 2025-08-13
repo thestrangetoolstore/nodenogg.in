@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>YJS Sync Server</title>
+    <title>nodenogg.in local sync</title>
     <!-- Ensure Tauri API is loaded -->
     <script>
         // Manual Tauri API loading for debugging
@@ -22,13 +23,13 @@
             padding: 0;
             box-sizing: border-box;
         }
-        
+
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: #f5f5f5;
             padding: 20px;
         }
-        
+
         .container {
             max-width: 800px;
             margin: 0 auto;
@@ -37,28 +38,28 @@
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             overflow: hidden;
         }
-        
+
         .header {
             background: #2563eb;
             color: white;
             padding: 24px;
             text-align: center;
         }
-        
+
         .header h1 {
             font-size: 24px;
             font-weight: 600;
         }
-        
+
         .header p {
             margin-top: 8px;
             opacity: 0.9;
         }
-        
+
         .content {
             padding: 24px;
         }
-        
+
         .status-card {
             display: flex;
             align-items: center;
@@ -68,32 +69,32 @@
             border-radius: 8px;
             margin-bottom: 24px;
         }
-        
+
         .status-indicator {
             display: flex;
             align-items: center;
             gap: 8px;
         }
-        
+
         .status-dot {
             width: 8px;
             height: 8px;
             border-radius: 50%;
         }
-        
+
         .status-dot.running {
             background: #10b981;
         }
-        
+
         .status-dot.stopped {
             background: #ef4444;
         }
-        
+
         .controls {
             display: flex;
             gap: 12px;
         }
-        
+
         .btn {
             padding: 8px 16px;
             border: none;
@@ -102,38 +103,38 @@
             cursor: pointer;
             transition: background-color 0.2s;
         }
-        
+
         .btn-primary {
             background: #2563eb;
             color: white;
         }
-        
+
         .btn-primary:hover {
             background: #1d4ed8;
         }
-        
+
         .btn-danger {
             background: #ef4444;
             color: white;
         }
-        
+
         .btn-danger:hover {
             background: #dc2626;
         }
-        
+
         .info-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 16px;
             margin-bottom: 24px;
         }
-        
+
         .info-item {
             padding: 16px;
             background: #f8fafc;
             border-radius: 8px;
         }
-        
+
         .info-label {
             font-size: 12px;
             font-weight: 600;
@@ -142,13 +143,13 @@
             color: #64748b;
             margin-bottom: 4px;
         }
-        
+
         .info-value {
             font-size: 18px;
             font-weight: 600;
             color: #1e293b;
         }
-        
+
         .logs {
             background: #1e293b;
             color: #e2e8f0;
@@ -162,25 +163,26 @@
         }
     </style>
 </head>
+
 <body>
     <div class="container">
         <div class="header">
-            <h1>YJS Sync Server</h1>
-            <p>Desktop sync server for collaborative editing</p>
+            <h1>nodenogg.in local sync</h1>
+            <p>Desktop sync engine for local-first, private, collaborative play and curiosity.</p>
         </div>
-        
+
         <div class="content">
             <div class="status-card">
                 <div class="status-indicator">
                     <div class="status-dot stopped" id="statusDot"></div>
-                    <span id="statusText">Server Stopped</span>
+                    <span id="statusText">Sync Stopped</span>
                 </div>
                 <div class="controls">
-                    <button class="btn btn-primary" id="startBtn" onclick="startServer()">Start Server</button>
-                    <button class="btn btn-danger" id="stopBtn" onclick="stopServer()" disabled>Stop Server</button>
+                    <button class="btn btn-primary" id="startBtn" onclick="startServer()">Turn on Sync</button>
+                    <button class="btn btn-danger" id="stopBtn" onclick="stopServer()" disabled>Stop Syncing</button>
                 </div>
             </div>
-            
+
             <div class="info-grid">
                 <div class="info-item">
                     <div class="info-label">Port</div>
@@ -199,14 +201,14 @@
                     <div class="info-value" id="documents">0</div>
                 </div>
             </div>
-            
+
             <div class="info-item" style="margin-bottom: 16px;">
-                <div class="info-label">Server URL</div>
+                <div class="info-label">URL</div>
                 <div class="info-value" id="serverUrl">http://localhost:8787</div>
             </div>
-            
+
             <div class="logs" id="logs">
-                Server logs will appear here...
+                Logs will appear here...
             </div>
         </div>
     </div>
@@ -214,7 +216,7 @@
     <script>
         let serverProcess = null;
         let tauriInvoke = null;
-        
+
         // Wait for Tauri to be ready - supports both v1 and v2 API formats
         async function waitForTauri() {
             return new Promise((resolve, reject) => {
@@ -242,16 +244,16 @@
                     }
                     return null;
                 }
-                
+
                 const invoke = getTauriInvoke();
                 if (invoke) {
                     resolve(invoke);
                     return;
                 }
-                
+
                 let attempts = 0;
                 const maxAttempts = 50; // 5 seconds max wait
-                
+
                 const checkTauri = () => {
                     attempts++;
                     const invoke = getTauriInvoke();
@@ -265,8 +267,8 @@
                             ipc: !!window.ipc,
                             invoke: !!window.invoke,
                             tauriKeys: window.__TAURI__ ? Object.keys(window.__TAURI__) : [],
-                            windowKeys: Object.keys(window).filter(key => 
-                                key.toLowerCase().includes('tauri') || 
+                            windowKeys: Object.keys(window).filter(key =>
+                                key.toLowerCase().includes('tauri') ||
                                 key.toLowerCase().includes('ipc') ||
                                 key.toLowerCase().includes('invoke')
                             )
@@ -277,93 +279,94 @@
                         setTimeout(checkTauri, 100);
                     }
                 };
-                
+
                 setTimeout(checkTauri, 100);
             });
         }
-        
+
         async function startServer() {
             try {
                 if (!tauriInvoke) {
                     logMessage('Error: Tauri API not available');
                     return;
                 }
-                
+
                 await tauriInvoke('start_server');
-                
+
                 updateStatus(true);
-                logMessage('Server starting...');
-                
+                logMessage('Sync starting...');
+
             } catch (error) {
-                console.error('Failed to start server:', error);
+                console.error('Failed to start sync:', error);
                 logMessage(`Error: ${error}`);
             }
         }
-        
+
         async function stopServer() {
             try {
                 if (!tauriInvoke) {
                     logMessage('Error: Tauri API not available');
                     return;
                 }
-                
+
                 await tauriInvoke('stop_server');
-                
+
                 updateStatus(false);
-                logMessage('Server stopped');
-                
+                logMessage('Sync stopped');
+
             } catch (error) {
-                console.error('Failed to stop server:', error);
+                console.error('Failed to stop sync:', error);
                 logMessage(`Error: ${error}`);
             }
         }
-        
+
         function updateStatus(isRunning) {
             const statusDot = document.getElementById('statusDot');
             const statusText = document.getElementById('statusText');
             const status = document.getElementById('status');
             const startBtn = document.getElementById('startBtn');
             const stopBtn = document.getElementById('stopBtn');
-            
+
             if (isRunning) {
                 statusDot.className = 'status-dot running';
-                statusText.textContent = 'Server Running';
+                statusText.textContent = 'Sync Running';
                 status.textContent = 'Running';
                 startBtn.disabled = true;
                 stopBtn.disabled = false;
             } else {
                 statusDot.className = 'status-dot stopped';
-                statusText.textContent = 'Server Stopped';
+                statusText.textContent = 'Sync Stopped';
                 status.textContent = 'Stopped';
                 startBtn.disabled = false;
                 stopBtn.disabled = true;
             }
         }
-        
+
         function logMessage(message) {
             const logs = document.getElementById('logs');
             const timestamp = new Date().toLocaleTimeString();
             logs.innerHTML += `[${timestamp}] ${message}\n`;
             logs.scrollTop = logs.scrollHeight;
         }
-        
+
         // Initialize when DOM and Tauri are ready
         window.addEventListener('DOMContentLoaded', async () => {
             try {
                 logMessage('Loading Tauri API...');
                 tauriInvoke = await waitForTauri();
                 logMessage('Tauri API loaded successfully');
-                
+
                 const isRunning = await tauriInvoke('get_server_status');
                 updateStatus(isRunning);
-                logMessage('Server status checked');
-                
+                logMessage('Sync status checked');
+
             } catch (error) {
                 console.error('Failed to initialize:', error);
                 logMessage(`Initialization error: ${error.message}`);
-                logMessage('Running in browser mode - server controls disabled');
+                logMessage('Running in browser mode - sync disabled');
             }
         });
     </script>
 </body>
+
 </html>
