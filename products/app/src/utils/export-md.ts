@@ -137,8 +137,6 @@ function htmlToMarkdown(html: string): string {
  */
 function entityToMarkdown(entity: Entity, identityId: IdentityID): string {
   const metadata = `---
-entity_id: ${entity.id}
-identity_id: ${identityId}
 created: ${new Date(entity.created).toISOString()}
 lastEdited: ${new Date(entity.lastEdited).toISOString()}
 type: ${entity.data.type}
