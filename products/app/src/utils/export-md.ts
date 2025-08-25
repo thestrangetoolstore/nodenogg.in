@@ -229,7 +229,7 @@ export function downloadMarkdownFiles(data: MicrocosmMarkdownExport, zipFilename
 
 ## Files
 
-${data.files.map(file => `- ${file.filename} (Entity: ${file.entity_id})`).join('\n')}
+${data.files.map(file => `- ${file.filename}`).join('\n')}
 
 ## Instructions
 
