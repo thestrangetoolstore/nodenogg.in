@@ -56,13 +56,13 @@ function htmlToMarkdown(html: string): string {
   })
 
   result = result
-    // Headers
-    .replace(/<h1[^>]*>(.*?)<\/h1>/gi, '# $1')
-    .replace(/<h2[^>]*>(.*?)<\/h2>/gi, '## $1')
-    .replace(/<h3[^>]*>(.*?)<\/h3>/gi, '### $1')
-    .replace(/<h4[^>]*>(.*?)<\/h4>/gi, '#### $1')
-    .replace(/<h5[^>]*>(.*?)<\/h5>/gi, '##### $1')
-    .replace(/<h6[^>]*>(.*?)<\/h6>/gi, '###### $1')
+    // Headers (add line breaks after headers)
+    .replace(/<h1[^>]*>(.*?)<\/h1>/gi, '# $1\n\n')
+    .replace(/<h2[^>]*>(.*?)<\/h2>/gi, '## $1\n\n')
+    .replace(/<h3[^>]*>(.*?)<\/h3>/gi, '### $1\n\n')
+    .replace(/<h4[^>]*>(.*?)<\/h4>/gi, '#### $1\n\n')
+    .replace(/<h5[^>]*>(.*?)<\/h5>/gi, '##### $1\n\n')
+    .replace(/<h6[^>]*>(.*?)<\/h6>/gi, '###### $1\n\n')
     
     // Bold and italic
     .replace(/<strong[^>]*>(.*?)<\/strong>/gi, '**$1**')
