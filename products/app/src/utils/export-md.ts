@@ -136,10 +136,20 @@ function htmlToMarkdown(html: string): string {
  * Converts an entity to markdown content
  */
 function entityToMarkdown(entity: Entity, identityId: IdentityID): string {
+  // Build metadata, including backgroundColor if it exists
+  let metadataFields = [
+    `created: ${new Date(entity.created).toISOString()}`,
+    `lastEdited: ${new Date(entity.lastEdited).toISOString()}`,
+    `type: ${entity.data.type}`
+  ]
+  
+  // Add backgroundColor if it exists (only for HTML entities)
+  if (entity.data.type === 'html' && entity.data.backgroundColor) {
+    metadataFields.push(`backgroundColor: ${entity.data.backgroundColor}`)
+  }
+  
   const metadata = `---
-created: ${new Date(entity.created).toISOString()}
-lastEdited: ${new Date(entity.lastEdited).toISOString()}
-type: ${entity.data.type}
+${metadataFields.join('\n')}
 ---
 
 `
