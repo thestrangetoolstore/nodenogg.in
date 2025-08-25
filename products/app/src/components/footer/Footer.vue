@@ -23,6 +23,7 @@ const version = import.meta.env.VITE_APP_VERSION;
     background-color: var(--ui-90);
     padding: var(--size-2) var(--size-4);
     border-radius: var(--ui-radius);
+    white-space: nowrap;
 }
 
 p {
@@ -33,10 +34,9 @@ p {
     .footer-info {
         left: 0;
         bottom: 0;
-        width: calc(100% - var(--size-8));
-        max-width: 260px;
         box-shadow: var(--ui-shadow-10);
         padding: var(--size-4) var(--size-8);
+        font-size: 0.8em;
     }
 }
 </style>
