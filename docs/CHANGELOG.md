@@ -1,5 +1,28 @@
 # Changelog
 
+## v0.3.13
+
+[compare changes](https://github.com/thestrangetoolstore/nodenogg.in/compare/v0.3.12...v0.3.13)
+
+### 🚀 Features
+
+- Added basic markdown export of all nodes ([e2f8658c](https://github.com/thestrangetoolstore/nodenogg.in/commit/e2f8658c))
+
+### 🐛 Bug Fixes
+
+- Tweaked footer text give space for add button on small screens ([63f4f237](https://github.com/thestrangetoolstore/nodenogg.in/commit/63f4f237))
+- Removed entity_id and identity_id from the exported markdown files ([c4cba655](https://github.com/thestrangetoolstore/nodenogg.in/commit/c4cba655))
+- Removed entity_id from the exported manifest file document as well ([a3524986](https://github.com/thestrangetoolstore/nodenogg.in/commit/a3524986))
+- Make sure for line breaks to follow after headers in the exported markdown ([b8741910](https://github.com/thestrangetoolstore/nodenogg.in/commit/b8741910))
+
+### 📖 Documentation
+
+- Updated Repo README.md with Liberapay donation button ([3253b7e2](https://github.com/thestrangetoolstore/nodenogg.in/commit/3253b7e2))
+
+### ❤️ Contributors
+
+- Adam Procter ([@adamprocter](https://github.com/adamprocter))
+
 ## v0.3.12
 
 [compare changes](https://github.com/thestrangetoolstore/nodenogg.in/compare/v0.3.11...v0.3.12)
