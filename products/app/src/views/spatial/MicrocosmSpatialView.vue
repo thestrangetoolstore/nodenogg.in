@@ -55,9 +55,21 @@ const positionedNodes = computed(() => {
   return entities.value.filter(e =>
     EntitySchema.utils.isType(e, 'html') || EntitySchema.utils.isType(e, 'emoji')
   ).map((entity) => {
-    const { x, y } = entity.data
-
     const isEmoji = EntitySchema.utils.isType(entity, 'emoji')
+    let { x, y } = entity.data
+
+    // For emojis with parent nodes, calculate relative position
+    if (isEmoji && entity.data.parentNodeId) {
+      const parentNode = entities.value.find(e => e.id === entity.data.parentNodeId)
+      if (parentNode && EntitySchema.utils.isType(parentNode, 'html')) {
+        // Calculate absolute position based on parent's current position
+        const relativeX = entity.data.x
+        const relativeY = entity.data.y
+        x = parentNode.data.x + relativeX
+        y = parentNode.data.y + relativeY
+      }
+    }
+
     const width = isEmoji ? 50 : entity.data.width
     const height = isEmoji ? 50 : entity.data.height
 
@@ -78,7 +90,8 @@ const positionedNodes = computed(() => {
         height: `${height}px`
       },
       // Add property to indicate if entity is editable for the resizer
-      draggable: isOwnedByCurrentUser(entity),
+      // Emojis with parent nodes should not be independently draggable
+      draggable: isOwnedByCurrentUser(entity) && !(isEmoji && entity.data.parentNodeId),
       selectable: true, // All entities can be selected
       deletable: isOwnedByCurrentUser(entity)
     }
@@ -173,8 +186,8 @@ const handleAddReactionToEntity = (entity: Entity) => {
     // Generate random position around the entity
     const entityWidth = entity.data.width || 200
     const entityHeight = entity.data.height || 200
-    const entityCenterX = entity.data.x + entityWidth / 2
-    const entityCenterY = entity.data.y + entityHeight / 2
+    const entityCenterX = entityWidth / 2
+    const entityCenterY = entityHeight / 2
 
     // Random angle around the entity (0 to 2π)
     const angle = Math.random() * 2 * Math.PI
@@ -184,15 +197,16 @@ const handleAddReactionToEntity = (entity: Entity) => {
     const maxDistance = Math.max(entityWidth, entityHeight) / 2 + 100
     const distance = minDistance + Math.random() * (maxDistance - minDistance)
 
-    // Calculate position using polar coordinates
-    const emojiX = entityCenterX + Math.cos(angle) * distance - 25 // -25 to center the 50px emoji
-    const emojiY = entityCenterY + Math.sin(angle) * distance - 25
+    // Calculate relative position using polar coordinates
+    const relativeX = entityCenterX + Math.cos(angle) * distance - 25 // -25 to center the 50px emoji
+    const relativeY = entityCenterY + Math.sin(angle) * distance - 25
 
     create({
       type: 'emoji',
       content: '❤️',
-      x: emojiX,
-      y: emojiY
+      x: relativeX,
+      y: relativeY,
+      parentNodeId: entity.id
     })
   }
 }
@@ -248,8 +262,8 @@ const handleEmojiCreateFromEntity = (emoji: string, entity: Entity) => {
     // Generate random position around the entity
     const entityWidth = entity.data.width || 200
     const entityHeight = entity.data.height || 200
-    const entityCenterX = entity.data.x + entityWidth / 2
-    const entityCenterY = entity.data.y + entityHeight / 2
+    const entityCenterX = entityWidth / 2
+    const entityCenterY = entityHeight / 2
     
     // Random angle around the entity (0 to 2π)
     const angle = Math.random() * 2 * Math.PI
@@ -259,15 +273,16 @@ const handleEmojiCreateFromEntity = (emoji: string, entity: Entity) => {
     const maxDistance = Math.max(entityWidth, entityHeight) / 2 + 100
     const distance = minDistance + Math.random() * (maxDistance - minDistance)
     
-    // Calculate position using polar coordinates
-    const emojiX = entityCenterX + Math.cos(angle) * distance - 25 // -25 to center the 50px emoji
-    const emojiY = entityCenterY + Math.sin(angle) * distance - 25
+    // Calculate relative position using polar coordinates
+    const relativeX = entityCenterX + Math.cos(angle) * distance - 25 // -25 to center the 50px emoji
+    const relativeY = entityCenterY + Math.sin(angle) * distance - 25
     
     create({
       type: 'emoji',
       content: emoji,
-      x: emojiX,
-      y: emojiY
+      x: relativeX,
+      y: relativeY,
+      parentNodeId: entity.id
     })
   }
 }
