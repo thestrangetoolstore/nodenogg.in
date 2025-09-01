@@ -69,10 +69,13 @@ const handleDoubleClick = (event: MouseEvent) => {
   }
 }
 
-// Handler for single click (prevent propagation when editing)
+// Handler for single click (start editing or prevent propagation when editing)
 const handleClick = (event: MouseEvent) => {
   if (props.isEditing) {
     event.stopPropagation()
+  } else if (isEditable.value && props.onStartEditing) {
+    event.stopPropagation()
+    props.onStartEditing(props.entity.id)
   }
 }
 
@@ -145,7 +148,7 @@ const handleEmojiSelect = (emoji: string) => {
         :on-change="handleContentChange" :on-cancel="handleCancel">
         <!-- Default content if no slot provided -->
         <component v-if="Editor" :is="Editor" :value="entity?.data.content" :onChange="handleContentChange"
-          :editable="isEditing && isEditable" @cancel="handleCancel" />
+          :editable="isEditing && isEditable" @cancel="handleCancel" @click="handleClick" />
       </slot>
     </div>
 
