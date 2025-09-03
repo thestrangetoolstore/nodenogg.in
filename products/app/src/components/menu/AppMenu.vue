@@ -65,6 +65,10 @@ const currentViewType = computed({
 // Get view display information
 const currentViewDefinition = computed(() => getViewDefinition(currentViewType.value))
 
+ const helpSite = () => {
+      window.location.href = "https://docs.nodenogg.in";
+}
+
 const handleDeleteData = () => {
     deleteDialogOpen.value = true
 }
@@ -246,6 +250,11 @@ const handleMarkdownExport = async () => {
                             <MenubarItem class="menubar-item warning" @click="handleDeleteData">
                                 <Icon type="trash" />
                                 <span>Delete my data</span>
+                            </MenubarItem>
+                               <MenubarSeparator />
+                            <MenubarItem class="menubar-item help" @click="helpSite">
+                                <Icon type="trash" />
+                                <span>Help</span>
                             </MenubarItem>
                         </MenubarContent>
                     </MenubarPortal>
@@ -433,6 +442,11 @@ nav {
         display: none;
     }
 }
+
+:deep(.menubar-item.help) {
+    color: var(--ui-primary-100);
+}
+
 
 /* Warning style for destructive actions */
 :deep(.menubar-item.warning) {
