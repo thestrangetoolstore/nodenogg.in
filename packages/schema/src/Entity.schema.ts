@@ -40,7 +40,8 @@ const schema = createVersionedSchema({
           type: literal('emoji'),
           content: string(),
           x: number(),
-          y: number()
+          y: number(),
+          parentNodeId: optional(entityID)
         })
       ])
     }
