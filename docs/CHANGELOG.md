@@ -1,5 +1,23 @@
 # Changelog
 
+## v0.3.14
+
+[compare changes](https://github.com/thestrangetoolstore/nodenogg.in/compare/v0.3.13...v0.3.14)
+
+### 🚀 Features
+
+- Make emoji stick to the node they are created with ([0c206b92](https://github.com/thestrangetoolstore/nodenogg.in/commit/0c206b92))
+- Added help link in options menu for now ([0310bbc2](https://github.com/thestrangetoolstore/nodenogg.in/commit/0310bbc2))
+
+### 🐛 Bug Fixes
+
+- Include backgroundColor as meta data in exported markdown files ([1442ffff](https://github.com/thestrangetoolstore/nodenogg.in/commit/1442ffff))
+- IOS phones now work to edit in spatial view ([32ca9e00](https://github.com/thestrangetoolstore/nodenogg.in/commit/32ca9e00))
+
+### ❤️ Contributors
+
+- Adam Procter ([@adamprocter](https://github.com/adamprocter))
+
 ## v0.3.13
 
 [compare changes](https://github.com/thestrangetoolstore/nodenogg.in/compare/v0.3.12...v0.3.13)
