@@ -1,5 +1,22 @@
 # Changelog
 
+## v0.3.15
+
+[compare changes](https://github.com/thestrangetoolstore/nodenogg.in/compare/v0.3.14...v0.3.15)
+
+### 🚀 Features
+
+- Updated tiptap to latest version, spatial view node height match ([9dadc6e3](https://github.com/thestrangetoolstore/nodenogg.in/commit/9dadc6e3))
+
+### 🐛 Bug Fixes
+
+- Removed changes made for iOS spatial view ([2d330de2](https://github.com/thestrangetoolstore/nodenogg.in/commit/2d330de2))
+- Updated hono due to security flaw ([0ddfae63](https://github.com/thestrangetoolstore/nodenogg.in/commit/0ddfae63))
+
+### ❤️ Contributors
+
+- Adam Procter ([@adamprocter](https://github.com/adamprocter))
+
 ## v0.3.14
 
 [compare changes](https://github.com/thestrangetoolstore/nodenogg.in/compare/v0.3.13...v0.3.14)
