@@ -414,16 +414,16 @@ importers:
         version: 2.15.3(y-protocols@1.0.6(yjs@13.6.27))(yjs@13.6.27)
       '@hono/node-server':
         specifier: ^1.17.1
-        version: 1.17.1(hono@4.8.10)
+        version: 1.17.1(hono@4.9.6)
       '@hono/node-ws':
         specifier: ^1.2.0
-        version: 1.2.0(@hono/node-server@1.17.1(hono@4.8.10))(hono@4.8.10)
+        version: 1.2.0(@hono/node-server@1.17.1(hono@4.9.6))(hono@4.9.6)
       dotenv:
         specifier: ^16.6.1
         version: 16.6.1
       hono:
-        specifier: ^4.8.10
-        version: 4.8.10
+        specifier: ^4.9.6
+        version: 4.9.6
       y-protocols:
         specifier: ^1.0.6
         version: 1.0.6(yjs@13.6.27)
@@ -3335,8 +3335,8 @@ packages:
     resolution: {integrity: sha512-F/1DnUGPopORZi0ni+CvrCgHQ5FyEAHRLSApuYWMmrbSwoN2Mn/7k+Gl38gJnR7yyDZk6WLXwiGod1JOWNDKGw==}
     hasBin: true
 
-  hono@4.8.10:
-    resolution: {integrity: sha512-DRMYbR3aFk6YET1FCSAFbgF2cWYTz5j0YAFYPECx9fmrbKBDAYnWU+YCgRTpOaatxMYN6e68U/2IG39zRP4W/A==}
+  hono@4.9.6:
+    resolution: {integrity: sha512-doVjXhSFvYZ7y0dNokjwwSahcrAfdz+/BCLvAMa/vHLzjj8+CFyV5xteThGUsKdkaasgN+gF2mUxao+SGLpUeA==}
     engines: {node: '>=16.9.0'}
 
   hookable@5.5.3:
@@ -6497,14 +6497,14 @@ snapshots:
       - bufferutil
       - utf-8-validate
 
-  '@hono/node-server@1.17.1(hono@4.8.10)':
+  '@hono/node-server@1.17.1(hono@4.9.6)':
     dependencies:
-      hono: 4.8.10
+      hono: 4.9.6
 
-  '@hono/node-ws@1.2.0(@hono/node-server@1.17.1(hono@4.8.10))(hono@4.8.10)':
+  '@hono/node-ws@1.2.0(@hono/node-server@1.17.1(hono@4.9.6))(hono@4.9.6)':
     dependencies:
-      '@hono/node-server': 1.17.1(hono@4.8.10)
-      hono: 4.8.10
+      '@hono/node-server': 1.17.1(hono@4.9.6)
+      hono: 4.9.6
       ws: 8.18.2
     transitivePeerDependencies:
       - bufferutil
@@ -8577,7 +8577,7 @@ snapshots:
 
   he@1.2.0: {}
 
-  hono@4.8.10: {}
+  hono@4.9.6: {}
 
   hookable@5.5.3: {}
 
