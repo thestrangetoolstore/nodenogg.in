@@ -4,7 +4,7 @@ title: Deploying nodenogg.in
 
 # Deploying nodenogg.in
 
-Because nodenogg.in is a decentralised app, it might feel a little different when compared to a conventional web app.
+Because nodenogg.in is a local-first, decentralised app, it might feel a little different when compared to a conventional web app.
 
 The main app should feel familiar, as an Single Page Application (SPA) it is built as a collection of static files that can be easily and cheaply hosted.
 
@@ -20,10 +20,9 @@ In the future, we hope to evaluate a number of different sync strategies and can
 
 ## Guides
 
+- Technical Guides
+
 ### Azure
 
 - Microsoft Azure notes
 
-### Vercel
-
-- Vercel notes
