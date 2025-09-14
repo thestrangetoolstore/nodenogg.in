@@ -1,5 +1,19 @@
 # Changelog
 
+## v0.3.16
+
+[compare changes](https://github.com/thestrangetoolstore/nodenogg.in/compare/v0.3.15...v0.3.16)
+
+### 🐛 Bug Fixes
+
+- Updated docs ([f1725679](https://github.com/thestrangetoolstore/nodenogg.in/commit/f1725679))
+- Updated hono ([aa40df5e](https://github.com/thestrangetoolstore/nodenogg.in/commit/aa40df5e))
+- Update lock ([da524732](https://github.com/thestrangetoolstore/nodenogg.in/commit/da524732))
+
+### ❤️ Contributors
+
+- Adam Procter ([@adamprocter](https://github.com/adamprocter))
+
 ## v0.3.15
 
 [compare changes](https://github.com/thestrangetoolstore/nodenogg.in/compare/v0.3.14...v0.3.15)
