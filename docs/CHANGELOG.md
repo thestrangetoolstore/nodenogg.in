@@ -1,5 +1,17 @@
 # Changelog
 
+## v0.3.17
+
+[compare changes](https://github.com/thestrangetoolstore/nodenogg.in/compare/v0.3.16...v0.3.17)
+
+### 🐛 Bug Fixes
+
+- Updated to new accessible font Lexend ([c969fa7e](https://github.com/thestrangetoolstore/nodenogg.in/commit/c969fa7e))
+
+### ❤️ Contributors
+
+- Adam Procter ([@adamprocter](https://github.com/adamprocter))
+
 ## v0.3.16
 
 [compare changes](https://github.com/thestrangetoolstore/nodenogg.in/compare/v0.3.15...v0.3.16)
