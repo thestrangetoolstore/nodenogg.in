@@ -64,6 +64,10 @@ export default defineConfig({
             link: "/guide/terminology",
           },
           {
+            text: "FAQ's",
+            link: "/guide/faq",
+          },
+          {
             text: "Why",
             link: "/guide/why",
           },
