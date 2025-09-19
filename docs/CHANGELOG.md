@@ -1,5 +1,25 @@
 # Changelog
 
+## v0.3.18
+
+[compare changes](https://github.com/thestrangetoolstore/nodenogg.in/compare/v0.3.17...v0.3.18)
+
+### 🚀 Features
+
+- More edits to docs ([3dc3f0b4](https://github.com/thestrangetoolstore/nodenogg.in/commit/3dc3f0b4))
+- Added new CLAUDE.md ([1f5c7d76](https://github.com/thestrangetoolstore/nodenogg.in/commit/1f5c7d76))
+- When creating new nodes they wont overlap ([692468f7](https://github.com/thestrangetoolstore/nodenogg.in/commit/692468f7))
+- Updating docs ([ddb26308](https://github.com/thestrangetoolstore/nodenogg.in/commit/ddb26308))
+
+### 🐛 Bug Fixes
+
+- Duplicate now works in spatial view ([c0e57e9c](https://github.com/thestrangetoolstore/nodenogg.in/commit/c0e57e9c))
+- Removed file on what changes claude made ([ed058659](https://github.com/thestrangetoolstore/nodenogg.in/commit/ed058659))
+
+### ❤️ Contributors
+
+- Adam Procter ([@adamprocter](https://github.com/adamprocter))
+
 ## v0.3.17
 
 [compare changes](https://github.com/thestrangetoolstore/nodenogg.in/compare/v0.3.16...v0.3.17)
