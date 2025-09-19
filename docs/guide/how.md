@@ -24,4 +24,16 @@ Spaces in a microcosm name do not matter but the use of Capitals will create dis
 :::
 - Step 3. Click or tap add, write notes in as many nodes as you want.
 
+::: warning Note
+
+There is no submit or save needed, text in microcosms is saved / stored locally instantly in realtime and then sync'd to everyone else connected.
+
+:::
+
 If you have a laptop, projector or large screen use this to switch from the Collect View to the Spatial view to see / show all contributions spatially.
+
+::: danger I need examples!
+
+Of course here you [go!](scenerios) 
+
+:::
