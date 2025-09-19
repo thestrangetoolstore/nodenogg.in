@@ -1,5 +1,5 @@
 ---
-title: Scenerios
+title: Why
 ---
 
 # What was the problem and why you need nodenogg.in

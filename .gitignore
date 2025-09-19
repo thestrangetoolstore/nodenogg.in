@@ -22,3 +22,5 @@ node_modules
 # Vite
 docs/.vitepress/dist
 docs/.vitepress/cache
+
+docs/guide/.Ulysses-Settings.plist

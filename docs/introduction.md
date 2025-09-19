@@ -6,7 +6,7 @@ title: Introduction
 
 <div class="card-grid">
 <CardLink
-title="Lets go!"
+title="Lets go! Click / Tap me"
   description="Dive straight in, if you are an educator this is for you to find out why nodenogg.in will improve your community of practice."
   href="/guide/getting-started"
 />
@@ -41,7 +41,7 @@ This site is evolving documentation, aimed firstly at educators who want to use 
   description="The Principles that guide how every decision behind how this product is made."
   href="/edtech/principles"
 />
-<CardLink
+<!-- <CardLink
   title="Architecture"
   description="For a deep dive into how nodenogg.in works, look through the Architecture documentation"
   href="/architecture/01-overview"
@@ -50,7 +50,7 @@ This site is evolving documentation, aimed firstly at educators who want to use 
   title="PhD Thesis"
   description="For a deep dive read how this project is built on foundational research done by Dr Adam Procter during his practise-based PhD."
   href="https://eprints.soton.ac.uk/476974/"
-/>
+/> -->
 
 </div>
 
