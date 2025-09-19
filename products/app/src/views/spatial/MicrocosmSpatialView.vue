@@ -288,9 +288,20 @@ const handleCreateNode = async () => {
 }
 
 // Handler for entity duplication with overlap prevention
-const handleDuplicateEntity = async (entity: Entity) => {
-  if (EntitySchema.utils.isType(entity, 'html')) {
-    const htmlData = entity.data as Extract<Entity['data'], { type: 'html' }>
+const handleDuplicateEntity = async (entityOrData: Entity | Entity['data']) => {
+  // Handle case where HTMLEntity component passes entity.data directly
+  let entityData: Entity['data']
+
+  if ('data' in entityOrData) {
+    // Full entity object
+    entityData = entityOrData.data
+  } else {
+    // Just entity data
+    entityData = entityOrData
+  }
+
+  if (entityData.type === 'html') {
+    const htmlData = entityData as Extract<Entity['data'], { type: 'html' }>
 
     // Try to place the duplicate near the original with some offset
     const preferredPosition = {
@@ -313,8 +324,8 @@ const handleDuplicateEntity = async (entity: Entity) => {
       x: position.x,
       y: position.y
     })
-  } else if (EntitySchema.utils.isType(entity, 'emoji')) {
-    const emojiData = entity.data as Extract<Entity['data'], { type: 'emoji' }>
+  } else if (entityData.type === 'emoji') {
+    const emojiData = entityData as Extract<Entity['data'], { type: 'emoji' }>
 
     // For emoji nodes, place them near the original
     const preferredPosition = {
