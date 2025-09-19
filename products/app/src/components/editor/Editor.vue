@@ -123,7 +123,7 @@ watch(() => props.editable, (newValue) => {
 <style>
 .wrapper {
   width: 100%;
-  padding-bottom: var(--size-16);
+  height: 100%;
   border: 2px solid transparent;
   border-radius: var(--ui-radius);
   transition: border-color 0.2s ease;

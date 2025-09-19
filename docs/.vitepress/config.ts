@@ -6,6 +6,7 @@ export default defineConfig({
   description: "Guides for using nodenogg.in",
   ignoreDeadLinks: true,
   cleanUrls: true,
+  base: "/",
   // lastUpdated: true,
   themeConfig: {
     // lastUpdated: {
@@ -47,8 +48,36 @@ export default defineConfig({
             link: "/guide/getting-started",
           },
           {
+            text: "How",
+            link: "/guide/how",
+          },
+          {
+            text: "Scenerios",
+            link: "/guide/scenerios",
+          },
+          {
+            text: "Features",
+            link: "/guide/features",
+          },
+          {
+            text: "Terminnology",
+            link: "/guide/terminology",
+          },
+          {
+            text: "FAQ's",
+            link: "/guide/faq",
+          },
+          {
+            text: "Why",
+            link: "/guide/why",
+          },
+          {
             text: "Testimonials",
             link: "/guide/testimonials",
+          },
+          {
+            text: "Feedback",
+            link: "/guide/feedback",
           },
         ],
       },
@@ -63,40 +92,40 @@ export default defineConfig({
         ],
       },
 
-      {
-        text: "Software Architecture",
-        items: [
-          { text: "Roadmap", link: "/architecture/roadmap" },
-          {
-            text: "Overview",
-            link: "/architecture/01-overview",
-          },
-          {
-            text: "Codebase",
-            link: "/architecture/02-codebase",
-          },
-          {
-            text: "Data",
-            link: "/architecture/03-data",
-          },
-          {
-            text: "Sync",
-            link: "/architecture/04-sync",
-          },
-          {
-            text: "Agents",
-            link: "/architecture/05-agents",
-          },
-          {
-            text: "Views",
-            link: "/architecture/06-views",
-          },
-          {
-            text: "Open questions",
-            link: "/architecture/07-open-questions",
-          },
-        ],
-      },
+      // {
+      //   text: "Software Architecture",
+      //   items: [
+      //     { text: "Roadmap", link: "/roadmap" },
+      //     {
+      //       text: "Overview",
+      //       link: "/architecture/01-overview",
+      //     },
+      //     {
+      //       text: "Codebase",
+      //       link: "/architecture/02-codebase",
+      //     },
+      //     {
+      //       text: "Data",
+      //       link: "/architecture/03-data",
+      //     },
+      //     {
+      //       text: "Sync",
+      //       link: "/architecture/04-sync",
+      //     },
+      //     {
+      //       text: "Agents",
+      //       link: "/architecture/05-agents",
+      //     },
+      //     {
+      //       text: "Views",
+      //       link: "/architecture/06-views",
+      //     },
+      //     {
+      //       text: "Open questions",
+      //       link: "/architecture/07-open-questions",
+      //     },
+      //   ],
+      // },
       {
         text: "Development",
         items: [

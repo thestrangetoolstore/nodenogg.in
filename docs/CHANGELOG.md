@@ -1,5 +1,68 @@
 # Changelog
 
+## v0.3.18
+
+[compare changes](https://github.com/thestrangetoolstore/nodenogg.in/compare/v0.3.17...v0.3.18)
+
+### 🚀 Features
+
+- More edits to docs ([3dc3f0b4](https://github.com/thestrangetoolstore/nodenogg.in/commit/3dc3f0b4))
+- Added new CLAUDE.md ([1f5c7d76](https://github.com/thestrangetoolstore/nodenogg.in/commit/1f5c7d76))
+- When creating new nodes they wont overlap ([692468f7](https://github.com/thestrangetoolstore/nodenogg.in/commit/692468f7))
+- Updating docs ([ddb26308](https://github.com/thestrangetoolstore/nodenogg.in/commit/ddb26308))
+
+### 🐛 Bug Fixes
+
+- Duplicate now works in spatial view ([c0e57e9c](https://github.com/thestrangetoolstore/nodenogg.in/commit/c0e57e9c))
+- Removed file on what changes claude made ([ed058659](https://github.com/thestrangetoolstore/nodenogg.in/commit/ed058659))
+
+### ❤️ Contributors
+
+- Adam Procter ([@adamprocter](https://github.com/adamprocter))
+
+## v0.3.17
+
+[compare changes](https://github.com/thestrangetoolstore/nodenogg.in/compare/v0.3.16...v0.3.17)
+
+### 🐛 Bug Fixes
+
+- Updated to new accessible font Lexend ([c969fa7e](https://github.com/thestrangetoolstore/nodenogg.in/commit/c969fa7e))
+
+### ❤️ Contributors
+
+- Adam Procter ([@adamprocter](https://github.com/adamprocter))
+
+## v0.3.16
+
+[compare changes](https://github.com/thestrangetoolstore/nodenogg.in/compare/v0.3.15...v0.3.16)
+
+### 🐛 Bug Fixes
+
+- Updated docs ([f1725679](https://github.com/thestrangetoolstore/nodenogg.in/commit/f1725679))
+- Updated hono ([aa40df5e](https://github.com/thestrangetoolstore/nodenogg.in/commit/aa40df5e))
+- Update lock ([da524732](https://github.com/thestrangetoolstore/nodenogg.in/commit/da524732))
+
+### ❤️ Contributors
+
+- Adam Procter ([@adamprocter](https://github.com/adamprocter))
+
+## v0.3.15
+
+[compare changes](https://github.com/thestrangetoolstore/nodenogg.in/compare/v0.3.14...v0.3.15)
+
+### 🚀 Features
+
+- Updated tiptap to latest version, spatial view node height match ([9dadc6e3](https://github.com/thestrangetoolstore/nodenogg.in/commit/9dadc6e3))
+
+### 🐛 Bug Fixes
+
+- Removed changes made for iOS spatial view ([2d330de2](https://github.com/thestrangetoolstore/nodenogg.in/commit/2d330de2))
+- Updated hono due to security flaw ([0ddfae63](https://github.com/thestrangetoolstore/nodenogg.in/commit/0ddfae63))
+
+### ❤️ Contributors
+
+- Adam Procter ([@adamprocter](https://github.com/adamprocter))
+
 ## v0.3.14
 
 [compare changes](https://github.com/thestrangetoolstore/nodenogg.in/compare/v0.3.13...v0.3.14)

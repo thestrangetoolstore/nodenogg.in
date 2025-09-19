@@ -1,5 +1,13 @@
+
+@font-face {
+  font-family: 'Lexend';
+  src: url('../public/fonts/Lexend/Lexend-VariableFont_wght.ttf') format('truetype-variations');
+  font-weight: 100 900;
+  font-display: swap;
+}
+
 :root {
-  --vp-font-family-base: "Munken Sans", "Inter", ui-sans-serif, system-ui,
+  --vp-font-family-base: "Lexend", "Inter", ui-sans-serif, system-ui,
     sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",
     "Noto Color Emoji";
   --vp-font-family-mono: ui-monospace, "Menlo", "Monaco", "Consolas",
