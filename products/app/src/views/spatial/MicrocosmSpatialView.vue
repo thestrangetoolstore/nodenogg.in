@@ -22,6 +22,7 @@ import {
   ContextMenuTrigger,
 } from 'reka-ui'
 import ContextMenuItem from '@/components/context-menu/ContextMenuItem.vue'
+import { findNonOverlappingPosition } from '@/utils/node-positioning'
 
 defineProps({
   view_id: {
@@ -216,18 +217,40 @@ const handleDeleteEntity = (entity: Entity) => {
 }
 
 const handleCreateNodeAtPosition = () => {
+  const preferredPosition = {
+    x: contextMenuPosition.value.x - 100, // Center the node
+    y: contextMenuPosition.value.y - 100
+  }
+
+  const dimensions = { width: 200, height: 200 }
+  const position = findNonOverlappingPosition(preferredPosition, dimensions, entities.value)
+
   create({
     type: 'html',
-    x: contextMenuPosition.value.x - 100, // Center the node
-    y: contextMenuPosition.value.y - 100,
-    width: 200,
-    height: 200,
+    x: position.x,
+    y: position.y,
+    width: dimensions.width,
+    height: dimensions.height,
     content: ''
   })
 }
 
-const handleCreateEmojiAtPosition = () =>
-  create({ type: 'emoji', content: '❤️', x: contextMenuPosition.value.x, y: contextMenuPosition.value.y })
+const handleCreateEmojiAtPosition = () => {
+  const preferredPosition = {
+    x: contextMenuPosition.value.x,
+    y: contextMenuPosition.value.y
+  }
+
+  const dimensions = { width: 50, height: 50 }
+  const position = findNonOverlappingPosition(preferredPosition, dimensions, entities.value)
+
+  create({
+    type: 'emoji',
+    content: '❤️',
+    x: position.x,
+    y: position.y
+  })
+}
 
 
 // Action handlers for spatial view
@@ -245,15 +268,72 @@ const handleCreateNode = async () => {
     y: centerScreenY
   })
 
-  // Create node at viewport center
+  const preferredPosition = {
+    x: flowPosition.x - 100, // Subtract half the width to center the node
+    y: flowPosition.y - 100  // Subtract half the height to center the node
+  }
+
+  const nodeDimensions = { width: 200, height: 200 }
+  const position = findNonOverlappingPosition(preferredPosition, nodeDimensions, entities.value)
+
+  // Create node at non-overlapping position
   await create({
     type: 'html',
-    x: flowPosition.x - 100, // Subtract half the width to center the node
-    y: flowPosition.y - 100, // Subtract half the height to center the node
-    width: 200,
-    height: 200,
+    x: position.x,
+    y: position.y,
+    width: nodeDimensions.width,
+    height: nodeDimensions.height,
     content: ''
   })
+}
+
+// Handler for entity duplication with overlap prevention
+const handleDuplicateEntity = async (entity: Entity) => {
+  if (EntitySchema.utils.isType(entity, 'html')) {
+    const htmlData = entity.data as Extract<Entity['data'], { type: 'html' }>
+
+    // Try to place the duplicate near the original with some offset
+    const preferredPosition = {
+      x: htmlData.x + 50, // Offset by 50 pixels
+      y: htmlData.y + 50
+    }
+
+    const dimensions = {
+      width: htmlData.width || 200,
+      height: htmlData.height || 200
+    }
+
+    const position = findNonOverlappingPosition(preferredPosition, dimensions, entities.value, {
+      searchRadius: 400,
+      gridSize: 30
+    })
+
+    await create({
+      ...htmlData,
+      x: position.x,
+      y: position.y
+    })
+  } else if (EntitySchema.utils.isType(entity, 'emoji')) {
+    const emojiData = entity.data as Extract<Entity['data'], { type: 'emoji' }>
+
+    // For emoji nodes, place them near the original
+    const preferredPosition = {
+      x: emojiData.x + 30,
+      y: emojiData.y + 30
+    }
+
+    const dimensions = { width: 50, height: 50 }
+    const position = findNonOverlappingPosition(preferredPosition, dimensions, entities.value, {
+      searchRadius: 200,
+      gridSize: 20
+    })
+
+    await create({
+      ...emojiData,
+      x: position.x,
+      y: position.y
+    })
+  }
 }
 
 // Handler for emoji creation from HTMLEntity dropdown
@@ -293,8 +373,8 @@ const handleEmojiCreateFromEntity = (emoji: string, entity: Entity) => {
   <ViewContainer>
     <div class="spatial-canvas">
       <SpatialView :view_id="view_id" :ui="ui" :nodes="positionedNodes" :HTMLEntity="HTMLEntity" :Editor="Editor"
-        :onUpdate="update" :onDelete="deleteEntity" :onDuplicate="create" :editable="true"
-        :current-user-identity-id="currentIdentity?.id" :zoom-controls="true" 
+        :onUpdate="update" :onDelete="deleteEntity" :onDuplicate="handleDuplicateEntity" :editable="true"
+        :current-user-identity-id="currentIdentity?.id" :zoom-controls="true"
         :on-emoji-create="handleEmojiCreateFromEntity" @nodes-change="handleNodeChange">
         <template #node-resizable="resizableNodeProps">
           <!-- HTML entities with resizable handles will now use the app's HTMLEntity -->
