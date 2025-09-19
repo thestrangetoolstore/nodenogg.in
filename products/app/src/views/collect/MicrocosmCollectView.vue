@@ -8,9 +8,7 @@ import EmptyState from '@/components/EmptyState.vue'
 import { computed } from 'vue'
 import { EntitySchema, type Entity } from '@nodenogg.in/schema'
 import { COPY } from '@/constants/copy'
-
-// Utility function to generate random position offset
-const getRandomOffset = () => Math.floor(Math.random() * 1000) - 500 // Range: -500 to 500
+import { findNonOverlappingPosition } from '@/utils/node-positioning'
 
 defineProps({
   view_id: {
@@ -36,25 +34,76 @@ const htmlEntities = computed(() => entities.value.filter(e =>
 const { setEditingNode, isEditing, update, deleteEntity, create, duplicateEntity } = microcosm
 
 const handleCreateEntity = async () => {
+  // Use a preferred position around origin with some variance
+  const preferredPosition = {
+    x: Math.floor(Math.random() * 400) - 200, // Range: -200 to 200
+    y: Math.floor(Math.random() * 400) - 200  // Range: -200 to 200
+  }
+
+  const dimensions = { width: 300, height: 200 }
+  const position = findNonOverlappingPosition(preferredPosition, dimensions, entities.value, {
+    searchRadius: 500,
+    gridSize: 30
+  })
+
   await create({
     type: 'html',
-    x: getRandomOffset(),
-    y: getRandomOffset(),
-    width: 300,
-    height: 200,
+    x: position.x,
+    y: position.y,
+    width: dimensions.width,
+    height: dimensions.height,
     content: ''
   })
 }
 
 const handleDuplicateEntity = async (e: Entity) => {
-  await duplicateEntity(e)
+  if (EntitySchema.utils.isType(e, 'html')) {
+    const htmlData = e.data as Extract<Entity['data'], { type: 'html' }>
+
+    // Try to place the duplicate near the original with some offset
+    const preferredPosition = {
+      x: htmlData.x + 50, // Offset by 50 pixels
+      y: htmlData.y + 50
+    }
+
+    const dimensions = {
+      width: htmlData.width || 300,
+      height: htmlData.height || 200
+    }
+
+    const position = findNonOverlappingPosition(preferredPosition, dimensions, entities.value, {
+      searchRadius: 400,
+      gridSize: 30
+    })
+
+    await create({
+      ...htmlData,
+      x: position.x,
+      y: position.y
+    })
+  } else {
+    // For non-HTML entities, use the original duplicate function
+    await duplicateEntity(e)
+  }
 }
 
 const handleCreateEmoji = async () => {
+  // Use a preferred position around origin with some variance
+  const preferredPosition = {
+    x: Math.floor(Math.random() * 400) - 200, // Range: -200 to 200
+    y: Math.floor(Math.random() * 400) - 200  // Range: -200 to 200
+  }
+
+  const dimensions = { width: 50, height: 50 }
+  const position = findNonOverlappingPosition(preferredPosition, dimensions, entities.value, {
+    searchRadius: 500,
+    gridSize: 20
+  })
+
   await create({
     type: 'emoji',
-    x: getRandomOffset(),
-    y: getRandomOffset(),
+    x: position.x,
+    y: position.y,
     content: `❤️`
   })
 }
