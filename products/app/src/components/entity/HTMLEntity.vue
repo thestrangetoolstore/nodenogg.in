@@ -130,7 +130,7 @@ const handleEmojiSelect = (emoji: string) => {
 </script>
 
 <template>
-  <NodeResizer v-if="isEditable" :min-width="50" :min-height="50" :node-id="entity.id" />
+  <NodeResizer v-if="isEditable" :min-width="50" :min-height="50" :max-width="580" :max-height="500" :node-id="entity.id" />
   <div class="resizable-container" :class="{
     'is-selected': isSelected,
     'is-editing': isEditing,
