@@ -1,6 +1,6 @@
 {
   "name": "@nodenogg.in/y-microcosm",
-  "version": "0.3.19",
+  "version": "0.3.20",
   "type": "module",
   "main": "./src/index.ts",
   "types": "./src/index.ts",

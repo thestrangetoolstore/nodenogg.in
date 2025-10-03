@@ -1,5 +1,17 @@
 # Changelog
 
+## v0.3.20
+
+[compare changes](https://github.com/thestrangetoolstore/nodenogg.in/compare/v0.3.19...v0.3.20)
+
+### 🚀 Features
+
+- Added icons to help, discuss and gitlab ([eb0733dd](https://github.com/thestrangetoolstore/nodenogg.in/commit/eb0733dd))
+
+### ❤️ Contributors
+
+- Adam Procter ([@adamprocter](https://github.com/adamprocter))
+
 ## v0.3.19
 
 [compare changes](https://github.com/thestrangetoolstore/nodenogg.in/compare/v0.3.18...v0.3.19)
