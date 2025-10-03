@@ -65,8 +65,8 @@ const currentViewType = computed({
 // Get view display information
 const currentViewDefinition = computed(() => getViewDefinition(currentViewType.value))
 
- const helpSite = () => {
-      window.location.href = "https://docs.nodenogg.in";
+ const helpExport = () => {
+      window.location.href = "https://docs.nodenogg.in/guide/export";
 }
 
 const handleDeleteData = () => {
@@ -170,6 +170,36 @@ const handleMarkdownExport = async () => {
                     </MenubarTrigger>
                 </MenubarMenu>
 
+                <MenubarMenu value="help">
+                    <MenubarTrigger as-child>
+                        <a href="https://docs.nodenogg.in" target="_blank" rel="noopener noreferrer" class="menubar-trigger home-trigger">
+                            <Tooltip tooltip="Help" side="bottom" align="center" disableClosingTrigger>
+                                <Icon type="help" />
+                            </Tooltip>
+                        </a>
+                    </MenubarTrigger>
+                </MenubarMenu>
+
+                <MenubarMenu value="discuss">
+                    <MenubarTrigger as-child>
+                        <a href="https://discuss.strangetool.store" target="_blank" rel="noopener noreferrer" class="menubar-trigger home-trigger">
+                            <Tooltip tooltip="Discuss" side="bottom" align="center" disableClosingTrigger>
+                                <Icon type="discuss" />
+                            </Tooltip>
+                        </a>
+                    </MenubarTrigger>
+                </MenubarMenu>
+
+                <MenubarMenu value="github">
+                    <MenubarTrigger as-child>
+                        <a href="https://github.com/thestrangetoolstore/nodenogg.in/" target="_blank" rel="noopener noreferrer" class="menubar-trigger home-trigger">
+                            <Tooltip tooltip="GitHub" side="bottom" align="center" disableClosingTrigger>
+                                <Icon type="github" />
+                            </Tooltip>
+                        </a>
+                    </MenubarTrigger>
+                </MenubarMenu>
+
                 <template v-if="app.activeMicrocosm">
                     <MenubarSeparator class="breadcrumb-separator" />
                     <span class="microcosm-name-text">
@@ -252,9 +282,9 @@ const handleMarkdownExport = async () => {
                                 <span>Delete my data</span>
                             </MenubarItem>
                                <MenubarSeparator />
-                            <MenubarItem class="menubar-item help" @click="helpSite">
+                            <MenubarItem class="menubar-item exporthelp" @click="helpExport">
                                 <Icon type="trash" />
-                                <span>Help</span>
+                                <span>Export Help</span>
                             </MenubarItem>
                         </MenubarContent>
                     </MenubarPortal>
@@ -443,7 +473,7 @@ nav {
     }
 }
 
-:deep(.menubar-item.help) {
+:deep(.menubar-item.exporthelp) {
     color: var(--ui-primary-100);
 }
 
