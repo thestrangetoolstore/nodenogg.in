@@ -60,6 +60,10 @@ export default defineConfig({
             link: "/guide/features",
           },
           {
+            text: "Export",
+            link: "/guide/export",
+          },
+          {
             text: "Terminnology",
             link: "/guide/terminology",
           },

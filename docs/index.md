@@ -16,22 +16,23 @@ hero:
 
 ## Messy multi-player thinking and feedback
 
-nodenogg.in is an **in-person** real-time collaborative multiscreen web tool that increases participation in feedback and critiques. Improves staff and student confidence, project outcomes and enhances a community of practice. Designed with privacy in mind, simple and quick to use, nodenogg.in supports your education practice by using networked technologies to enhance social learning spaces.
+nodenogg.in is an **in-person** real-time collaborative multiscreen web tool that increases participation in feedback and critiques. 
+The app improves staff and student confidence, amplifies project outcomes and enhances a community of practice. Designed with privacy in mind, and simple and quick to use, nodenogg.in supports educational practice by using networked technologies to enhance social learning spaces.
 
 <div class="card-grid">
 <CardLink
 title="Lets go! Click / Tap me"
-  description="Dive straight in, if you are an educator this is for you to find out why nodenogg.in will improve your community of practice."
+  description="Dive straight in and see nodenogg.in in action. If you’re an educator find out why it will improve your community of practice."
   href="/guide/getting-started"
 />
 </div>
 
-## Education Technology but different
+## Education Technology but different!
 
 - trust based
 - free (libre) software
 - local-first (hosted-second)
-  - data is local **only** never stored in the cloud
+  - data is local **only**, never stored in the cloud
 - You control and own your data
 
 ::: details Click me to open {closed}

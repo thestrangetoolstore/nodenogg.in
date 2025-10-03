@@ -16,6 +16,9 @@ import home from './home.icon.svg?raw'
 import spatialview from './spatialview.icon.svg?raw'
 import collectview from './collectview.icon.svg?raw'
 import _new from './new.icon.svg?raw'
+import help from './help.icon.svg?raw'
+import discuss from './discuss.icon.svg?raw'
+import github from './github.icon.svg?raw'
 
 export type IconName = keyof typeof icons
 
@@ -35,6 +38,9 @@ export const icons = {
   plus,
   region,
   home,
+  help,
+  discuss,
+  github,
   ['new']: _new,
   ['collect-view']: collectview,
   ['spatial-view']: spatialview
