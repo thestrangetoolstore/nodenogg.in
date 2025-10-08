@@ -38,7 +38,7 @@ const { isType } = EntitySchema.utils
 
 <template>
     <div class="node" :style="`background-color: ${getColor(entity.data.backgroundColor || 'yellow')}`"
-        v-if="isType(entity, 'html')" :class="{ 'is-editing': isEditing }" tabindex="0">
+        v-if="isType(entity, 'html')" :class="{ 'is-editing': isEditing }" tabindex="0" :data-entity-id="entity.id">
         <Editor :value="entity.data.content" :onChange="content => onChange({ content })" :editable="isEditing"
             @click="onStartEditing" @cancel="onStopEditing" />
         <DropdownMenuRoot :modal="true">
