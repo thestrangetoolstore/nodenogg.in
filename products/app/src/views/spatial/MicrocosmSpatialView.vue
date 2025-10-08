@@ -193,9 +193,9 @@ const handleAddReactionToEntity = (entity: Entity) => {
     // Random angle around the entity (0 to 2π)
     const angle = Math.random() * 2 * Math.PI
 
-    // Random distance from edge of entity (50-100 pixels outside)
-    const minDistance = Math.max(entityWidth, entityHeight) / 2 + 50
-    const maxDistance = Math.max(entityWidth, entityHeight) / 2 + 100
+    // Random distance from edge of entity (20-40 pixels outside)
+    const minDistance = Math.max(entityWidth, entityHeight) / 2 + 20
+    const maxDistance = Math.max(entityWidth, entityHeight) / 2 + 40
     const distance = minDistance + Math.random() * (maxDistance - minDistance)
 
     // Calculate relative position using polar coordinates
@@ -358,16 +358,16 @@ const handleEmojiCreateFromEntity = (emoji: string, entity: Entity) => {
     
     // Random angle around the entity (0 to 2π)
     const angle = Math.random() * 2 * Math.PI
-    
-    // Random distance from edge of entity (50-100 pixels outside)
-    const minDistance = Math.max(entityWidth, entityHeight) / 2 + 50
-    const maxDistance = Math.max(entityWidth, entityHeight) / 2 + 100
+
+    // Random distance from edge of entity (20-40 pixels outside)
+    const minDistance = Math.max(entityWidth, entityHeight) / 2 + 20
+    const maxDistance = Math.max(entityWidth, entityHeight) / 2 + 40
     const distance = minDistance + Math.random() * (maxDistance - minDistance)
-    
+
     // Calculate relative position using polar coordinates
     const relativeX = entityCenterX + Math.cos(angle) * distance - 25 // -25 to center the 50px emoji
     const relativeY = entityCenterY + Math.sin(angle) * distance - 25
-    
+
     create({
       type: 'emoji',
       content: emoji,
