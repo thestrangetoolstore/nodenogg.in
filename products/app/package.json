@@ -38,6 +38,7 @@
     "@vue-flow/minimap": "^1.5.3",
     "@vueuse/core": "^13.6.0",
     "focus-trap-vue": "^4.0.3",
+    "jszip": "^3.10.1",
     "linkifyjs": "^4.3.2",
     "perfect-arrows": "^0.3.7",
     "pinia": "^3.0.3",

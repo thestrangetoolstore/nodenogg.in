@@ -1,6 +1,7 @@
 import type { Entity, MicrocosmID, IdentityID } from '@nodenogg.in/schema'
 import { APP_VERSION } from '@nodenogg.in/core'
 import type { MicrocosmAPI } from '@nodenogg.in/core'
+import JSZip from 'jszip'
 
 export interface MarkdownFileExport {
   filename: string
@@ -222,19 +223,16 @@ export async function exportMicrocosmEntitiesAsMarkdown(
 /**
  * Downloads individual markdown files as a ZIP archive
  */
-export function downloadMarkdownFiles(data: MicrocosmMarkdownExport, zipFilename?: string): void {
-  // For now, we'll create a simple implementation that downloads each file individually
-  // In a production environment, you might want to use a library like JSZip
-  
+export async function downloadMarkdownFiles(data: MicrocosmMarkdownExport, zipFilename?: string): Promise<void> {
   const filename = zipFilename || `microcosm-${data.microcosm_id}-markdown-${new Date().toISOString().split('T')[0]}`
-  
+
   // Create a manifest file that lists all the markdown files
   const manifest = `# Microcosm Export Manifest
 
-**Microcosm ID:** ${data.microcosm_id}  
-**Generated:** ${data.generated_at}  
-**App Version:** ${data.app_version}  
-**Total Identities:** ${data.total_identities}  
+**Microcosm ID:** ${data.microcosm_id}
+**Generated:** ${data.generated_at}
+**App Version:** ${data.app_version}
+**Total Identities:** ${data.total_identities}
 **Total Files:** ${data.files.length}
 
 ## Files
@@ -248,25 +246,31 @@ This export contains ${data.files.length} markdown files from your microcosm. Ea
 - The original content preserved as markdown
 
 To use these files:
-1. Extract all files to a directory
+1. Extract the ZIP archive to a directory
 2. Each .md file can be opened in any markdown editor
 3. The frontmatter contains the original entity metadata
 `
 
-  // Download manifest first
-  downloadTextFile(manifest, `${filename}-manifest.md`)
-  
-  // Download each markdown file
+  // Create a new JSZip instance
+  const zip = new JSZip()
+
+  // Add manifest file to the zip
+  zip.file('README.md', manifest)
+
+  // Add each markdown file to the zip
   data.files.forEach(file => {
-    downloadTextFile(file.content, file.filename)
+    zip.file(file.filename, file.content)
   })
+
+  // Generate the zip file and trigger download
+  const blob = await zip.generateAsync({ type: 'blob' })
+  downloadBlob(blob, `${filename}.zip`)
 }
 
 /**
- * Downloads a text file to the user's device
+ * Downloads a blob to the user's device
  */
-function downloadTextFile(content: string, filename: string): void {
-  const blob = new Blob([content], { type: 'text/markdown;charset=utf-8' })
+function downloadBlob(blob: Blob, filename: string): void {
   const url = URL.createObjectURL(blob)
 
   const link = document.createElement('a')
