@@ -1,5 +1,17 @@
 # Changelog
 
+## v0.3.22
+
+[compare changes](https://github.com/thestrangetoolstore/nodenogg.in/compare/v0.3.21...v0.3.22)
+
+### 🐛 Bug Fixes
+
+- Added JSZip for packaging up markdown files ([2f1c78c0](https://github.com/thestrangetoolstore/nodenogg.in/commit/2f1c78c0))
+
+### ❤️ Contributors
+
+- Adam Procter ([@adamprocter](https://github.com/adamprocter))
+
 ## v0.3.21
 
 [compare changes](https://github.com/thestrangetoolstore/nodenogg.in/compare/v0.3.20...v0.3.21)
