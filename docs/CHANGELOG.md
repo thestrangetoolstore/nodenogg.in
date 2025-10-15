@@ -1,5 +1,35 @@
 # Changelog
 
+## v0.3.22
+
+[compare changes](https://github.com/thestrangetoolstore/nodenogg.in/compare/v0.3.21...v0.3.22)
+
+### 🐛 Bug Fixes
+
+- Added JSZip for packaging up markdown files ([2f1c78c0](https://github.com/thestrangetoolstore/nodenogg.in/commit/2f1c78c0))
+
+### ❤️ Contributors
+
+- Adam Procter ([@adamprocter](https://github.com/adamprocter))
+
+## v0.3.21
+
+[compare changes](https://github.com/thestrangetoolstore/nodenogg.in/compare/v0.3.20...v0.3.21)
+
+### 🚀 Features
+
+- Added autofocus for node editing ([a41bdc69](https://github.com/thestrangetoolstore/nodenogg.in/commit/a41bdc69))
+
+### 🐛 Bug Fixes
+
+- Cant react to your own nodes ([58f768b6](https://github.com/thestrangetoolstore/nodenogg.in/commit/58f768b6))
+- Updated tiptap core ([8d5b641f](https://github.com/thestrangetoolstore/nodenogg.in/commit/8d5b641f))
+- Update tiptap ([04895e29](https://github.com/thestrangetoolstore/nodenogg.in/commit/04895e29))
+
+### ❤️ Contributors
+
+- Adam Procter ([@adamprocter](https://github.com/adamprocter))
+
 ## v0.3.20
 
 [compare changes](https://github.com/thestrangetoolstore/nodenogg.in/compare/v0.3.19...v0.3.20)

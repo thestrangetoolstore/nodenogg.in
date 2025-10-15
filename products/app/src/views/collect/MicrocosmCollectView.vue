@@ -5,7 +5,7 @@ import { storeToRefs } from 'pinia'
 import ViewContainer from '@/components/ViewContainer.vue'
 import ActionButton from '@/components/ActionButton.vue'
 import EmptyState from '@/components/EmptyState.vue'
-import { computed } from 'vue'
+import { computed, nextTick } from 'vue'
 import { EntitySchema, type Entity } from '@nodenogg.in/schema'
 import { COPY } from '@/constants/copy'
 import { findNonOverlappingPosition } from '@/utils/node-positioning'
@@ -46,7 +46,7 @@ const handleCreateEntity = async () => {
     gridSize: 30
   })
 
-  await create({
+  const newEntity = await create({
     type: 'html',
     x: position.x,
     y: position.y,
@@ -54,6 +54,23 @@ const handleCreateEntity = async () => {
     height: dimensions.height,
     content: ''
   })
+
+  // Scroll to and focus the newly created node
+  if (newEntity) {
+    await nextTick()
+    // Wait for the DOM to fully update and editor to initialize
+    setTimeout(() => {
+      const nodeElement = document.querySelector(`[data-entity-id="${newEntity.id}"]`)
+      if (nodeElement) {
+        nodeElement.scrollIntoView({ behavior: 'smooth', block: 'center' })
+        // Find and focus the editor within the node
+        const editorElement = nodeElement.querySelector('.tiptap') as HTMLElement
+        if (editorElement) {
+          editorElement.focus()
+        }
+      }
+    }, 100)
+  }
 }
 
 const handleDuplicateEntity = async (e: Entity) => {

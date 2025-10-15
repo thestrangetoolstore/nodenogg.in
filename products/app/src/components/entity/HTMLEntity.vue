@@ -168,10 +168,6 @@ const handleEmojiSelect = (emoji: string) => {
                 <ColorSelector :value="entity.data.backgroundColor" :onUpdate="handleColorChange" />
               </DropdownMenuItem>
               <DropdownMenuSeparator class="dropdown-menu-separator" />
-              <DropdownMenuItem class="dropdown-menu-item emoji-selector-item">
-                <EmojiSelector :onEmojiSelect="handleEmojiSelect" />
-              </DropdownMenuItem>
-              <DropdownMenuSeparator class="dropdown-menu-separator" />
               <DropdownMenuItem class="dropdown-menu-item" @click="handleDuplicate">
                 Duplicate
               </DropdownMenuItem>
