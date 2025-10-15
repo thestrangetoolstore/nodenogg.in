@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed, ref, onMounted } from 'vue'
 import { SpatialView, EmojiEntity } from '@nodenogg.in/spatial-view'
 import HTMLEntity from '@/components/entity/HTMLEntity.vue'
 import { useCurrentMicrocosm } from '@/state'
@@ -23,6 +23,7 @@ import {
 } from 'reka-ui'
 import ContextMenuItem from '@/components/context-menu/ContextMenuItem.vue'
 import { findNonOverlappingPosition } from '@/utils/node-positioning'
+import { useAdminMode } from '@/composables/useAdminMode'
 
 defineProps({
   view_id: {
@@ -42,6 +43,14 @@ const { entities } = storeToRefs(microcosm)
 
 // Get current user identity
 const currentIdentity = client.identity.get()
+
+// Admin mode composable
+const { isAdminMode, isTauriApp, initAdminMode, toggleAdminMode } = useAdminMode()
+
+// Initialize admin mode on mount
+onMounted(() => {
+  initAdminMode()
+})
 
 // Helper function to check if entity is owned by current user
 const isOwnedByCurrentUser = (entity: Entity) => {
@@ -92,9 +101,10 @@ const positionedNodes = computed(() => {
       },
       // Add property to indicate if entity is editable for the resizer
       // Emojis with parent nodes should not be independently draggable
-      draggable: isOwnedByCurrentUser(entity) && !(isEmoji && entity.data.parentNodeId),
+      // In admin mode (Tauri only), all entities are draggable
+      draggable: (isAdminMode.value || isOwnedByCurrentUser(entity)) && !(isEmoji && entity.data.parentNodeId),
       selectable: true, // All entities can be selected
-      deletable: isOwnedByCurrentUser(entity)
+      deletable: isAdminMode.value || isOwnedByCurrentUser(entity)
     }
   })
 })
@@ -407,6 +417,21 @@ const handleEmojiCreateFromEntity = (emoji: string, entity: Entity) => {
     </div>
     <template #actions>
       <ActionButton icon="new" label="Add" @click="handleCreateNode" />
+      <!-- Admin mode toggle - only visible in Tauri app -->
+      <ActionButton
+        v-if="isTauriApp"
+        icon="tool"
+        :label="isAdminMode ? 'Move All: ON' : 'Move All: OFF'"
+        @click="toggleAdminMode"
+        :style="{
+          background: isAdminMode ? 'var(--ui-primary-100)' : 'var(--ui-95)',
+          color: isAdminMode ? 'var(--ui-100)' : 'inherit'
+        }"
+      />
+      <!-- Debug info - remove this after testing -->
+      <!-- <div style="position: fixed; bottom: 10px; right: 10px; background: black; color: white; padding: 8px; font-size: 12px; z-index: 9999;">
+        Tauri: {{ isTauriApp ? 'YES' : 'NO' }} | Admin: {{ isAdminMode ? 'ON' : 'OFF' }}
+      </div> -->
     </template>
   </ViewContainer>
 </template>
