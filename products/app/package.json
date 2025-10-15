@@ -5,6 +5,9 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "tauri": "tauri",
+    "tauri:dev": "tauri dev",
+    "tauri:build": "tauri build",
     "build": "run-p type-check \"build-only {@}\" --",
     "preview": "vite preview",
     "test": "vitest",
@@ -20,6 +23,7 @@
     "@nodenogg.in/schema": "workspace:*",
     "@nodenogg.in/spatial-view": "workspace:*",
     "@nodenogg.in/y-microcosm": "workspace:*",
+    "@tauri-apps/api": "^2.8.0",
     "@tiptap/core": "^3.6.5",
     "@tiptap/extension-character-count": "^3.6.5",
     "@tiptap/extension-document": "^3.6.5",
