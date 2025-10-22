@@ -134,21 +134,32 @@ function htmlToMarkdown(html: string): string {
 }
 
 /**
- * Converts an entity to markdown content
+ * Converts an entity to markdown content, optionally including related emojis
  */
-function entityToMarkdown(entity: Entity, identityId: IdentityID): string {
+function entityToMarkdown(entity: Entity, identityId: IdentityID, relatedEmojis: Entity[] = []): string {
   // Build metadata, including backgroundColor if it exists
   let metadataFields = [
     `created: ${new Date(entity.created).toISOString()}`,
     `lastEdited: ${new Date(entity.lastEdited).toISOString()}`,
     `type: ${entity.data.type}`
   ]
-  
+
   // Add backgroundColor if it exists (only for HTML entities)
   if (entity.data.type === 'html' && entity.data.backgroundColor) {
     metadataFields.push(`backgroundColor: ${entity.data.backgroundColor}`)
   }
-  
+
+  // Add emoji information if there are related emojis (only for HTML entities)
+  if (entity.data.type === 'html' && relatedEmojis.length > 0) {
+    const emojiList = relatedEmojis
+      .map(e => e.data.type === 'emoji' ? e.data.content : '')
+      .filter(Boolean)
+      .join(', ')
+    if (emojiList) {
+      metadataFields.push(`emojis: [${emojiList}]`)
+    }
+  }
+
   const metadata = `---
 ${metadataFields.join('\n')}
 ---
@@ -159,11 +170,24 @@ ${metadataFields.join('\n')}
     case 'html':
       const htmlContent = entity.data.content || ''
       const markdownContent = htmlToMarkdown(htmlContent)
-      return metadata + markdownContent
-    
+
+      // Append emoji section if there are related emojis
+      let emojiSection = ''
+      if (relatedEmojis.length > 0) {
+        emojiSection = '\n\n---\n\n## Emojis\n\n'
+        relatedEmojis.forEach(emoji => {
+          if (emoji.data.type === 'emoji') {
+            emojiSection += `${emoji.data.content} `
+          }
+        })
+        emojiSection = emojiSection.trim()
+      }
+
+      return metadata + markdownContent + emojiSection
+
     case 'emoji':
       return metadata + `# ${entity.data.content}`
-    
+
     case 'connection':
       return metadata + `Connection from ${entity.data.from || 'unknown'} to ${entity.data.to || 'unknown'}`
   }
@@ -180,10 +204,11 @@ export async function exportMicrocosmEntitiesAsMarkdown(
   let index = 0
   let identityCount = 0
 
-  // Collect all entities from all identities
+  // First pass: collect all entities
+  const allEntities: Entity[] = []
   for await (const identityId of microcosmApi.getCollections()) {
     identityCount++
-    
+
     for await (const entityId of microcosmApi.getCollection(identityId)) {
       try {
         const entity = await microcosmApi.getEntity({
@@ -192,22 +217,65 @@ export async function exportMicrocosmEntitiesAsMarkdown(
         })
 
         if (entity) {
-          const filename = createFilename(entity, index)
-          const content = entityToMarkdown(entity, identityId)
-          
-          files.push({
-            filename,
-            content,
-            entity_id: entity.id,
-            created: entity.created,
-            lastEdited: entity.lastEdited
-          })
-          
-          index++
+          allEntities.push(entity)
         }
       } catch (error) {
-        console.warn(`Failed to export entity ${entityId} from identity ${identityId}:`, error)
+        console.warn(`Failed to fetch entity ${entityId} from identity ${identityId}:`, error)
       }
+    }
+  }
+
+  // Build a map of parent HTML entities to their related emojis
+  const emojiMap = new Map<string, Entity[]>()
+  const standaloneEmojis: Entity[] = []
+
+  allEntities.forEach(entity => {
+    if (entity.data.type === 'emoji') {
+      if (entity.data.parentNodeId) {
+        // This emoji is connected to a parent HTML entity
+        const emojis = emojiMap.get(entity.data.parentNodeId) || []
+        emojis.push(entity)
+        emojiMap.set(entity.data.parentNodeId, emojis)
+      } else {
+        // This is a standalone emoji
+        standaloneEmojis.push(entity)
+      }
+    }
+  })
+
+  // Second pass: export entities with their related emojis
+  for (const entity of allEntities) {
+    try {
+      // Skip emojis that have a parent (they'll be included with their parent)
+      if (entity.data.type === 'emoji' && entity.data.parentNodeId) {
+        continue
+      }
+
+      let filename: string
+      let content: string
+
+      if (entity.data.type === 'html') {
+        // Include related emojis for HTML entities
+        const relatedEmojis = emojiMap.get(entity.id) || []
+        filename = createFilename(entity, index)
+        content = entityToMarkdown(entity, entity.identity_id, relatedEmojis)
+      } else {
+        // For other entity types (standalone emojis, connections)
+        filename = createFilename(entity, index)
+        content = entityToMarkdown(entity, entity.identity_id)
+      }
+
+      files.push({
+        filename,
+        content,
+        entity_id: entity.id,
+        created: entity.created,
+        lastEdited: entity.lastEdited
+      })
+
+      index++
+    } catch (error) {
+      console.warn(`Failed to export entity ${entity.id}:`, error)
     }
   }
 
