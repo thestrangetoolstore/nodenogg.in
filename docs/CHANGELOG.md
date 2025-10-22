@@ -1,5 +1,24 @@
 # Changelog
 
+## v0.3.23
+
+[compare changes](https://github.com/thestrangetoolstore/nodenogg.in/compare/v0.3.22...v0.3.23)
+
+### 🚀 Features
+
+- Added a positive issue template creator ([0b374bb4](https://github.com/thestrangetoolstore/nodenogg.in/commit/0b374bb4))
+- Markdown export now has emojis within the node export file ([0c8ccb38](https://github.com/thestrangetoolstore/nodenogg.in/commit/0c8ccb38))
+
+### 🐛 Bug Fixes
+
+- Updated packages ([cc4bfc30](https://github.com/thestrangetoolstore/nodenogg.in/commit/cc4bfc30))
+- Updated vitepress package as well ([b2db0b00](https://github.com/thestrangetoolstore/nodenogg.in/commit/b2db0b00))
+- Updated vite across all of monorepo now ([1d644333](https://github.com/thestrangetoolstore/nodenogg.in/commit/1d644333))
+
+### ❤️ Contributors
+
+- Adam Procter ([@adamprocter](https://github.com/adamprocter))
+
 ## v0.3.22
 
 [compare changes](https://github.com/thestrangetoolstore/nodenogg.in/compare/v0.3.21...v0.3.22)
