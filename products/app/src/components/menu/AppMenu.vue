@@ -23,6 +23,7 @@ import { useApp, useAppRouter } from '@/state';
 import { client } from '@/state/app';
 import { exportAndDownloadMicrocosm, deleteAllUserEntities } from '@/utils/export';
 import { exportAndDownloadMarkdownFiles } from '@/utils/export-md';
+import { exportAndDownloadRtfFiles } from '@/utils/export-rtf';
 import { viewRegistry, getViewDefinition } from '@/views';
 import Icon from '@/components/icon/Icon.vue';
 import Tooltip from '../Tooltip.vue';
@@ -153,6 +154,28 @@ const handleMarkdownExport = async () => {
     }
 }
 
+const handleRtfExport = async () => {
+    if (!app.activeMicrocosm) {
+        console.warn('No active microcosm to export')
+        return
+    }
+
+    try {
+        // Get the microcosm API instance
+        const microcosmApi = await client.register({ id: app.activeMicrocosm.id })
+
+        await exportAndDownloadRtfFiles(
+            microcosmApi,
+            app.activeMicrocosm.id
+        )
+
+        console.log('Microcosm exported as RTF files successfully')
+    } catch (error) {
+        console.error('Failed to export microcosm as RTF:', error)
+        // TODO: Show user-friendly error notification
+    }
+}
+
 </script>
 
 <template>
@@ -274,7 +297,11 @@ const handleMarkdownExport = async () => {
                             </MenubarItem>
                             <MenubarItem class="menubar-item" @click="handleMarkdownExport">
                                 <Icon type="download" />
-                                <span>Export to Markdown</span>
+                                <span>Export all to Markdown files</span>
+                            </MenubarItem>
+                            <MenubarItem class="menubar-item" @click="handleRtfExport">
+                                <Icon type="download" />
+                                <span>Export all to Text Files</span>
                             </MenubarItem>
                             <MenubarSeparator />
                             <MenubarItem class="menubar-item warning" @click="handleDeleteData">
