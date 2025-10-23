@@ -5,7 +5,7 @@ title: Export
 These page explains the current export options and what each one does.
 
 ## Export as JSON
-This option will export **only your** nodes from a microcosm into a single JSON file (.json). This is useful when you need a data format for importing into aa variety of systems.
+This option will export **only your** nodes from a microcosm into a single JSON file (.json). This is useful when you need a data format for importing into a variety of systems.
 
 ::: details What is JSON? {closed}
 
