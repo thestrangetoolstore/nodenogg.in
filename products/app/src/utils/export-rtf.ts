@@ -519,7 +519,7 @@ ${data.files.map(file => `- ${file.filename}`).join('\n')}
 
 This export contains ${data.files.length + 1} RTF (Rich Text Format) files from your microcosm:
 
-1. **all-entities.rtf** - A single document containing all entities, separated by page breaks
+1. **all-nodes.rtf** - A single document containing all entities, separated by page breaks
 2. **Individual entity files** - Each entity exported as a separate RTF file
 
 Each file contains:
@@ -543,7 +543,7 @@ RTF files can be opened in:
 
   // Create and add the combined RTF file
   const combinedRtf = createCombinedRtfDocument(data)
-  zip.file('all-entities.rtf', combinedRtf)
+  zip.file('all-nodes.rtf', combinedRtf)
 
   // Add each individual RTF file to the zip
   data.files.forEach(file => {
