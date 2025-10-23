@@ -1,5 +1,25 @@
 # Changelog
 
+## v0.3.24
+
+[compare changes](https://github.com/thestrangetoolstore/nodenogg.in/compare/v0.3.23...v0.3.24)
+
+### 🚀 Features
+
+- Added rich text format output ([991cd9f9](https://github.com/thestrangetoolstore/nodenogg.in/commit/991cd9f9))
+- Improved export documentation ([5ff2e749](https://github.com/thestrangetoolstore/nodenogg.in/commit/5ff2e749))
+
+### 🐛 Bug Fixes
+
+- Updated hono for security ([bf333845](https://github.com/thestrangetoolstore/nodenogg.in/commit/bf333845))
+- Moved emoji closer to node you react towards ([2ef75ce0](https://github.com/thestrangetoolstore/nodenogg.in/commit/2ef75ce0))
+- Capitalisation tweak ([967a5361](https://github.com/thestrangetoolstore/nodenogg.in/commit/967a5361))
+- Typo ([4a5ae0c6](https://github.com/thestrangetoolstore/nodenogg.in/commit/4a5ae0c6))
+
+### ❤️ Contributors
+
+- Adam Procter ([@adamprocter](https://github.com/adamprocter))
+
 ## v0.3.23
 
 [compare changes](https://github.com/thestrangetoolstore/nodenogg.in/compare/v0.3.22...v0.3.23)

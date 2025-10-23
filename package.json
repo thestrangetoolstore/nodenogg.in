@@ -1,6 +1,6 @@
 {
   "name": "nodenogg.in",
-  "version": "0.3.23",
+  "version": "0.3.24",
   "description": "Monorepo for nodenogg.in app and YJS sync server",
   "type": "module",
   "scripts": {
