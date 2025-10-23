@@ -193,9 +193,9 @@ const handleAddReactionToEntity = (entity: Entity) => {
     // Random angle around the entity (0 to 2π)
     const angle = Math.random() * 2 * Math.PI
 
-    // Random distance from edge of entity (20-40 pixels outside)
-    const minDistance = Math.max(entityWidth, entityHeight) / 2 + 20
-    const maxDistance = Math.max(entityWidth, entityHeight) / 2 + 40
+    // Random distance from edge of entity (10-30 pixels outside)
+    const minDistance = Math.max(entityWidth, entityHeight) / 2 + 10
+    const maxDistance = Math.max(entityWidth, entityHeight) / 2 + 30
     const distance = minDistance + Math.random() * (maxDistance - minDistance)
 
     // Calculate relative position using polar coordinates
