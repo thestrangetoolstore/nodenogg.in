@@ -301,7 +301,7 @@ const handleRtfExport = async () => {
                             </MenubarItem>
                             <MenubarItem class="menubar-item" @click="handleRtfExport">
                                 <Icon type="download" />
-                                <span>Export all to Text Files</span>
+                                <span>Export all to Text files</span>
                             </MenubarItem>
                             <MenubarSeparator />
                             <MenubarItem class="menubar-item warning" @click="handleDeleteData">
