@@ -419,17 +419,17 @@ importers:
         specifier: ^2.15.3
         version: 2.15.3(y-protocols@1.0.6(yjs@13.6.27))(yjs@13.6.27)
       '@hono/node-server':
-        specifier: ^1.17.1
-        version: 1.17.1(hono@4.10.2)
+        specifier: ^1.19.5
+        version: 1.19.5(hono@4.10.3)
       '@hono/node-ws':
         specifier: ^1.2.0
-        version: 1.2.0(@hono/node-server@1.17.1(hono@4.10.2))(hono@4.10.2)
+        version: 1.2.0(@hono/node-server@1.19.5(hono@4.10.3))(hono@4.10.3)
       dotenv:
         specifier: ^16.6.1
         version: 16.6.1
       hono:
-        specifier: ^4.10.2
-        version: 4.10.2
+        specifier: ^4.10.3
+        version: 4.10.3
       y-protocols:
         specifier: ^1.0.6
         version: 1.0.6(yjs@13.6.27)
@@ -1598,8 +1598,8 @@ packages:
       y-protocols: ^1.0.6
       yjs: ^13.6.8
 
-  '@hono/node-server@1.17.1':
-    resolution: {integrity: sha512-SY79W/C+2b1MyAzmIcV32Q47vO1b5XwLRwj8S9N6Jr5n1QCkIfAIH6umOSgqWZ4/v67hg6qq8Ha5vZonVidGsg==}
+  '@hono/node-server@1.19.5':
+    resolution: {integrity: sha512-iBuhh+uaaggeAuf+TftcjZyWh2GEgZcVGXkNtskLVoWaXhnJtC5HLHrU8W1KHDoucqO1MswwglmkWLFyiDn4WQ==}
     engines: {node: '>=18.14.1'}
     peerDependencies:
       hono: ^4
@@ -3623,8 +3623,8 @@ packages:
     resolution: {integrity: sha512-F/1DnUGPopORZi0ni+CvrCgHQ5FyEAHRLSApuYWMmrbSwoN2Mn/7k+Gl38gJnR7yyDZk6WLXwiGod1JOWNDKGw==}
     hasBin: true
 
-  hono@4.10.2:
-    resolution: {integrity: sha512-p6fyzl+mQo6uhESLxbF5WlBOAJMDh36PljwlKtP5V1v09NxlqGru3ShK+4wKhSuhuYf8qxMmrivHOa/M7q0sMg==}
+  hono@4.10.3:
+    resolution: {integrity: sha512-2LOYWUbnhdxdL8MNbNg9XZig6k+cZXm5IjHn2Aviv7honhBMOHb+jxrKIeJRZJRmn+htUCKhaicxwXuUDlchRA==}
     engines: {node: '>=16.9.0'}
 
   hookable@5.5.3:
@@ -6819,14 +6819,14 @@ snapshots:
       - bufferutil
       - utf-8-validate
 
-  '@hono/node-server@1.17.1(hono@4.10.2)':
+  '@hono/node-server@1.19.5(hono@4.10.3)':
     dependencies:
-      hono: 4.10.2
+      hono: 4.10.3
 
-  '@hono/node-ws@1.2.0(@hono/node-server@1.17.1(hono@4.10.2))(hono@4.10.2)':
+  '@hono/node-ws@1.2.0(@hono/node-server@1.19.5(hono@4.10.3))(hono@4.10.3)':
     dependencies:
-      '@hono/node-server': 1.17.1(hono@4.10.2)
-      hono: 4.10.2
+      '@hono/node-server': 1.19.5(hono@4.10.3)
+      hono: 4.10.3
       ws: 8.18.2
     transitivePeerDependencies:
       - bufferutil
@@ -9054,7 +9054,7 @@ snapshots:
 
   he@1.2.0: {}
 
-  hono@4.10.2: {}
+  hono@4.10.3: {}
 
   hookable@5.5.3: {}
 
