@@ -1,5 +1,17 @@
 # Changelog
 
+## v0.3.25
+
+[compare changes](https://github.com/thestrangetoolstore/nodenogg.in/compare/v0.3.24...v0.3.25)
+
+### 🐛 Bug Fixes
+
+- Renamed options to export ([0d1b5908](https://github.com/thestrangetoolstore/nodenogg.in/commit/0d1b5908))
+
+### ❤️ Contributors
+
+- Adam Procter ([@adamprocter](https://github.com/adamprocter))
+
 ## v0.3.24
 
 [compare changes](https://github.com/thestrangetoolstore/nodenogg.in/compare/v0.3.23...v0.3.24)
