@@ -20,10 +20,10 @@
     "@hocuspocus/extension-logger": "^2.15.3",
     "@hocuspocus/extension-throttle": "^2.15.3",
     "@hocuspocus/server": "^2.15.3",
-    "@hono/node-server": "^1.17.1",
+    "@hono/node-server": "^1.19.5",
     "@hono/node-ws": "^1.2.0",
     "dotenv": "^16.6.1",
-    "hono": "^4.10.2",
+    "hono": "^4.10.3",
     "y-protocols": "^1.0.6",
     "yjs": "^13.6.27"
   }
