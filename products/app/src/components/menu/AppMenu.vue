@@ -285,7 +285,7 @@ const handleRtfExport = async () => {
                 <MenubarMenu value="options">
                     <MenubarTrigger class="menubar-trigger options-trigger">
                         <Tooltip tooltip="Options" side="bottom" align="center" disableClosingTrigger>
-                            <span class="options-text">Options</span>
+                            <span class="options-text">Export</span>
                             <Icon type="ellipsis" />
                         </Tooltip>
                     </MenubarTrigger>
