@@ -8,6 +8,11 @@ export const COPY = {
       title: 'This is your solo data view',
       description: 'This view shows only your nodes. Other users\' nodes are not visible here.',
       actionText: 'Add'
+    },
+    stack: {
+      title: 'This is the Stack view',
+      description: 'Create nodes and add tags to organize them in columns',
+      actionText: 'Add'
     }
   },
   
@@ -27,6 +32,10 @@ export const COPY = {
     spatial: {
       title: 'Spatial',
       description: 'Collaborative spatial view'
+    },
+    stack: {
+      title: 'Stack',
+      description: 'Organize nodes by tags in columns'
     }
   },
   

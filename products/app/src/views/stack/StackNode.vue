@@ -7,6 +7,8 @@ import {
     DropdownMenuItem,
     DropdownMenuSeparator
 } from 'reka-ui'
+import { computed } from 'vue'
+import { client } from '@/state'
 import Editor from '@/components/editor/Editor.vue'
 import Icon from '@/components/icon/Icon.vue'
 import TagInput from '@/components/tags/TagInput.vue'
@@ -24,8 +26,19 @@ const props = defineProps<{
 
 const emit = defineEmits(['startEditing', 'stopEditing'])
 
+// Get current user identity
+const currentIdentity = client.identity.get()
+
+// Check if current user owns this entity
+const isOwner = computed(() => {
+  return currentIdentity && props.entity.identity_id === currentIdentity.id
+})
+
 const onStartEditing = () => {
-    emit('startEditing')
+    // Only allow editing if user owns the node
+    if (isOwner.value) {
+        emit('startEditing')
+    }
 }
 
 const onStopEditing = () => {
@@ -42,13 +55,13 @@ const { isType } = EntitySchema.utils
 </script>
 
 <template>
-    <div class="node" :style="`background-color: ${getColor(entity.data.backgroundColor || 'yellow')}`"
-        v-if="isType(entity, 'html')" :class="{ 'is-editing': isEditing }" tabindex="0" :data-entity-id="entity.id">
-        <Editor :value="entity.data.content" :onChange="content => onChange({ content })" :editable="isEditing"
+    <div class="node" :style="`background-color: ${getColor(entity.data.backgroundColor || 'yellow', isOwner ? 50 : 50)}`"
+        v-if="isType(entity, 'html')" :class="{ 'is-editing': isEditing, 'read-only': !isOwner }" tabindex="0" :data-entity-id="entity.id">
+        <Editor :value="entity.data.content" :onChange="content => onChange({ content })" :editable="isEditing && isOwner"
             @click="onStartEditing" @cancel="onStopEditing" />
 
-        <!-- Tag input section -->
-        <TagInput :entity="entity" :onUpdate="handleTagUpdate" />
+        <!-- Tag input section - only for owners -->
+        <TagInput v-if="isOwner" :entity="entity" :onUpdate="handleTagUpdate" />
 
         <DropdownMenuRoot :modal="true">
             <DropdownMenuTrigger class="node-menu-trigger">
@@ -56,17 +69,26 @@ const { isType } = EntitySchema.utils
             </DropdownMenuTrigger>
             <DropdownMenuPortal>
                 <DropdownMenuContent class="dropdown-menu-content" :side-offset="5" :align="'end'">
-                    <DropdownMenuItem class="dropdown-menu-item">
-                        <ColorSelector :value="entity.data.backgroundColor"
-                            :onUpdate="backgroundColor => onChange({ backgroundColor })" />
-                    </DropdownMenuItem>
-                    <DropdownMenuSeparator class="dropdown-menu-separator" />
-                    <DropdownMenuItem class="dropdown-menu-item" @click="onDuplicate">
-                        Duplicate
-                    </DropdownMenuItem>
-                    <DropdownMenuItem class="dropdown-menu-item" @click="onDelete">
-                        Delete
-                    </DropdownMenuItem>
+                    <!-- Owner actions -->
+                    <template v-if="isOwner">
+                        <DropdownMenuItem class="dropdown-menu-item">
+                            <ColorSelector :value="entity.data.backgroundColor"
+                                :onUpdate="backgroundColor => onChange({ backgroundColor })" />
+                        </DropdownMenuItem>
+                        <DropdownMenuSeparator class="dropdown-menu-separator" />
+                        <DropdownMenuItem class="dropdown-menu-item" @click="onDuplicate">
+                            Duplicate
+                        </DropdownMenuItem>
+                        <DropdownMenuItem class="dropdown-menu-item" @click="onDelete">
+                            Delete
+                        </DropdownMenuItem>
+                    </template>
+                    <!-- Non-owner actions -->
+                    <template v-else>
+                        <DropdownMenuItem class="dropdown-menu-item" @click="onDuplicate">
+                            Duplicate
+                        </DropdownMenuItem>
+                    </template>
                 </DropdownMenuContent>
             </DropdownMenuPortal>
         </DropdownMenuRoot>
@@ -95,6 +117,14 @@ const { isType } = EntitySchema.utils
 
 .node.is-editing {
     box-shadow: 0 0 8px rgba(var(--ui-primary-rgb), 0.5);
+}
+
+.node.read-only {
+    opacity: 0.85;
+}
+
+.node.read-only:hover {
+    opacity: 1;
 }
 
 /* Dropdown menu styles matching ContextMenu */
