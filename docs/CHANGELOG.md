@@ -1,5 +1,22 @@
 # Changelog
 
+## v0.3.26
+
+[compare changes](https://github.com/thestrangetoolstore/nodenogg.in/compare/v0.3.25...v0.3.26)
+
+### 🚀 Features
+
+- Added tags to nodes ([a9341241](https://github.com/thestrangetoolstore/nodenogg.in/commit/a9341241))
+- Added Stack view for tags ([61cc6359](https://github.com/thestrangetoolstore/nodenogg.in/commit/61cc6359))
+
+### 🐛 Bug Fixes
+
+- Updated hono ([cfefae89](https://github.com/thestrangetoolstore/nodenogg.in/commit/cfefae89))
+
+### ❤️ Contributors
+
+- Adam Procter ([@adamprocter](https://github.com/adamprocter))
+
 ## v0.3.25
 
 [compare changes](https://github.com/thestrangetoolstore/nodenogg.in/compare/v0.3.24...v0.3.25)
