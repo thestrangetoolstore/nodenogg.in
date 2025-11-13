@@ -1,5 +1,17 @@
 # Changelog
 
+## v0.3.27
+
+[compare changes](https://github.com/thestrangetoolstore/nodenogg.in/compare/v0.3.26...v0.3.27)
+
+### 🐛 Bug Fixes
+
+- Stack view now correctly shows all nodes and text fixes ([e96d7ee7](https://github.com/thestrangetoolstore/nodenogg.in/commit/e96d7ee7))
+
+### ❤️ Contributors
+
+- Adam Procter ([@adamprocter](https://github.com/adamprocter))
+
 ## v0.3.26
 
 [compare changes](https://github.com/thestrangetoolstore/nodenogg.in/compare/v0.3.25...v0.3.26)
