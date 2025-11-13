@@ -20,6 +20,12 @@ export const viewRegistry = freeze({
     title: 'Collect',
     description: 'Simple list view for quick note-taking',
     icon: 'collect-view'
+  },
+  stack: {
+    component: defineAsyncComponent(() => import('./stack/MicrocosmStackView.vue')),
+    title: 'Stack',
+    description: 'Organize nodes by tags in columns',
+    icon: 'stack'
   }
 } satisfies Record<string, ViewDefinition>)
 
