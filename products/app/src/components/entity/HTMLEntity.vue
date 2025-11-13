@@ -11,6 +11,7 @@ import {
 import Icon from '@/components/icon/Icon.vue'
 import ColorSelector from '@/components/color-selector/ColorSelector.vue'
 import EmojiSelector from '@/components/emoji-selector/EmojiSelector.vue'
+import TagInput from '@/components/tags/TagInput.vue'
 import type { EntityOfType } from '@nodenogg.in/schema'
 import { getColor } from '@/utils/color'
 import { NodeResizer } from '@nodenogg.in/spatial-view'
@@ -148,6 +149,9 @@ const handleEmojiSelect = (emoji: string) => {
           :editable="isEditing && isEditable" @cancel="handleCancel" />
       </slot>
     </div>
+
+    <!-- Tag input section - only for owners -->
+    <TagInput v-if="isOwner" :entity="entity" :onUpdate="onUpdate" :disabled="!isEditable" />
 
     <!-- Menu trigger slot with default implementation - show for all entities -->
     <DropdownMenuRoot :modal="true">

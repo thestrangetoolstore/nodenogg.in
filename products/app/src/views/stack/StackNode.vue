@@ -77,7 +77,6 @@ const { isType } = EntitySchema.utils
 .node {
     position: relative;
     width: 100%;
-    max-width: calc(256 * var(--size-2));
     background: var(--card-yellow-50);
     color: var(--ui-mono-0);
     border-radius: var(--ui-radius);
@@ -86,6 +85,7 @@ const { isType } = EntitySchema.utils
     transition: border-color 0.2s ease, outline 0.2s ease;
     outline: none;
     padding-bottom: var(--size-8);
+    margin-bottom: var(--size-12);
 }
 
 .node:focus {

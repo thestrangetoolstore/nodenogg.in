@@ -1,4 +1,18 @@
-import { custom, literal, number, object, optional, string, ValiError, variant } from 'valibot'
+import {
+  array,
+  custom,
+  literal,
+  toLowerCase,
+  maxLength,
+  number,
+  object,
+  optional,
+  pipe,
+  string,
+  trim,
+  ValiError,
+  variant
+} from 'valibot'
 import { createVersionedSchema, type InferVersionedSchema } from '@figureland/versioned-schema'
 import { clone as c } from '@figureland/kit/tools/clone'
 import { createTimestamp, isString } from './utils'
@@ -29,7 +43,8 @@ const schema = createVersionedSchema({
           width: number(),
           height: number(),
           content: string(),
-          backgroundColor: optional(string())
+          backgroundColor: optional(string()),
+          tags: optional(array(pipe(string(), trim(), toLowerCase(), maxLength(30))))
         }),
         object({
           type: literal('connection'),
