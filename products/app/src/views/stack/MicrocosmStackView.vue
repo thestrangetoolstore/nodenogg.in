@@ -28,14 +28,14 @@ const identity = client.identity.get()
 
 const { entities } = storeToRefs(microcosm)
 
-// Get all HTML entities owned by current user
+// Get all HTML entities from all users
 const htmlEntities = computed(() => entities.value.filter(e =>
-  EntitySchema.utils.isType(e, 'html') && identity?.id === e.identity_id
+  EntitySchema.utils.isType(e, 'html')
 ) as EntityOfType<'html'>[])
 
 const { setEditingNode, isEditing, update, deleteEntity, create, duplicateEntity } = microcosm
 
-// Get all unique tags from user's entities
+// Get all unique tags from all entities
 const allTags = computed(() => {
   return getAllTags(htmlEntities.value).sort()
 })
@@ -179,11 +179,11 @@ const handleDuplicateEntity = async (e: Entity) => {
       </div>
 
       <!-- Empty state -->
-      <EmptyState v-else :title="COPY.emptyStates.collect.title"
-        :description="'Create nodes and add tags to organize them in columns'">
+      <EmptyState v-else :title="COPY.emptyStates.stack.title"
+        :description="COPY.emptyStates.stack.description">
         <template #action>
           <p class="action-message">
-            Click <span class="button-style">{{ COPY.emptyStates.collect.actionText }}</span> to create your first node.
+            Click <span class="button-style">{{ COPY.emptyStates.stack.actionText }}</span> to create your first node.
           </p>
         </template>
       </EmptyState>
