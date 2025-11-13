@@ -9,11 +9,12 @@ import {
 } from 'reka-ui'
 import Editor from '@/components/editor/Editor.vue'
 import Icon from '@/components/icon/Icon.vue'
+import TagInput from '@/components/tags/TagInput.vue'
 import { EntitySchema, type Entity, type EntityUpdate } from '@nodenogg.in/schema'
 import ColorSelector from '@/components/color-selector/ColorSelector.vue'
 import { getColor } from '@/utils/color'
 
-defineProps<{
+const props = defineProps<{
     onChange: (update: EntityUpdate) => void
     onDelete: () => void
     onDuplicate: () => void
@@ -31,6 +32,10 @@ const onStopEditing = () => {
     emit('stopEditing')
 }
 
+// Adapter function for TagInput - it expects (id: string, data: any) but we have onChange(update)
+const handleTagUpdate = (_id: string, data: EntityUpdate) => {
+    props.onChange(data)
+}
 
 const { isType } = EntitySchema.utils
 
@@ -41,6 +46,10 @@ const { isType } = EntitySchema.utils
         v-if="isType(entity, 'html')" :class="{ 'is-editing': isEditing }" tabindex="0" :data-entity-id="entity.id">
         <Editor :value="entity.data.content" :onChange="content => onChange({ content })" :editable="isEditing"
             @click="onStartEditing" @cancel="onStopEditing" />
+
+        <!-- Tag input section -->
+        <TagInput :entity="entity" :onUpdate="handleTagUpdate" />
+
         <DropdownMenuRoot :modal="true">
             <DropdownMenuTrigger class="node-menu-trigger">
                 <Icon type="ellipsis" />
@@ -72,9 +81,11 @@ const { isType } = EntitySchema.utils
     background: var(--card-yellow-50);
     color: var(--ui-mono-0);
     border-radius: var(--ui-radius);
-    display: inline-block;
+    display: flex;
+    flex-direction: column;
     transition: border-color 0.2s ease, outline 0.2s ease;
     outline: none;
+    padding-bottom: var(--size-8);
 }
 
 .node:focus {
