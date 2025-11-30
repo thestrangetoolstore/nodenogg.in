@@ -1,5 +1,19 @@
 # Changelog
 
+## v0.3.28
+
+[compare changes](https://github.com/thestrangetoolstore/nodenogg.in/compare/v0.3.27...v0.3.28)
+
+### 🐛 Bug Fixes
+
+- Css for microcosm grid and tweaked empty stack text placement ([b3b790b4](https://github.com/thestrangetoolstore/nodenogg.in/commit/b3b790b4))
+- Css changes only for microcosm grid ([a874c534](https://github.com/thestrangetoolstore/nodenogg.in/commit/a874c534))
+- Package updates for security ([7624a7d6](https://github.com/thestrangetoolstore/nodenogg.in/commit/7624a7d6))
+
+### ❤️ Contributors
+
+- Adam Procter ([@adamprocter](https://github.com/adamprocter))
+
 ## v0.3.27
 
 [compare changes](https://github.com/thestrangetoolstore/nodenogg.in/compare/v0.3.26...v0.3.27)
