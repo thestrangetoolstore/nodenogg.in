@@ -35,7 +35,9 @@
   },
   "pnpm": {
     "overrides": {
-      "esbuild": ">=0.25.8"
+      "esbuild": ">=0.25.8",
+      "glob": ">=10.5.0",
+      "js-yaml": ">=4.1.1"
     }
   }
 }
