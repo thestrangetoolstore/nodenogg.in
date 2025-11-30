@@ -204,11 +204,6 @@ const handleDuplicateEntity = async (e: Entity) => {
   left: 0;
   overflow-x: auto;
   overflow-y: hidden;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  align-items: center;
-  padding: var(--size-12);
 }
 
 .columns-container {
