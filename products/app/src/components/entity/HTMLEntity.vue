@@ -128,6 +128,21 @@ const handleEmojiSelect = (emoji: string) => {
     props.onEmojiCreate(emoji, props.entity)
   }
 }
+
+// Handler for visibility toggle
+const handleToggleVisibility = () => {
+  if (props.onUpdate && props.entity) {
+    // Toggle visibility: if undefined or true, set to false; if false, set to true
+    const newVisibility = props.entity.data.visible === false ? true : false
+    props.onUpdate(props.entity.id, { visible: newVisibility })
+  }
+}
+
+// Compute visibility status for display
+const isVisible = computed(() => {
+  // Default to visible (true) if not explicitly set
+  return props.entity.data.visible !== false
+})
 </script>
 
 <template>
@@ -135,7 +150,8 @@ const handleEmojiSelect = (emoji: string) => {
   <div class="resizable-container" :class="{
     'is-selected': isSelected,
     'is-editing': isEditing,
-    'read-only': !isEditable
+    'read-only': !isEditable,
+    'is-hidden': !isVisible
   }" :style="`background-color: ${getColor(entity.data.backgroundColor || 'yellow', isEditable ? 50 : 50)}`"
     tabindex="0" @keydown="handleKeydown" @dblclick="handleDoubleClick" @click="handleClick"
     @mousedown="handleMouseDown" @wheel="handleWheel">
@@ -174,6 +190,9 @@ const handleEmojiSelect = (emoji: string) => {
               <DropdownMenuSeparator class="dropdown-menu-separator" />
               <DropdownMenuItem class="dropdown-menu-item" @click="handleDuplicate">
                 Duplicate
+              </DropdownMenuItem>
+              <DropdownMenuItem class="dropdown-menu-item" @click="handleToggleVisibility">
+                {{ isVisible ? 'Hide' : 'Show' }}
               </DropdownMenuItem>
               <DropdownMenuItem class="dropdown-menu-item" @click="handleDelete">
                 Delete
@@ -229,6 +248,11 @@ const handleEmojiSelect = (emoji: string) => {
   /* outline: 3px solid var(--ui-primary-100); */
   /* outline-offset: 2px; */
   box-shadow: 0 0 0 4px rgba(var(--ui-primary-100-rgb), 0.2);
+}
+
+/* Hidden state - only visible to owner */
+.resizable-container.is-hidden {
+  opacity: 0.5;
 }
 
 .resizable-container.read-only {
@@ -373,5 +397,12 @@ const handleEmojiSelect = (emoji: string) => {
 
 .emoji-selector-item:hover {
   background: transparent !important;
+}
+
+/* Visibility toggle styles */
+.visibility-toggle {
+  display: flex;
+  align-items: center;
+  gap: var(--size-4);
 }
 </style>

@@ -50,13 +50,29 @@ const handleTagUpdate = (_id: string, data: EntityUpdate) => {
     props.onChange(data)
 }
 
+// Handler for visibility toggle
+const handleToggleVisibility = () => {
+    // Toggle visibility: if undefined or true, set to false; if false, set to true
+    const newVisibility = props.entity.data.visible === false ? true : false
+    props.onChange({ visible: newVisibility })
+}
+
+// Compute visibility status for display
+const isVisible = computed(() => {
+    // Default to visible (true) if not explicitly set
+    if (isType(props.entity, 'html')) {
+        return props.entity.data.visible !== false
+    }
+    return true
+})
+
 const { isType } = EntitySchema.utils
 
 </script>
 
 <template>
     <div class="node" :style="`background-color: ${getColor(entity.data.backgroundColor || 'yellow', isOwner ? 50 : 50)}`"
-        v-if="isType(entity, 'html')" :class="{ 'is-editing': isEditing, 'read-only': !isOwner }" tabindex="0" :data-entity-id="entity.id">
+        v-if="isType(entity, 'html')" :class="{ 'is-editing': isEditing, 'read-only': !isOwner, 'is-hidden': !isVisible }" tabindex="0" :data-entity-id="entity.id">
         <Editor :value="entity.data.content" :onChange="content => onChange({ content })" :editable="isEditing && isOwner"
             @click="onStartEditing" @cancel="onStopEditing" />
 
@@ -78,6 +94,9 @@ const { isType } = EntitySchema.utils
                         <DropdownMenuSeparator class="dropdown-menu-separator" />
                         <DropdownMenuItem class="dropdown-menu-item" @click="onDuplicate">
                             Duplicate
+                        </DropdownMenuItem>
+                        <DropdownMenuItem class="dropdown-menu-item" @click="handleToggleVisibility">
+                            {{ isVisible ? 'Hide' : 'Show' }}
                         </DropdownMenuItem>
                         <DropdownMenuItem class="dropdown-menu-item" @click="onDelete">
                             Delete
@@ -117,6 +136,11 @@ const { isType } = EntitySchema.utils
 
 .node.is-editing {
     box-shadow: 0 0 8px rgba(var(--ui-primary-rgb), 0.5);
+}
+
+/* Hidden state - only visible to owner */
+.node.is-hidden {
+    opacity: 0.5;
 }
 
 .node.read-only {
@@ -210,5 +234,12 @@ const { isType } = EntitySchema.utils
     height: 1px;
     background: var(--ui-90);
     margin: var(--size-2) 0;
+}
+
+/* Visibility toggle styles */
+.visibility-toggle {
+    display: flex;
+    align-items: center;
+    gap: var(--size-4);
 }
 </style>

@@ -53,9 +53,31 @@ const { screenToFlowCoordinate, panOnDrag, zoomOnScroll, zoomOnPinch, project, d
 
 // Compute positioned nodes for the spatial view
 const positionedNodes = computed(() => {
-  return entities.value.filter(e =>
-    EntitySchema.utils.isType(e, 'html') || EntitySchema.utils.isType(e, 'emoji')
-  ).map((entity) => {
+  return entities.value.filter(e => {
+    // Filter by type
+    if (!EntitySchema.utils.isType(e, 'html') && !EntitySchema.utils.isType(e, 'emoji')) {
+      return false
+    }
+
+    // Filter by visibility for HTML entities
+    if (EntitySchema.utils.isType(e, 'html')) {
+      // Hide from others if explicitly set to false, but always show to owner
+      if (e.data.visible === false && !isOwnedByCurrentUser(e)) {
+        return false
+      }
+    }
+
+    // Filter emojis whose parent is hidden (unless parent is owned by current user)
+    if (EntitySchema.utils.isType(e, 'emoji') && e.data.parentNodeId) {
+      const parentNode = entities.value.find(p => p.id === e.data.parentNodeId)
+      if (parentNode && EntitySchema.utils.isType(parentNode, 'html') &&
+          parentNode.data.visible === false && !isOwnedByCurrentUser(parentNode)) {
+        return false
+      }
+    }
+
+    return true
+  }).map((entity) => {
     const isEmoji = EntitySchema.utils.isType(entity, 'emoji')
     let { x, y } = entity.data
 

@@ -1,5 +1,6 @@
 import {
   array,
+  boolean,
   custom,
   literal,
   toLowerCase,
@@ -44,7 +45,8 @@ const schema = createVersionedSchema({
           height: number(),
           content: string(),
           backgroundColor: optional(string()),
-          tags: optional(array(pipe(string(), trim(), toLowerCase(), maxLength(30))))
+          tags: optional(array(pipe(string(), trim(), toLowerCase(), maxLength(30)))),
+          visible: optional(boolean())
         }),
         object({
           type: literal('connection'),

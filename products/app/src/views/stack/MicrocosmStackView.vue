@@ -28,10 +28,15 @@ const identity = client.identity.get()
 
 const { entities } = storeToRefs(microcosm)
 
-// Get all HTML entities from all users
-const htmlEntities = computed(() => entities.value.filter(e =>
-  EntitySchema.utils.isType(e, 'html')
-) as EntityOfType<'html'>[])
+// Get all HTML entities from all users (excluding hidden ones, but show owner's hidden nodes)
+const htmlEntities = computed(() => entities.value.filter(e => {
+  if (!EntitySchema.utils.isType(e, 'html')) {
+    return false
+  }
+  // Show if visible OR if current user is the owner
+  const isOwner = identity && e.identity_id === identity.id
+  return e.data.visible !== false || isOwner
+}) as EntityOfType<'html'>[])
 
 const { setEditingNode, isEditing, update, deleteEntity, create, duplicateEntity } = microcosm
 

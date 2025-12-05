@@ -7,6 +7,7 @@ import {
     DropdownMenuItem,
     DropdownMenuSeparator
 } from 'reka-ui'
+import { computed } from 'vue'
 import Editor from '@/components/editor/Editor.vue'
 import Icon from '@/components/icon/Icon.vue'
 import TagInput from '@/components/tags/TagInput.vue'
@@ -37,13 +38,29 @@ const handleTagUpdate = (_id: string, data: EntityUpdate) => {
     props.onChange(data)
 }
 
+// Handler for visibility toggle
+const handleToggleVisibility = () => {
+    // Toggle visibility: if undefined or true, set to false; if false, set to true
+    const newVisibility = props.entity.data.visible === false ? true : false
+    props.onChange({ visible: newVisibility })
+}
+
+// Compute visibility status for display
+const isVisible = computed(() => {
+    // Default to visible (true) if not explicitly set
+    if (isType(props.entity, 'html')) {
+        return props.entity.data.visible !== false
+    }
+    return true
+})
+
 const { isType } = EntitySchema.utils
 
 </script>
 
 <template>
     <div class="node" :style="`background-color: ${getColor(entity.data.backgroundColor || 'yellow')}`"
-        v-if="isType(entity, 'html')" :class="{ 'is-editing': isEditing }" tabindex="0" :data-entity-id="entity.id">
+        v-if="isType(entity, 'html')" :class="{ 'is-editing': isEditing, 'is-hidden': !isVisible }" tabindex="0" :data-entity-id="entity.id">
         <Editor :value="entity.data.content" :onChange="content => onChange({ content })" :editable="isEditing"
             @click="onStartEditing" @cancel="onStopEditing" />
 
@@ -63,6 +80,9 @@ const { isType } = EntitySchema.utils
                     <DropdownMenuSeparator class="dropdown-menu-separator" />
                     <DropdownMenuItem class="dropdown-menu-item" @click="onDuplicate">
                         Duplicate
+                    </DropdownMenuItem>
+                    <DropdownMenuItem class="dropdown-menu-item" @click="handleToggleVisibility">
+                        {{ isVisible ? 'Hide' : 'Show' }}
                     </DropdownMenuItem>
                     <DropdownMenuItem class="dropdown-menu-item" @click="onDelete">
                         Delete
@@ -95,6 +115,11 @@ const { isType } = EntitySchema.utils
 
 .node.is-editing {
     box-shadow: 0 0 8px rgba(var(--ui-primary-rgb), 0.5);
+}
+
+/* Hidden state - only visible to owner */
+.node.is-hidden {
+    opacity: 0.5;
 }
 
 /* Dropdown menu styles matching ContextMenu */
