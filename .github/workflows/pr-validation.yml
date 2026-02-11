@@ -34,7 +34,7 @@ jobs:
         run: pnpm lint
 
       - name: Run type checking
-        run: pnpm --filter @* type-check
+        run: pnpm -r --if-present type-check
 
       - name: Run tests
         run: pnpm test
