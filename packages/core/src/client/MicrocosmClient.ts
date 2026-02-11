@@ -7,7 +7,7 @@ import { getPersistenceName } from '../app/App'
 import { isMap } from '@figureland/kit/tools/guards'
 import { createIdentitySession } from '../identity/identity'
 import { createTimestamp } from '@figureland/kit/tools/time'
-import { MicrocosmAPI, MicrocosmAPIFactory } from '..'
+import { MicrocosmAPI, type MicrocosmAPIFactory } from '..'
 
 const { isValidMicrocosmID } = MicrocosmSchema.utils
 

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { cardColors, getColor } from '@/utils/color'
-import { ToggleGroupItem, ToggleGroupRoot } from 'reka-ui'
+import { ToggleGroupItem, ToggleGroupRoot, type AcceptableValue } from 'reka-ui'
 import { type PropType } from 'vue'
 
 
@@ -14,8 +14,8 @@ const props = defineProps({
   }
 })
 
-const handleUpdate = (color: string | string[]) =>
-  props.onUpdate(Array.isArray(color) ? color[0] : color)
+const handleUpdate = (color: AcceptableValue | AcceptableValue[]) =>
+  props.onUpdate(String(Array.isArray(color) ? color[0] : color))
 
 </script>
 

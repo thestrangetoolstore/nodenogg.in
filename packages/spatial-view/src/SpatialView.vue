@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { onMounted, ref, watch, computed, nextTick } from 'vue'
-import { VueFlow, useVueFlow, type NodeChange } from '@vue-flow/core'
+import { VueFlow, useVueFlow, type NodeChange, type NodeMouseEvent } from '@vue-flow/core'
 import { Background } from '@vue-flow/background'
 import { MiniMap } from '@vue-flow/minimap'
 
@@ -74,7 +74,8 @@ const handleNodeChange = (changes: NodeChange[]) => {
 }
 
 // Handle node clicks for selection
-const handleNodeClick = (event: MouseEvent, node: any) => {
+const handleNodeClick = (nodeMouseEvent: NodeMouseEvent) => {
+  const { node } = nodeMouseEvent
   if (node && node.id) {
     selectNode(node.id)
   }

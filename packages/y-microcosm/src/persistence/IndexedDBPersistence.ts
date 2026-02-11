@@ -75,7 +75,11 @@ export const clearDocument = (name: string) => idb.deleteDB(name)
 /**
  * @extends Observable<string>
  */
-export class IndexedDBPersistence extends Observable<string> {
+type IndexedDBPersistenceEvents = {
+  synced: (persistence: IndexedDBPersistence) => void
+}
+
+export class IndexedDBPersistence extends Observable<IndexedDBPersistenceEvents> {
   _dbref: number = 0
   _dbsize: number = 0
   _destroyed = false

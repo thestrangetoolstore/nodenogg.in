@@ -1,9 +1,12 @@
 <script setup lang="ts">
 import ToolButton from './ToolButton.vue'
 import Icon from '@/components/icon/Icon.vue'
-import { useCurrentSpatialView } from '@/views/spatial'
-import { storeToRefs } from 'pinia';
 
+// TODO: This component is unused and references a legacy API.
+// Stub declarations to satisfy type-checking until it is removed or rewritten.
+const tools = {} as Record<string, { meta: { title: string; command: string; icon: string; hidden: boolean } }>
+const tool = '' as string
+const view = { infinitykit: { setTool: (_key: string) => {} } }
 </script>
 
 <template>

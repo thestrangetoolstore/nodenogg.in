@@ -7,17 +7,17 @@ import type { Provider, ProviderFactory } from './provider'
 import { isString } from '@figureland/kit/tools'
 
 import {
-  Entity,
-  Identity,
-  IdentityID,
-  EntityLocation,
+  type Entity,
+  type Identity,
+  type IdentityID,
+  type EntityLocation,
   EntitySchema,
   createTimestamp,
   validateIdentityWithStatus,
-  IdentityWithStatus
+  type IdentityWithStatus
 } from '@nodenogg.in/schema'
-import { MicrocosmAPIConfig, MicrocosmAPIState, NNError, collectNNErrors } from '@nodenogg.in/core'
-import { YMicrocosmAPIOptions } from '.'
+import { type MicrocosmAPIConfig, type MicrocosmAPIState, NNError, collectNNErrors } from '@nodenogg.in/core'
+import type { YMicrocosmAPIOptions } from '.'
 
 export type Signed<T> = {
   content: T
@@ -41,8 +41,8 @@ export class YMicrocosmDoc {
   private persistence!: Persistence[]
   private providers!: Provider[]
   private identity_id!: IdentityID
-  private undoStore: UndoManager
-  private collection: YCollection
+  private undoStore!: UndoManager
+  private collection!: YCollection
   private providerFactories?: ProviderFactory[]
   private persistenceFactories?: PersistenceFactory[]
   private config: MicrocosmAPIConfig

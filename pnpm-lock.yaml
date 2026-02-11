@@ -12,6 +12,11 @@ overrides:
   '@isaacs/brace-expansion': '>=5.0.1'
   mdast-util-to-hast: '>=13.2.1'
 
+patchedDependencies:
+  '@figureland/kit@0.0.57':
+    hash: 92a130a8286d27bcc0736c55d7e896236e3c04c2b7d5d170b696002b9eee0ce3
+    path: patches/@figureland__kit@0.0.57.patch
+
 importers:
 
   .:
@@ -45,7 +50,7 @@ importers:
     dependencies:
       '@figureland/kit':
         specifier: ^0.0.57
-        version: 0.0.57(typescript@5.8.3)(vue@3.5.18(typescript@5.8.3))
+        version: 0.0.57(patch_hash=92a130a8286d27bcc0736c55d7e896236e3c04c2b7d5d170b696002b9eee0ce3)(typescript@5.8.3)(vue@3.5.18(typescript@5.8.3))
       '@figureland/versioned-schema':
         specifier: ^0.0.16
         version: 0.0.16(effect@3.14.5)(valibot@1.2.0(typescript@5.8.3))(zod@3.24.2)
@@ -91,7 +96,7 @@ importers:
     dependencies:
       '@figureland/kit':
         specifier: ^0.0.57
-        version: 0.0.57(typescript@5.8.3)(vue@3.5.18(typescript@5.8.3))
+        version: 0.0.57(patch_hash=92a130a8286d27bcc0736c55d7e896236e3c04c2b7d5d170b696002b9eee0ce3)(typescript@5.8.3)(vue@3.5.18(typescript@5.8.3))
       '@figureland/versioned-schema':
         specifier: ^0.0.16
         version: 0.0.16(effect@3.14.5)(valibot@1.2.0(typescript@5.8.3))(zod@3.24.2)
@@ -192,7 +197,7 @@ importers:
     dependencies:
       '@figureland/kit':
         specifier: ^0.0.57
-        version: 0.0.57(typescript@5.8.3)(vue@3.5.18(typescript@5.8.3))
+        version: 0.0.57(patch_hash=92a130a8286d27bcc0736c55d7e896236e3c04c2b7d5d170b696002b9eee0ce3)(typescript@5.8.3)(vue@3.5.18(typescript@5.8.3))
       '@hocuspocus/provider':
         specifier: ^2.15.3
         version: 2.15.3(y-protocols@1.0.6(yjs@13.6.27))(yjs@13.6.27)
@@ -247,7 +252,7 @@ importers:
     dependencies:
       '@figureland/kit':
         specifier: ^0.0.57
-        version: 0.0.57(typescript@5.8.3)(vue@3.5.18(typescript@5.8.3))
+        version: 0.0.57(patch_hash=92a130a8286d27bcc0736c55d7e896236e3c04c2b7d5d170b696002b9eee0ce3)(typescript@5.8.3)(vue@3.5.18(typescript@5.8.3))
       '@nodenogg.in/core':
         specifier: workspace:*
         version: link:../../packages/core
@@ -6942,7 +6947,7 @@ snapshots:
       '@eslint/core': 0.15.1
       levn: 0.4.1
 
-  '@figureland/kit@0.0.57(typescript@5.8.3)(vue@3.5.18(typescript@5.8.3))':
+  '@figureland/kit@0.0.57(patch_hash=92a130a8286d27bcc0736c55d7e896236e3c04c2b7d5d170b696002b9eee0ce3)(typescript@5.8.3)(vue@3.5.18(typescript@5.8.3))':
     dependencies:
       typescript: 5.8.3
     optionalDependencies:

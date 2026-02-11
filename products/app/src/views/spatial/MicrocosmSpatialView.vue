@@ -122,7 +122,11 @@ const contextMenuTarget = ref<Entity | null>(null)
 const contextMenuPosition = ref({ x: 0, y: 0 })
 
 // Store original interaction settings
-const originalInteractions = ref({
+const originalInteractions = ref<{
+  panOnDrag: boolean | number[]
+  zoomOnScroll: boolean
+  zoomOnPinch: boolean
+}>({
   panOnDrag: true,
   zoomOnScroll: true,
   zoomOnPinch: true

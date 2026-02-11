@@ -1,0 +1,36 @@
+diff --git a/src/state/state.ts b/src/state/state.ts
+index 333bdbe7120c866dd2736c965e2e95fd1cd8c6d1..8e913220b0c6ae290be99732790f7765a7aaee81 100644
+--- a/src/state/state.ts
++++ b/src/state/state.ts
+@@ -19,7 +19,7 @@ export const state = <V>(
+   let loaded = false
+   let lastSyncTime: number = 0
+   let hasEmitted = false
+-  let throttleTimeoutId: number | undefined
++  let throttleTimeoutId: ReturnType<typeof setTimeout> | undefined
+ 
+   const shouldThrottle = () => {
+     return throttle !== undefined && hasEmitted && performance.now() - lastSyncTime < throttle
+diff --git a/src/state/tasks.ts b/src/state/tasks.ts
+index cfc10ea36aa8d218dcd188172871432adf3aa02f..b9ea2c11e5322bb0692e2243f509766a593548f8 100644
+--- a/src/state/tasks.ts
++++ b/src/state/tasks.ts
+@@ -43,7 +43,7 @@ export const tasks = (): Tasks => {
+     const m = store()
+     const active = m.use(state(true))
+     const remaining = m.use(state(count))
+-    let timer: Timer
++    let timer: ReturnType<typeof setTimeout>
+ 
+     const runTask = () => {
+       if (!active.get() || remaining.get() <= 0) {
+diff --git a/src/state/wrap.ts b/src/state/wrap.ts
+index 490457ee552aa7a66725bfcb46a26bc5382de527..7e0ac4390c8b75b547ef36c987e76a44be35ee9f 100644
+--- a/src/state/wrap.ts
++++ b/src/state/wrap.ts
+@@ -1,4 +1,4 @@
+-import { State, state, type Wrap, type Wrapped, extend } from '.'
++import { type State, state, type Wrap, type Wrapped, extend } from '.'
+ 
+ export type WrappedInstance<T> = {
+   value: T

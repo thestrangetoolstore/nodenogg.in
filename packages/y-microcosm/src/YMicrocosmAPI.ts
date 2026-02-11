@@ -13,7 +13,7 @@ import {
   type EntityPointer
 } from '@nodenogg.in/schema'
 import { MicrocosmAPI } from '@nodenogg.in/core'
-import { YMicrocosmAPIOptions } from '.'
+import type { YMicrocosmAPIOptions } from '.'
 
 export type EntityEvent<E extends Entity = Entity> =
   | {

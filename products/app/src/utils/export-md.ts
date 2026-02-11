@@ -51,7 +51,7 @@ function htmlToMarkdown(html: string): string {
   // Handle ordered lists first (preserve numbering)  
   let result = html.replace(/<ol[^>]*>([\s\S]*?)<\/ol>/gi, (match, content) => {
     let counter = 1
-    return content.replace(/<li[^>]*>(.*?)<\/li>/gi, (liMatch, liContent) => {
+    return content.replace(/<li[^>]*>(.*?)<\/li>/gi, (_liMatch: string, liContent: string) => {
       return `${counter++}. ${liContent}\n`
     })
   })
