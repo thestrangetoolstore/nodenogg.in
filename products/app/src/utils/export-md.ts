@@ -149,6 +149,11 @@ function entityToMarkdown(entity: Entity, identityId: IdentityID, relatedEmojis:
     metadataFields.push(`backgroundColor: ${entity.data.backgroundColor}`)
   }
 
+  // Add tags if they exist (only for HTML entities)
+  if (entity.data.type === 'html' && entity.data.tags && entity.data.tags.length > 0) {
+    metadataFields.push(`tags: [${entity.data.tags.join(', ')}]`)
+  }
+
   // Add emoji information if there are related emojis (only for HTML entities)
   if (entity.data.type === 'html' && relatedEmojis.length > 0) {
     const emojiList = relatedEmojis
