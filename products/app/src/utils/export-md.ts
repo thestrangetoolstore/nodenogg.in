@@ -51,7 +51,7 @@ function htmlToMarkdown(html: string): string {
   // Handle ordered lists first (preserve numbering)  
   let result = html.replace(/<ol[^>]*>([\s\S]*?)<\/ol>/gi, (match, content) => {
     let counter = 1
-    return content.replace(/<li[^>]*>(.*?)<\/li>/gi, (liMatch, liContent) => {
+    return content.replace(/<li[^>]*>(.*?)<\/li>/gi, (_liMatch: string, liContent: string) => {
       return `${counter++}. ${liContent}\n`
     })
   })
@@ -147,6 +147,11 @@ function entityToMarkdown(entity: Entity, identityId: IdentityID, relatedEmojis:
   // Add backgroundColor if it exists (only for HTML entities)
   if (entity.data.type === 'html' && entity.data.backgroundColor) {
     metadataFields.push(`backgroundColor: ${entity.data.backgroundColor}`)
+  }
+
+  // Add tags if they exist (only for HTML entities)
+  if (entity.data.type === 'html' && entity.data.tags && entity.data.tags.length > 0) {
+    metadataFields.push(`tags: [${entity.data.tags.join(', ')}]`)
   }
 
   // Add emoji information if there are related emojis (only for HTML entities)

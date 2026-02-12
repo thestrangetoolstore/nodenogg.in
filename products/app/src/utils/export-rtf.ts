@@ -299,6 +299,11 @@ function entityToRtf(entity: Entity, identityId: IdentityID, relatedEmojis: Enti
     metadata.push(`Background Color: ${entity.data.backgroundColor}`)
   }
 
+  // Add tags if they exist (only for HTML entities)
+  if (entity.data.type === 'html' && entity.data.tags && entity.data.tags.length > 0) {
+    metadata.push(`Tags: ${entity.data.tags.join(', ')}`)
+  }
+
   // Add emoji information if there are related emojis
   if (entity.data.type === 'html' && relatedEmojis.length > 0) {
     const emojiList = relatedEmojis

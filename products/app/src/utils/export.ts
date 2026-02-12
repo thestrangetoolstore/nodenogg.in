@@ -100,7 +100,7 @@ export async function deleteAllUserEntities(
   // Delete all entities
   for (const entityId of entityIds) {
     try {
-      await microcosmApi.delete([{
+      await (microcosmApi as any).delete([{
         entity_id: entityId,
         identity_id: identityId
       }])

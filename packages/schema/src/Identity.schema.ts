@@ -1,5 +1,5 @@
 import { createVersionedSchema, type InferVersionedSchema } from '@figureland/versioned-schema'
-import { string, optional, custom, object, boolean, InferInput, parse, number } from 'valibot'
+import { string, optional, custom, object, boolean, type InferInput, parse, number } from 'valibot'
 import { createUUID, isValidUUID } from './uuid'
 import { isString } from './utils'
 import { freeze } from '@figureland/kit/tools/object'

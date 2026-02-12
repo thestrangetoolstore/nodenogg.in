@@ -86,7 +86,7 @@ watch(() => props.value, (newValue) => {
   const currentContent = editor.value.getHTML()
   if (newValue !== currentContent && newValue !== lastEmittedContent.value) {
     lastEmittedContent.value = newValue
-    editor.value.commands.setContent(newValue, false)
+    editor.value.commands.setContent(newValue, { emitUpdate: false })
   }
 })
 

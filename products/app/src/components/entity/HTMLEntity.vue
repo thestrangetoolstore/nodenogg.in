@@ -21,7 +21,7 @@ const props = defineProps<{
   Editor?: any
   onUpdate?: (id: string, data: any) => void
   onDelete?: (id: string) => void
-  onDuplicate?: (id: string) => void
+  onDuplicate?: (entityOrData: any) => void
   onEmojiCreate?: (emoji: string, entity: EntityOfType<'html'>) => void
   isSelected?: boolean
   editable?: boolean
@@ -106,7 +106,7 @@ const handleWheel = (event: WheelEvent) => {
 // Handler functions for dropdown menu actions
 const handleDelete = () => {
   if (props.onDelete && props.entity) {
-    props.onDelete(props.entity)
+    props.onDelete(props.entity.id)
   }
 }
 
@@ -151,7 +151,7 @@ const handleEmojiSelect = (emoji: string) => {
     </div>
 
     <!-- Tag input section - only for owners -->
-    <TagInput v-if="isOwner" :entity="entity" :onUpdate="onUpdate" :disabled="!isEditable" />
+    <TagInput v-if="isOwner && onUpdate" :entity="entity" :onUpdate="onUpdate" :disabled="!isEditable" />
 
     <!-- Menu trigger slot with default implementation - show for all entities -->
     <DropdownMenuRoot :modal="true">
