@@ -44,6 +44,7 @@
     },
     "patchedDependencies": {
       "@figureland/kit@0.0.57": "patches/@figureland__kit@0.0.57.patch"
-    }
+    },
+    "allowNonAppliedPatches": true
   }
 }
