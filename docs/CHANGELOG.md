@@ -1,5 +1,17 @@
 # Changelog
 
+## v0.3.31
+
+[compare changes](https://github.com/thestrangetoolstore/nodenogg.in/compare/v0.3.30...v0.3.31)
+
+### 🐛 Bug Fixes
+
+- To patches update ([87c750fe](https://github.com/thestrangetoolstore/nodenogg.in/commit/87c750fe))
+
+### ❤️ Contributors
+
+- Adam Procter ([@adamprocter](https://github.com/adamprocter))
+
 ## v0.3.30
 
 [compare changes](https://github.com/thestrangetoolstore/nodenogg.in/compare/v0.3.29...v0.3.30)
