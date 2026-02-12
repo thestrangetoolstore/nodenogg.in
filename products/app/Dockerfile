@@ -15,6 +15,7 @@ WORKDIR /app
 
 # Copy root workspace files
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+COPY patches/ ./patches/
 
 # Copy all package.json files from workspaces to maintain structure
 COPY packages/ ./packages/

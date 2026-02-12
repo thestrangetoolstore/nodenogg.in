@@ -14,6 +14,7 @@ COPY pnpm-workspace.yaml ./
 
 # Copy package files for workspace and dependencies
 COPY package.json pnpm-lock.yaml ./
+COPY patches/ ./patches/
 COPY products/yjs-sync-server/package.json ./products/yjs-sync-server/package.json
 
 # Install dependencies (excluding husky)
@@ -44,6 +45,7 @@ RUN corepack enable
 # Copy workspace files
 COPY pnpm-workspace.yaml ./
 COPY package.json pnpm-lock.yaml ./
+COPY patches/ ./patches/
 COPY products/yjs-sync-server/package.json ./products/yjs-sync-server/
 
 # Copy built files
