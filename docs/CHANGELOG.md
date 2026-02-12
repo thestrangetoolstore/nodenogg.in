@@ -1,5 +1,23 @@
 # Changelog
 
+## v0.3.29
+
+[compare changes](https://github.com/thestrangetoolstore/nodenogg.in/compare/v0.3.28...v0.3.29)
+
+### 🚀 Features
+
+- Added tags into markdown and text export head info ([41a8119a](https://github.com/thestrangetoolstore/nodenogg.in/commit/41a8119a))
+
+### 🐛 Bug Fixes
+
+- Updated packages for security fix ([675999f6](https://github.com/thestrangetoolstore/nodenogg.in/commit/675999f6))
+- Pr-validation ([89b70e1e](https://github.com/thestrangetoolstore/nodenogg.in/commit/89b70e1e))
+- Typescript updates ([4a971749](https://github.com/thestrangetoolstore/nodenogg.in/commit/4a971749))
+
+### ❤️ Contributors
+
+- Adam Procter ([@adamprocter](https://github.com/adamprocter))
+
 ## v0.3.28
 
 [compare changes](https://github.com/thestrangetoolstore/nodenogg.in/compare/v0.3.27...v0.3.28)
