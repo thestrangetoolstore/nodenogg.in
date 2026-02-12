@@ -1,5 +1,17 @@
 # Changelog
 
+## v0.3.30
+
+[compare changes](https://github.com/thestrangetoolstore/nodenogg.in/compare/v0.3.29...v0.3.30)
+
+### 🐛 Bug Fixes
+
+- To copy patches folder ([7f580a85](https://github.com/thestrangetoolstore/nodenogg.in/commit/7f580a85))
+
+### ❤️ Contributors
+
+- Adam Procter ([@adamprocter](https://github.com/adamprocter))
+
 ## v0.3.29
 
 [compare changes](https://github.com/thestrangetoolstore/nodenogg.in/compare/v0.3.28...v0.3.29)
