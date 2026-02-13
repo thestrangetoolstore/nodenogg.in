@@ -85,11 +85,14 @@ const entitiesByTag = computed(() => {
     }
   })
 
-  // Move untagged to the end if it exists
+  // Move untagged to the front if it exists
   if (grouped.has('untagged')) {
     const untagged = grouped.get('untagged')!
     grouped.delete('untagged')
-    grouped.set('untagged', untagged)
+    const reordered = new Map<string, EntityOfType<'html'>[]>()
+    reordered.set('untagged', untagged)
+    grouped.forEach((v, k) => reordered.set(k, v))
+    return reordered
   }
 
   return grouped
