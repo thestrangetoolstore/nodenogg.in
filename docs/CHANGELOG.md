@@ -1,5 +1,17 @@
 # Changelog
 
+## v0.3.33
+
+[compare changes](https://github.com/thestrangetoolstore/nodenogg.in/compare/v0.3.32...v0.3.33)
+
+### 🐛 Bug Fixes
+
+- Hide any of your own empty nodes from other people ([1403cbbb](https://github.com/thestrangetoolstore/nodenogg.in/commit/1403cbbb))
+
+### ❤️ Contributors
+
+- Adam Procter ([@adamprocter](https://github.com/adamprocter))
+
 ## v0.3.32
 
 [compare changes](https://github.com/thestrangetoolstore/nodenogg.in/compare/v0.3.31...v0.3.32)
