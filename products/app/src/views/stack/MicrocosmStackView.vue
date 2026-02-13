@@ -5,10 +5,12 @@ import { storeToRefs } from 'pinia'
 import ViewContainer from '@/components/ViewContainer.vue'
 import ActionButton from '@/components/ActionButton.vue'
 import EmptyState from '@/components/EmptyState.vue'
-import { computed, nextTick } from 'vue'
+import { computed, nextTick, reactive, ref } from 'vue'
 import { EntitySchema, type Entity, type EntityOfType } from '@nodenogg.in/schema'
 import { getTags, getAllTags } from '@nodenogg.in/core'
 import { COPY } from '@/constants/copy'
+import Icon from '@/components/icon/Icon.vue'
+import IdentityCount from '@/components/IdentityCount.vue'
 import { findNonOverlappingPosition } from '@/utils/node-positioning'
 
 defineProps({
@@ -32,6 +34,19 @@ const { entities } = storeToRefs(microcosm)
 const htmlEntities = computed(() => entities.value.filter(e =>
   EntitySchema.utils.isType(e, 'html')
 ) as EntityOfType<'html'>[])
+
+// Build a lookup of parentNodeId → emoji entities
+const emojisByParent = computed(() => {
+  const map = new Map<string, EntityOfType<'emoji'>[]>()
+  entities.value.forEach(e => {
+    if (EntitySchema.utils.isType(e, 'emoji') && e.data.parentNodeId) {
+      const list = map.get(e.data.parentNodeId) || []
+      list.push(e as EntityOfType<'emoji'>)
+      map.set(e.data.parentNodeId, list)
+    }
+  })
+  return map
+})
 
 const { setEditingNode, isEditing, update, deleteEntity, create, duplicateEntity } = microcosm
 
@@ -70,15 +85,61 @@ const entitiesByTag = computed(() => {
     }
   })
 
-  // Move untagged to the end if it exists
+  // Move untagged to the front if it exists
   if (grouped.has('untagged')) {
     const untagged = grouped.get('untagged')!
     grouped.delete('untagged')
-    grouped.set('untagged', untagged)
+    const reordered = new Map<string, EntityOfType<'html'>[]>()
+    reordered.set('untagged', untagged)
+    grouped.forEach((v, k) => reordered.set(k, v))
+    return reordered
   }
 
   return grouped
 })
+
+// Track which columns have emoji sorting enabled
+const emojiSortedColumns = reactive(new Set<string>())
+
+const toggleEmojiSort = (tag: string) => {
+  if (emojiSortedColumns.has(tag)) {
+    emojiSortedColumns.delete(tag)
+  } else {
+    emojiSortedColumns.add(tag)
+  }
+}
+
+const getSortedEntities = (tag: string, tagEntities: EntityOfType<'html'>[]) => {
+  if (!emojiSortedColumns.has(tag)) return tagEntities
+  return [...tagEntities].sort((a, b) => {
+    const aCount = emojisByParent.value.get(a.id)?.length || 0
+    const bCount = emojisByParent.value.get(b.id)?.length || 0
+    return bCount - aCount
+  })
+}
+
+const handleEmojiCreate = (emoji: string, entity: EntityOfType<'html'>) => {
+  const entityWidth = entity.data.width || 200
+  const entityHeight = entity.data.height || 200
+  const entityCenterX = entityWidth / 2
+  const entityCenterY = entityHeight / 2
+
+  const angle = Math.random() * 2 * Math.PI
+  const minDistance = Math.max(entityWidth, entityHeight) / 2 + 20
+  const maxDistance = Math.max(entityWidth, entityHeight) / 2 + 40
+  const distance = minDistance + Math.random() * (maxDistance - minDistance)
+
+  const relativeX = entityCenterX + Math.cos(angle) * distance - 25
+  const relativeY = entityCenterY + Math.sin(angle) * distance - 25
+
+  create({
+    type: 'emoji',
+    content: emoji,
+    x: relativeX,
+    y: relativeY,
+    parentNodeId: entity.id
+  })
+}
 
 const handleCreateEntity = async () => {
   // Use a preferred position around origin with some variance
@@ -150,27 +211,74 @@ const handleDuplicateEntity = async (e: Entity) => {
     await duplicateEntity(e)
   }
 }
+
+// Click-and-drag horizontal scrolling
+const stackViewRef = ref<HTMLElement | null>(null)
+const isDragging = ref(false)
+let dragStartX = 0
+let scrollStartX = 0
+
+const onPointerDown = (e: PointerEvent) => {
+  const target = e.target as HTMLElement
+  // Only start drag if clicking on background areas, not inside a node card
+  if (target.closest('.stack-node-wrapper')) return
+  isDragging.value = true
+  dragStartX = e.clientX
+  scrollStartX = stackViewRef.value?.scrollLeft ?? 0
+}
+
+const onPointerMove = (e: PointerEvent) => {
+  if (!isDragging.value || !stackViewRef.value) return
+  const delta = e.clientX - dragStartX
+  stackViewRef.value.scrollLeft = scrollStartX - delta
+}
+
+const onPointerUp = () => {
+  isDragging.value = false
+}
 </script>
 
 <template>
   <ViewContainer>
-    <div class="stack-view">
+    <div
+      ref="stackViewRef"
+      class="stack-view"
+      :class="{ dragging: isDragging }"
+      @pointerdown="onPointerDown"
+      @pointermove="onPointerMove"
+      @pointerup="onPointerUp"
+      @pointerleave="onPointerUp"
+    >
       <!-- Columns for each tag -->
       <div v-if="entitiesByTag.size > 0" class="columns-container">
         <div v-for="[tag, tagEntities] in entitiesByTag" :key="tag" class="tag-column">
           <div class="column-header">
             <h3 class="tag-name">{{ tag }}</h3>
-            <span class="tag-count">{{ tagEntities.length }}</span>
+            <div class="column-header-actions">
+              <button
+                class="emoji-sort-toggle"
+                :class="{ active: emojiSortedColumns.has(tag) }"
+                :title="emojiSortedColumns.has(tag) ? 'Clear emoji sort' : 'Sort by emoji count'"
+                @click="toggleEmojiSort(tag)"
+              >
+                <Icon type="emoji" :size="20" />
+                <span class="emoji-sort-arrow">{{ emojiSortedColumns.has(tag) ? '\u2193' : '' }}</span>
+              </button>
+              <IdentityCount :count="tagEntities.length" />
+            </div>
           </div>
           <div class="column-content">
             <StackNode
-              v-for="e in tagEntities"
+              v-for="e in getSortedEntities(tag, tagEntities)"
               :key="`${tag}/${e.id}`"
               :entity="e"
               :onChange="u => update(e.id, u)"
               :onDelete="() => deleteEntity(e)"
               :isEditing="isEditing(e.id)"
               :onDuplicate="() => handleDuplicateEntity(e)"
+              :onEmojiCreate="(emoji: string) => handleEmojiCreate(emoji, e)"
+              :onEmojiDelete="(emojiEntity) => deleteEntity(emojiEntity)"
+              :emojis="emojisByParent.get(e.id) || []"
               @startEditing="setEditingNode(e.id)"
               @stopEditing="setEditingNode(null)"
             />
@@ -204,6 +312,12 @@ const handleDuplicateEntity = async (e: Entity) => {
   left: 0;
   overflow-x: auto;
   overflow-y: hidden;
+  cursor: grab;
+}
+
+.stack-view.dragging {
+  cursor: grabbing;
+  user-select: none;
 }
 
 .columns-container {
@@ -259,21 +373,51 @@ const handleDuplicateEntity = async (e: Entity) => {
   white-space: nowrap;
 }
 
-.tag-count {
-  font-size: 0.75rem;
-  font-weight: 500;
-  color: var(--ui-50);
-  background: rgba(0, 0, 0, 0.1);
+.column-header-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--size-6);
+}
+
+.emoji-sort-toggle {
+  display: flex;
+  align-items: center;
+  gap: 2px;
   padding: var(--size-2) var(--size-6);
+  border: none;
   border-radius: var(--size-12);
-  min-width: var(--size-20);
-  text-align: center;
+  background: transparent;
+  cursor: pointer;
+  font-size: 0.75rem;
+  line-height: 1;
+  color: black;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.emoji-sort-toggle:hover {
+  background: rgba(0, 0, 0, 0.08);
+}
+
+.emoji-sort-toggle.active {
+  background: rgba(0, 0, 0, 0.12);
 }
 
 @media (prefers-color-scheme: dark) {
-  .tag-count {
+  .emoji-sort-toggle {
+    color: white;
+  }
+
+  .emoji-sort-toggle:hover {
     background: rgba(255, 255, 255, 0.1);
   }
+
+  .emoji-sort-toggle.active {
+    background: rgba(255, 255, 255, 0.15);
+  }
+}
+
+.emoji-sort-arrow {
+  font-size: 0.7rem;
 }
 
 .column-content {

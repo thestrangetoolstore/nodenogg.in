@@ -12,16 +12,20 @@ import { client } from '@/state'
 import Editor from '@/components/editor/Editor.vue'
 import Icon from '@/components/icon/Icon.vue'
 import TagInput from '@/components/tags/TagInput.vue'
-import { EntitySchema, type Entity, type EntityUpdate } from '@nodenogg.in/schema'
+import { EntitySchema, type Entity, type EntityUpdate, type EntityOfType } from '@nodenogg.in/schema'
 import ColorSelector from '@/components/color-selector/ColorSelector.vue'
+import EmojiSelector from '@/components/emoji-selector/EmojiSelector.vue'
 import { getColor } from '@/utils/color'
 
 const props = defineProps<{
     onChange: (update: EntityUpdate) => void
     onDelete: () => void
     onDuplicate: () => void
+    onEmojiCreate: (emoji: string) => void
+    onEmojiDelete: (emoji: EntityOfType<'emoji'>) => void
     entity: Entity
     isEditing: boolean
+    emojis?: EntityOfType<'emoji'>[]
 }>()
 
 const emit = defineEmits(['startEditing', 'stopEditing'])
@@ -55,47 +59,70 @@ const { isType } = EntitySchema.utils
 </script>
 
 <template>
-    <div class="node" :style="`background-color: ${getColor(entity.data.backgroundColor || 'yellow', isOwner ? 50 : 50)}`"
-        v-if="isType(entity, 'html')" :class="{ 'is-editing': isEditing, 'read-only': !isOwner }" tabindex="0" :data-entity-id="entity.id">
-        <Editor :value="entity.data.content" :onChange="content => onChange({ content })" :editable="isEditing && isOwner"
-            @click="onStartEditing" @cancel="onStopEditing" />
+    <div class="stack-node-wrapper" v-if="isType(entity, 'html')">
+        <div class="node" :style="`background-color: ${getColor(entity.data.backgroundColor || 'yellow', isOwner ? 50 : 50)}`"
+            :class="{ 'is-editing': isEditing, 'read-only': !isOwner }" tabindex="0" :data-entity-id="entity.id">
+            <Editor :value="entity.data.content" :onChange="content => onChange({ content })" :editable="isEditing && isOwner"
+                @click="onStartEditing" @cancel="onStopEditing" />
 
-        <!-- Tag input section - only for owners -->
-        <TagInput v-if="isOwner" :entity="entity" :onUpdate="handleTagUpdate" />
+            <!-- Tag input section - only for owners -->
+            <TagInput v-if="isOwner" :entity="entity" :onUpdate="handleTagUpdate" />
 
-        <DropdownMenuRoot :modal="true">
-            <DropdownMenuTrigger class="node-menu-trigger">
-                <Icon type="ellipsis" />
-            </DropdownMenuTrigger>
-            <DropdownMenuPortal>
-                <DropdownMenuContent class="dropdown-menu-content" :side-offset="5" :align="'end'">
-                    <!-- Owner actions -->
-                    <template v-if="isOwner">
-                        <DropdownMenuItem class="dropdown-menu-item">
-                            <ColorSelector :value="entity.data.backgroundColor"
-                                :onUpdate="backgroundColor => onChange({ backgroundColor })" />
-                        </DropdownMenuItem>
-                        <DropdownMenuSeparator class="dropdown-menu-separator" />
-                        <DropdownMenuItem class="dropdown-menu-item" @click="onDuplicate">
-                            Duplicate
-                        </DropdownMenuItem>
-                        <DropdownMenuItem class="dropdown-menu-item" @click="onDelete">
-                            Delete
-                        </DropdownMenuItem>
-                    </template>
-                    <!-- Non-owner actions -->
-                    <template v-else>
-                        <DropdownMenuItem class="dropdown-menu-item" @click="onDuplicate">
-                            Duplicate
-                        </DropdownMenuItem>
-                    </template>
-                </DropdownMenuContent>
-            </DropdownMenuPortal>
-        </DropdownMenuRoot>
+            <DropdownMenuRoot :modal="true">
+                <DropdownMenuTrigger class="node-menu-trigger">
+                    <Icon type="ellipsis" />
+                </DropdownMenuTrigger>
+                <DropdownMenuPortal>
+                    <DropdownMenuContent class="dropdown-menu-content" :side-offset="5" :align="'end'">
+                        <!-- Owner actions -->
+                        <template v-if="isOwner">
+                            <DropdownMenuItem class="dropdown-menu-item">
+                                <ColorSelector :value="entity.data.backgroundColor"
+                                    :onUpdate="backgroundColor => onChange({ backgroundColor })" />
+                            </DropdownMenuItem>
+                            <DropdownMenuSeparator class="dropdown-menu-separator" />
+                            <DropdownMenuItem class="dropdown-menu-item" @click="onDuplicate">
+                                Duplicate
+                            </DropdownMenuItem>
+                            <DropdownMenuItem class="dropdown-menu-item" @click="onDelete">
+                                Delete
+                            </DropdownMenuItem>
+                        </template>
+                        <!-- Non-owner actions -->
+                        <template v-else>
+                            <DropdownMenuItem class="dropdown-menu-item emoji-menu-item">
+                                <EmojiSelector :onEmojiSelect="onEmojiCreate" />
+                            </DropdownMenuItem>
+                            <DropdownMenuSeparator class="dropdown-menu-separator" />
+                            <DropdownMenuItem class="dropdown-menu-item" @click="onDuplicate">
+                                Duplicate
+                            </DropdownMenuItem>
+                        </template>
+                    </DropdownMenuContent>
+                </DropdownMenuPortal>
+            </DropdownMenuRoot>
+        </div>
+        <div v-if="emojis && emojis.length > 0" class="emoji-row">
+            <span v-for="emoji in emojis" :key="emoji.id" class="emoji-badge"
+                :class="{ 'is-own': currentIdentity && emoji.identity_id === currentIdentity.id }">
+                {{ emoji.data.content }}
+                <button v-if="currentIdentity && emoji.identity_id === currentIdentity.id"
+                    class="emoji-delete-button" @click="onEmojiDelete(emoji)" aria-label="Delete emoji">
+                    <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+            </span>
+        </div>
     </div>
 </template>
 
 <style scoped>
+.stack-node-wrapper {
+    margin-bottom: var(--size-12);
+}
+
 .node {
     position: relative;
     width: 100%;
@@ -107,7 +134,61 @@ const { isType } = EntitySchema.utils
     transition: border-color 0.2s ease, outline 0.2s ease;
     outline: none;
     padding-bottom: var(--size-8);
-    margin-bottom: var(--size-12);
+}
+
+.emoji-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--size-4);
+    padding: var(--size-4) var(--size-8);
+}
+
+.emoji-badge {
+    position: relative;
+    font-size: 1.25rem;
+    line-height: 1;
+    cursor: default;
+}
+
+.emoji-delete-button {
+    position: absolute;
+    top: -4px;
+    right: -4px;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    border: none;
+    color: var(--ui-0);
+    background: var(--ui-100);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: all 0.2s ease;
+    padding: 0;
+}
+
+.emoji-badge.is-own:hover .emoji-delete-button {
+    opacity: 1;
+}
+
+.emoji-delete-button:hover {
+    color: var(--ui-100);
+    background: var(--ui-0);
+    transform: scale(1.1);
+}
+
+@media (prefers-color-scheme: dark) {
+    .emoji-delete-button {
+        background: rgba(40, 40, 40, 0.9);
+        color: #ccc;
+    }
+
+    .emoji-delete-button:hover {
+        background: #ff4757;
+        color: white;
+    }
 }
 
 .node:focus {
