@@ -5,7 +5,7 @@ import { storeToRefs } from 'pinia'
 import ViewContainer from '@/components/ViewContainer.vue'
 import ActionButton from '@/components/ActionButton.vue'
 import EmptyState from '@/components/EmptyState.vue'
-import { computed, nextTick, reactive } from 'vue'
+import { computed, nextTick, reactive, ref } from 'vue'
 import { EntitySchema, type Entity, type EntityOfType } from '@nodenogg.in/schema'
 import { getTags, getAllTags } from '@nodenogg.in/core'
 import { COPY } from '@/constants/copy'
@@ -208,11 +208,44 @@ const handleDuplicateEntity = async (e: Entity) => {
     await duplicateEntity(e)
   }
 }
+
+// Click-and-drag horizontal scrolling
+const stackViewRef = ref<HTMLElement | null>(null)
+const isDragging = ref(false)
+let dragStartX = 0
+let scrollStartX = 0
+
+const onPointerDown = (e: PointerEvent) => {
+  const target = e.target as HTMLElement
+  // Only start drag if clicking on background areas, not inside a node card
+  if (target.closest('.stack-node-wrapper')) return
+  isDragging.value = true
+  dragStartX = e.clientX
+  scrollStartX = stackViewRef.value?.scrollLeft ?? 0
+}
+
+const onPointerMove = (e: PointerEvent) => {
+  if (!isDragging.value || !stackViewRef.value) return
+  const delta = e.clientX - dragStartX
+  stackViewRef.value.scrollLeft = scrollStartX - delta
+}
+
+const onPointerUp = () => {
+  isDragging.value = false
+}
 </script>
 
 <template>
   <ViewContainer>
-    <div class="stack-view">
+    <div
+      ref="stackViewRef"
+      class="stack-view"
+      :class="{ dragging: isDragging }"
+      @pointerdown="onPointerDown"
+      @pointermove="onPointerMove"
+      @pointerup="onPointerUp"
+      @pointerleave="onPointerUp"
+    >
       <!-- Columns for each tag -->
       <div v-if="entitiesByTag.size > 0" class="columns-container">
         <div v-for="[tag, tagEntities] in entitiesByTag" :key="tag" class="tag-column">
@@ -276,6 +309,12 @@ const handleDuplicateEntity = async (e: Entity) => {
   left: 0;
   overflow-x: auto;
   overflow-y: hidden;
+  cursor: grab;
+}
+
+.stack-view.dragging {
+  cursor: grabbing;
+  user-select: none;
 }
 
 .columns-container {
