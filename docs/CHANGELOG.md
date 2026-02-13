@@ -1,5 +1,28 @@
 # Changelog
 
+## v0.3.32
+
+[compare changes](https://github.com/thestrangetoolstore/nodenogg.in/compare/v0.3.31...v0.3.32)
+
+### 🚀 Features
+
+- Add new emoji icon SVG ([defda50b](https://github.com/thestrangetoolstore/nodenogg.in/commit/defda50b))
+- Register emoji icon in the icon system ([f3f8b39d](https://github.com/thestrangetoolstore/nodenogg.in/commit/f3f8b39d))
+- **stack:** Implement emoji grouping and sorting logic in MicrocosmStackView ([80262bda](https://github.com/thestrangetoolstore/nodenogg.in/commit/80262bda))
+- **stack:** Update MicrocosmStackView template for emoji features ([4307d180](https://github.com/thestrangetoolstore/nodenogg.in/commit/4307d180))
+- **stack:** Enhance StackNode to display associated emojis ([44c68577](https://github.com/thestrangetoolstore/nodenogg.in/commit/44c68577))
+- Wire up emoji creation and deletion in MicrocosmStackView ([24c43d41](https://github.com/thestrangetoolstore/nodenogg.in/commit/24c43d41))
+- Emoji fix ([d225c6f8](https://github.com/thestrangetoolstore/nodenogg.in/commit/d225c6f8))
+- Added mouse / hand icon for moving across columns in stack view ([5ddf8ecf](https://github.com/thestrangetoolstore/nodenogg.in/commit/5ddf8ecf))
+
+### 🐛 Bug Fixes
+
+- Made sure untagged is always column 1in stackview ([6355cfd2](https://github.com/thestrangetoolstore/nodenogg.in/commit/6355cfd2))
+
+### ❤️ Contributors
+
+- Adam Procter ([@adamprocter](https://github.com/adamprocter))
+
 ## v0.3.31
 
 [compare changes](https://github.com/thestrangetoolstore/nodenogg.in/compare/v0.3.30...v0.3.31)
