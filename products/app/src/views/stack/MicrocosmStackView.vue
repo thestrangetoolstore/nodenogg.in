@@ -195,17 +195,29 @@ const handleDuplicateEntity = async (e: Entity) => {
         <div v-for="[tag, tagEntities] in entitiesByTag" :key="tag" class="tag-column">
           <div class="column-header">
             <h3 class="tag-name">{{ tag }}</h3>
-            <span class="tag-count">{{ tagEntities.length }}</span>
+            <div class="column-header-actions">
+              <button
+                class="emoji-sort-toggle"
+                :class="{ active: emojiSortedColumns.has(tag) }"
+                :title="emojiSortedColumns.has(tag) ? 'Clear emoji sort' : 'Sort by emoji count'"
+                @click="toggleEmojiSort(tag)"
+              >
+                <Icon type="emoji" :size="20" />
+                <span class="emoji-sort-arrow">{{ emojiSortedColumns.has(tag) ? '\u2193' : '' }}</span>
+              </button>
+              <IdentityCount :count="tagEntities.length" />
+            </div>
           </div>
           <div class="column-content">
             <StackNode
-              v-for="e in tagEntities"
+              v-for="e in getSortedEntities(tag, tagEntities)"
               :key="`${tag}/${e.id}`"
               :entity="e"
               :onChange="u => update(e.id, u)"
               :onDelete="() => deleteEntity(e)"
               :isEditing="isEditing(e.id)"
               :onDuplicate="() => handleDuplicateEntity(e)"
+              :emojis="emojisByParent.get(e.id) || []"
               @startEditing="setEditingNode(e.id)"
               @stopEditing="setEditingNode(null)"
             />
