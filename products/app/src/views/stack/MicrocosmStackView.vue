@@ -115,6 +115,29 @@ const getSortedEntities = (tag: string, tagEntities: EntityOfType<'html'>[]) => 
   })
 }
 
+const handleEmojiCreate = (emoji: string, entity: EntityOfType<'html'>) => {
+  const entityWidth = entity.data.width || 200
+  const entityHeight = entity.data.height || 200
+  const entityCenterX = entityWidth / 2
+  const entityCenterY = entityHeight / 2
+
+  const angle = Math.random() * 2 * Math.PI
+  const minDistance = Math.max(entityWidth, entityHeight) / 2 + 20
+  const maxDistance = Math.max(entityWidth, entityHeight) / 2 + 40
+  const distance = minDistance + Math.random() * (maxDistance - minDistance)
+
+  const relativeX = entityCenterX + Math.cos(angle) * distance - 25
+  const relativeY = entityCenterY + Math.sin(angle) * distance - 25
+
+  create({
+    type: 'emoji',
+    content: emoji,
+    x: relativeX,
+    y: relativeY,
+    parentNodeId: entity.id
+  })
+}
+
 const handleCreateEntity = async () => {
   // Use a preferred position around origin with some variance
   const preferredPosition = {
