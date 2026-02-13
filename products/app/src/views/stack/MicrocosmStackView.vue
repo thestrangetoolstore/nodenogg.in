@@ -5,10 +5,12 @@ import { storeToRefs } from 'pinia'
 import ViewContainer from '@/components/ViewContainer.vue'
 import ActionButton from '@/components/ActionButton.vue'
 import EmptyState from '@/components/EmptyState.vue'
-import { computed, nextTick } from 'vue'
+import { computed, nextTick, reactive } from 'vue'
 import { EntitySchema, type Entity, type EntityOfType } from '@nodenogg.in/schema'
 import { getTags, getAllTags } from '@nodenogg.in/core'
 import { COPY } from '@/constants/copy'
+import Icon from '@/components/icon/Icon.vue'
+import IdentityCount from '@/components/IdentityCount.vue'
 import { findNonOverlappingPosition } from '@/utils/node-positioning'
 
 defineProps({
@@ -32,6 +34,19 @@ const { entities } = storeToRefs(microcosm)
 const htmlEntities = computed(() => entities.value.filter(e =>
   EntitySchema.utils.isType(e, 'html')
 ) as EntityOfType<'html'>[])
+
+// Build a lookup of parentNodeId → emoji entities
+const emojisByParent = computed(() => {
+  const map = new Map<string, EntityOfType<'emoji'>[]>()
+  entities.value.forEach(e => {
+    if (EntitySchema.utils.isType(e, 'emoji') && e.data.parentNodeId) {
+      const list = map.get(e.data.parentNodeId) || []
+      list.push(e as EntityOfType<'emoji'>)
+      map.set(e.data.parentNodeId, list)
+    }
+  })
+  return map
+})
 
 const { setEditingNode, isEditing, update, deleteEntity, create, duplicateEntity } = microcosm
 
@@ -79,6 +94,26 @@ const entitiesByTag = computed(() => {
 
   return grouped
 })
+
+// Track which columns have emoji sorting enabled
+const emojiSortedColumns = reactive(new Set<string>())
+
+const toggleEmojiSort = (tag: string) => {
+  if (emojiSortedColumns.has(tag)) {
+    emojiSortedColumns.delete(tag)
+  } else {
+    emojiSortedColumns.add(tag)
+  }
+}
+
+const getSortedEntities = (tag: string, tagEntities: EntityOfType<'html'>[]) => {
+  if (!emojiSortedColumns.has(tag)) return tagEntities
+  return [...tagEntities].sort((a, b) => {
+    const aCount = emojisByParent.value.get(a.id)?.length || 0
+    const bCount = emojisByParent.value.get(b.id)?.length || 0
+    return bCount - aCount
+  })
+}
 
 const handleCreateEntity = async () => {
   // Use a preferred position around origin with some variance
@@ -259,21 +294,51 @@ const handleDuplicateEntity = async (e: Entity) => {
   white-space: nowrap;
 }
 
-.tag-count {
-  font-size: 0.75rem;
-  font-weight: 500;
-  color: var(--ui-50);
-  background: rgba(0, 0, 0, 0.1);
+.column-header-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--size-6);
+}
+
+.emoji-sort-toggle {
+  display: flex;
+  align-items: center;
+  gap: 2px;
   padding: var(--size-2) var(--size-6);
+  border: none;
   border-radius: var(--size-12);
-  min-width: var(--size-20);
-  text-align: center;
+  background: transparent;
+  cursor: pointer;
+  font-size: 0.75rem;
+  line-height: 1;
+  color: black;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.emoji-sort-toggle:hover {
+  background: rgba(0, 0, 0, 0.08);
+}
+
+.emoji-sort-toggle.active {
+  background: rgba(0, 0, 0, 0.12);
 }
 
 @media (prefers-color-scheme: dark) {
-  .tag-count {
+  .emoji-sort-toggle {
+    color: white;
+  }
+
+  .emoji-sort-toggle:hover {
     background: rgba(255, 255, 255, 0.1);
   }
+
+  .emoji-sort-toggle.active {
+    background: rgba(255, 255, 255, 0.15);
+  }
+}
+
+.emoji-sort-arrow {
+  font-size: 0.7rem;
 }
 
 .column-content {
