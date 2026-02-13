@@ -12,7 +12,7 @@ import { client } from '@/state'
 import Editor from '@/components/editor/Editor.vue'
 import Icon from '@/components/icon/Icon.vue'
 import TagInput from '@/components/tags/TagInput.vue'
-import { EntitySchema, type Entity, type EntityUpdate } from '@nodenogg.in/schema'
+import { EntitySchema, type Entity, type EntityUpdate, type EntityOfType } from '@nodenogg.in/schema'
 import ColorSelector from '@/components/color-selector/ColorSelector.vue'
 import { getColor } from '@/utils/color'
 
@@ -22,6 +22,7 @@ const props = defineProps<{
     onDuplicate: () => void
     entity: Entity
     isEditing: boolean
+    emojis?: EntityOfType<'emoji'>[]
 }>()
 
 const emit = defineEmits(['startEditing', 'stopEditing'])
@@ -55,47 +56,58 @@ const { isType } = EntitySchema.utils
 </script>
 
 <template>
-    <div class="node" :style="`background-color: ${getColor(entity.data.backgroundColor || 'yellow', isOwner ? 50 : 50)}`"
-        v-if="isType(entity, 'html')" :class="{ 'is-editing': isEditing, 'read-only': !isOwner }" tabindex="0" :data-entity-id="entity.id">
-        <Editor :value="entity.data.content" :onChange="content => onChange({ content })" :editable="isEditing && isOwner"
-            @click="onStartEditing" @cancel="onStopEditing" />
+    <div class="stack-node-wrapper" v-if="isType(entity, 'html')">
+        <div class="node" :style="`background-color: ${getColor(entity.data.backgroundColor || 'yellow', isOwner ? 50 : 50)}`"
+            :class="{ 'is-editing': isEditing, 'read-only': !isOwner }" tabindex="0" :data-entity-id="entity.id">
+            <Editor :value="entity.data.content" :onChange="content => onChange({ content })" :editable="isEditing && isOwner"
+                @click="onStartEditing" @cancel="onStopEditing" />
 
-        <!-- Tag input section - only for owners -->
-        <TagInput v-if="isOwner" :entity="entity" :onUpdate="handleTagUpdate" />
+            <!-- Tag input section - only for owners -->
+            <TagInput v-if="isOwner" :entity="entity" :onUpdate="handleTagUpdate" />
 
-        <DropdownMenuRoot :modal="true">
-            <DropdownMenuTrigger class="node-menu-trigger">
-                <Icon type="ellipsis" />
-            </DropdownMenuTrigger>
-            <DropdownMenuPortal>
-                <DropdownMenuContent class="dropdown-menu-content" :side-offset="5" :align="'end'">
-                    <!-- Owner actions -->
-                    <template v-if="isOwner">
-                        <DropdownMenuItem class="dropdown-menu-item">
-                            <ColorSelector :value="entity.data.backgroundColor"
-                                :onUpdate="backgroundColor => onChange({ backgroundColor })" />
-                        </DropdownMenuItem>
-                        <DropdownMenuSeparator class="dropdown-menu-separator" />
-                        <DropdownMenuItem class="dropdown-menu-item" @click="onDuplicate">
-                            Duplicate
-                        </DropdownMenuItem>
-                        <DropdownMenuItem class="dropdown-menu-item" @click="onDelete">
-                            Delete
-                        </DropdownMenuItem>
-                    </template>
-                    <!-- Non-owner actions -->
-                    <template v-else>
-                        <DropdownMenuItem class="dropdown-menu-item" @click="onDuplicate">
-                            Duplicate
-                        </DropdownMenuItem>
-                    </template>
-                </DropdownMenuContent>
-            </DropdownMenuPortal>
-        </DropdownMenuRoot>
+            <DropdownMenuRoot :modal="true">
+                <DropdownMenuTrigger class="node-menu-trigger">
+                    <Icon type="ellipsis" />
+                </DropdownMenuTrigger>
+                <DropdownMenuPortal>
+                    <DropdownMenuContent class="dropdown-menu-content" :side-offset="5" :align="'end'">
+                        <!-- Owner actions -->
+                        <template v-if="isOwner">
+                            <DropdownMenuItem class="dropdown-menu-item">
+                                <ColorSelector :value="entity.data.backgroundColor"
+                                    :onUpdate="backgroundColor => onChange({ backgroundColor })" />
+                            </DropdownMenuItem>
+                            <DropdownMenuSeparator class="dropdown-menu-separator" />
+                            <DropdownMenuItem class="dropdown-menu-item" @click="onDuplicate">
+                                Duplicate
+                            </DropdownMenuItem>
+                            <DropdownMenuItem class="dropdown-menu-item" @click="onDelete">
+                                Delete
+                            </DropdownMenuItem>
+                        </template>
+                        <!-- Non-owner actions -->
+                        <template v-else>
+                            <DropdownMenuItem class="dropdown-menu-item" @click="onDuplicate">
+                                Duplicate
+                            </DropdownMenuItem>
+                        </template>
+                    </DropdownMenuContent>
+                </DropdownMenuPortal>
+            </DropdownMenuRoot>
+        </div>
+        <div v-if="emojis && emojis.length > 0" class="emoji-row">
+            <span v-for="emoji in emojis" :key="emoji.id" class="emoji-badge">
+                {{ emoji.data.content }}
+            </span>
+        </div>
     </div>
 </template>
 
 <style scoped>
+.stack-node-wrapper {
+    margin-bottom: var(--size-12);
+}
+
 .node {
     position: relative;
     width: 100%;
@@ -107,7 +119,19 @@ const { isType } = EntitySchema.utils
     transition: border-color 0.2s ease, outline 0.2s ease;
     outline: none;
     padding-bottom: var(--size-8);
-    margin-bottom: var(--size-12);
+}
+
+.emoji-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--size-4);
+    padding: var(--size-4) var(--size-8);
+}
+
+.emoji-badge {
+    font-size: 1.25rem;
+    line-height: 1;
+    cursor: default;
 }
 
 .node:focus {
