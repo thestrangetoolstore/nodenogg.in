@@ -48,6 +48,9 @@ const isOwnedByCurrentUser = (entity: Entity) => {
   return currentIdentity && entity.identity_id === currentIdentity.id
 }
 
+// Helper to check if HTML content has any actual text
+const hasContent = (content: string) => content.replace(/<[^>]*>/g, '').trim().length > 0
+
 // Access vue-flow instance for coordinate transformation and interaction control
 const { screenToFlowCoordinate, panOnDrag, zoomOnScroll, zoomOnPinch, project, dimensions } = useVueFlow()
 
@@ -55,7 +58,13 @@ const { screenToFlowCoordinate, panOnDrag, zoomOnScroll, zoomOnPinch, project, d
 const positionedNodes = computed(() => {
   return entities.value.filter(e =>
     EntitySchema.utils.isType(e, 'html') || EntitySchema.utils.isType(e, 'emoji')
-  ).map((entity) => {
+  ).filter(e => {
+    // Hide empty HTML nodes from other users
+    if (EntitySchema.utils.isType(e, 'html') && !isOwnedByCurrentUser(e) && !hasContent(e.data.content)) {
+      return false
+    }
+    return true
+  }).map((entity) => {
     const isEmoji = EntitySchema.utils.isType(entity, 'emoji')
     let { x, y } = entity.data
 

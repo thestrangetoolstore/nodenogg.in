@@ -30,9 +30,13 @@ const identity = client.identity.get()
 
 const { entities } = storeToRefs(microcosm)
 
-// Get all HTML entities from all users
+// Helper to check if HTML content has any actual text
+const hasContent = (content: string) => content.replace(/<[^>]*>/g, '').trim().length > 0
+
+// Get all HTML entities from all users, hiding empty nodes from other users
 const htmlEntities = computed(() => entities.value.filter(e =>
-  EntitySchema.utils.isType(e, 'html')
+  EntitySchema.utils.isType(e, 'html') &&
+  (e.identity_id === identity?.id || hasContent((e as EntityOfType<'html'>).data.content))
 ) as EntityOfType<'html'>[])
 
 // Build a lookup of parentNodeId → emoji entities
