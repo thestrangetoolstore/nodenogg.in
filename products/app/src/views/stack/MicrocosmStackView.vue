@@ -217,6 +217,8 @@ const handleDuplicateEntity = async (e: Entity) => {
               :onDelete="() => deleteEntity(e)"
               :isEditing="isEditing(e.id)"
               :onDuplicate="() => handleDuplicateEntity(e)"
+              :onEmojiCreate="(emoji: string) => handleEmojiCreate(emoji, e)"
+              :onEmojiDelete="(emojiEntity) => deleteEntity(emojiEntity)"
               :emojis="emojisByParent.get(e.id) || []"
               @startEditing="setEditingNode(e.id)"
               @stopEditing="setEditingNode(null)"
