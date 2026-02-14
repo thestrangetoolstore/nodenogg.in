@@ -362,6 +362,21 @@ nav {
     }
 }
 
+@media (max-width: 350px) {
+    nav {
+        flex-wrap: wrap;
+    }
+
+    .nav-left {
+        flex: 1 1 100%;
+    }
+
+    .nav-right {
+        flex: 1 1 100%;
+        justify-content: flex-start;
+    }
+}
+
 
 @media (prefers-color-scheme: dark) {
     nav {
@@ -474,6 +489,13 @@ nav {
     text-overflow: ellipsis;
     white-space: nowrap;
 }
+
+@media (max-width: 473px) {
+    .name-wrapper {
+        max-width: 100px;
+    }
+}
+
 
 
 /* Options trigger specific styles */
