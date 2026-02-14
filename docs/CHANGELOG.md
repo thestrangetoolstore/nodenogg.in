@@ -1,5 +1,18 @@
 # Changelog
 
+## v0.3.34
+
+[compare changes](https://github.com/thestrangetoolstore/nodenogg.in/compare/v0.3.33...v0.3.34)
+
+### 🐛 Bug Fixes
+
+- Minor css changes to help with small screens long microcosm names ([4ffd46cf](https://github.com/thestrangetoolstore/nodenogg.in/commit/4ffd46cf))
+- Security patch ([3d0178bb](https://github.com/thestrangetoolstore/nodenogg.in/commit/3d0178bb))
+
+### ❤️ Contributors
+
+- Adam Procter ([@adamprocter](https://github.com/adamprocter))
+
 ## v0.3.33
 
 [compare changes](https://github.com/thestrangetoolstore/nodenogg.in/compare/v0.3.32...v0.3.33)
