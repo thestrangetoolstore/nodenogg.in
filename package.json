@@ -41,7 +41,21 @@
       "preact": ">=10.27.3",
       "@isaacs/brace-expansion": ">=5.0.1",
       "mdast-util-to-hast": ">=13.2.1",
-      "markdown-it": ">=14.1.1"
+      "markdown-it": ">=14.1.1",
+      "vite>rollup": "^4.59.0",
+      "tsup>rollup": "^4.59.0",
+      "workbox-build>rollup": "^2.80.0",
+      "eslint>minimatch": "^3.1.4",
+      "@typescript-eslint/typescript-estree>minimatch": "^9.0.7",
+      "filelist>minimatch": "^5.1.8",
+      "editorconfig>minimatch": "^9.0.7",
+      "glob>minimatch": "^10.2.3",
+      "eslint>ajv": "^6.14.0",
+      "@commitlint/config-validator>ajv": "^8.18.0",
+      "workbox-build>ajv": "^8.18.0",
+      "@rollup/plugin-terser>serialize-javascript": "^7.0.3",
+      "npm-run-all2>minimatch": "^9.0.7",
+      "@vue/language-core>minimatch": "^9.0.7"
     },
     "patchedDependencies": {
       "@figureland/kit@0.0.57": "patches/@figureland__kit@0.0.57.patch"
