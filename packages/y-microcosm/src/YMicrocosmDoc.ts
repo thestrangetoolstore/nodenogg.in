@@ -290,7 +290,7 @@ export class YMicrocosmDoc {
 
   private disconnectProviders = async () => {
     this.providers?.forEach((p) => {
-      p.awareness?.off('change', this.handleAwareness)
+      p.awareness?.off('update', this.handleAwareness)
       p.shouldConnect = false
       p.disconnect()
     })
@@ -319,10 +319,10 @@ export class YMicrocosmDoc {
     }
   }
 
-  private handleAwareness = (_: unknown, provider: string | Provider) => {
-    if (isString(provider)) {
-      return
-    }
+  private handleAwareness = (_: unknown, providerOrOrigin: string | Provider) => {
+    const provider = isString(providerOrOrigin)
+      ? this.providers?.find((p) => p.awareness)
+      : providerOrOrigin
 
     const states = Array.from(provider?.awareness?.getStates() || new Map())
       .map(([, state]) => state?.identity || {})
