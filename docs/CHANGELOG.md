@@ -1,5 +1,22 @@
 # Changelog
 
+## v0.3.35
+
+[compare changes](https://github.com/thestrangetoolstore/nodenogg.in/compare/v0.3.34...v0.3.35)
+
+### 🐛 Bug Fixes
+
+- Security updates ([036b54e6](https://github.com/thestrangetoolstore/nodenogg.in/commit/036b54e6))
+- When you join as the first person count now goes to 1 ([e04e1199](https://github.com/thestrangetoolstore/nodenogg.in/commit/e04e1199))
+
+### 📖 Documentation
+
+- Added some more testimonials ([05261604](https://github.com/thestrangetoolstore/nodenogg.in/commit/05261604))
+
+### ❤️ Contributors
+
+- Adam Procter ([@adamprocter](https://github.com/adamprocter))
+
 ## v0.3.34
 
 [compare changes](https://github.com/thestrangetoolstore/nodenogg.in/compare/v0.3.33...v0.3.34)
