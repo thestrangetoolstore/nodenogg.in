@@ -104,6 +104,27 @@ const handleDuplicateEntity = async (e: Entity) => {
   }
 }
 
+const handleSplitEntity = async (entity: Entity) => {
+  if (!EntitySchema.utils.isType(entity, 'html')) return
+
+  const preferredPosition = {
+    x: entity.data.x,
+    y: entity.data.y + (entity.data.height || 200) + 16
+  }
+
+  const dimensions = { width: entity.data.width || 300, height: entity.data.height || 200 }
+  const position = findNonOverlappingPosition(preferredPosition, dimensions, entities.value)
+
+  await create({
+    type: 'html',
+    x: position.x,
+    y: position.y,
+    width: dimensions.width,
+    height: dimensions.height,
+    content: ''
+  })
+}
+
 const handleCreateEmoji = async () => {
   // Use a preferred position around origin with some variance
   const preferredPosition = {
@@ -131,6 +152,7 @@ const handleCreateEmoji = async () => {
     <div class="entities">
       <CollectNode v-for="e in htmlEntities" v-bind:key="`entity/${e.id}`" :entity="e" :onChange="u => update(e.id, u)"
         :onDelete="() => deleteEntity(e)" :isEditing="isEditing(e.id)" :onDuplicate="() => handleDuplicateEntity(e)"
+        :onSplit="() => handleSplitEntity(e)"
         @startEditing="setEditingNode(e.id)" @stopEditing="setEditingNode(null)" />
 
       <EmptyState v-if="htmlEntities.length === 0" :title="COPY.emptyStates.collect.title"

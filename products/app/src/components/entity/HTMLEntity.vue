@@ -23,6 +23,7 @@ const props = defineProps<{
   onDelete?: (id: string) => void
   onDuplicate?: (entityOrData: any) => void
   onEmojiCreate?: (emoji: string, entity: EntityOfType<'html'>) => void
+  onSplit?: (entity: EntityOfType<'html'>) => void
   isSelected?: boolean
   editable?: boolean
   isEditing?: boolean
@@ -54,6 +55,9 @@ const handleColorChange = (backgroundColor: string) => {
     props.onUpdate(props.entity.id, { backgroundColor })
   }
 }
+
+// Handler for split (--- shortcut)
+const handleSplit = () => props.onSplit?.(props.entity)
 
 // Handler for when editing is cancelled
 const handleCancel = () => {
@@ -146,7 +150,7 @@ const handleEmojiSelect = (emoji: string) => {
         :on-change="handleContentChange" :on-cancel="handleCancel">
         <!-- Default content if no slot provided -->
         <component v-if="Editor" :is="Editor" :value="entity?.data.content" :onChange="handleContentChange"
-          :editable="isEditing && isEditable" @cancel="handleCancel" />
+          :editable="isEditing && isEditable" :onSplit="handleSplit" @cancel="handleCancel" />
       </slot>
     </div>
 
