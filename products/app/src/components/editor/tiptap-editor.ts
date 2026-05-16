@@ -2,6 +2,7 @@ import { StarterKit } from '@tiptap/starter-kit'
 import { Link } from '@tiptap/extension-link'
 import { CharacterCount } from '@tiptap/extension-character-count'
 import { Placeholder } from '@tiptap/extension-placeholder'
+import { Extension, InputRule } from '@tiptap/core'
 import type { Extensions } from '@tiptap/core'
 import { MAX_CHARACTER_COUNT } from '@nodenogg.in/core'
 // import { Document } from '@tiptap/extension-document'
@@ -17,10 +18,26 @@ import { MAX_CHARACTER_COUNT } from '@nodenogg.in/core'
 //   content: 'heading block*'
 // })
 
-export const extensions: Extensions = [
+const SplitNode = Extension.create<{ onSplit?: () => void }>({
+  name: 'splitNode',
+  addInputRules() {
+    return [
+      new InputRule({
+        find: /---$/,
+        handler: ({ commands, range }) => {
+          commands.deleteRange(range)
+          this.options.onSplit?.()
+        }
+      })
+    ]
+  }
+})
+
+export const createExtensions = (options: { onSplit?: () => void } = {}): Extensions => [
   // NodeDocument,
   StarterKit.configure({
     // document: false
+    horizontalRule: false
   }),
   Link.configure({
     HTMLAttributes: {
@@ -40,5 +57,6 @@ export const extensions: Extensions = [
       }
       return ''
     }
-  })
+  }),
+  SplitNode.configure({ onSplit: options.onSplit })
 ]
