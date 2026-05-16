@@ -115,7 +115,7 @@ const handleSplitEntity = async (entity: Entity) => {
   const dimensions = { width: entity.data.width || 300, height: entity.data.height || 200 }
   const position = findNonOverlappingPosition(preferredPosition, dimensions, entities.value)
 
-  await create({
+  const newEntity = await create({
     type: 'html',
     x: position.x,
     y: position.y,
@@ -123,6 +123,20 @@ const handleSplitEntity = async (entity: Entity) => {
     height: dimensions.height,
     content: ''
   })
+
+  if (newEntity) {
+    await nextTick()
+    setTimeout(() => {
+      const nodeElement = document.querySelector(`[data-entity-id="${newEntity.id}"]`)
+      if (nodeElement) {
+        nodeElement.scrollIntoView({ behavior: 'smooth', block: 'center' })
+        const editorElement = nodeElement.querySelector('.tiptap') as HTMLElement
+        if (editorElement) {
+          editorElement.focus()
+        }
+      }
+    }, 100)
+  }
 }
 
 const handleCreateEmoji = async () => {
