@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed, nextTick, ref } from 'vue'
 import { SpatialView, EmojiEntity, useSpatialSelection } from '@nodenogg.in/spatial-view'
 import HTMLEntity from '@/components/entity/HTMLEntity.vue'
 import { useCurrentMicrocosm } from '@/state'
@@ -290,8 +290,7 @@ const handleCreateNode = async () => {
   const nodeDimensions = { width: 200, height: 200 }
   const position = findNonOverlappingPosition(preferredPosition, nodeDimensions, entities.value)
 
-  // Create node at non-overlapping position
-  await create({
+  const newEntity = await create({
     type: 'html',
     x: position.x,
     y: position.y,
@@ -299,6 +298,15 @@ const handleCreateNode = async () => {
     height: nodeDimensions.height,
     content: ''
   })
+
+  if (newEntity?.id) {
+    startEditing(newEntity.id)
+    await nextTick()
+    setTimeout(() => {
+      const editorElement = document.querySelector(`.vue-flow__node[data-id="${newEntity.id}"] .tiptap`) as HTMLElement
+      editorElement?.focus()
+    }, 100)
+  }
 }
 
 // Handler for entity duplication with overlap prevention
@@ -384,6 +392,11 @@ const handleSplitEntity = async (entity: Entity) => {
 
   if (newEntity?.id) {
     startEditing(newEntity.id)
+    await nextTick()
+    setTimeout(() => {
+      const editorElement = document.querySelector(`.vue-flow__node[data-id="${newEntity.id}"] .tiptap`) as HTMLElement
+      editorElement?.focus()
+    }, 100)
   }
 }
 
