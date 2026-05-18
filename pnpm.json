@@ -22,8 +22,4 @@
     "npm-run-all2>minimatch": "^9.0.7",
     "@vue/language-core>minimatch": "^9.0.7"
   },
-  "patchedDependencies": {
-    "@figureland/kit@0.0.57": "patches/@figureland__kit@0.0.57.patch"
-  },
-  "allowUnusedPatches": true
 }
