@@ -3,9 +3,9 @@ import tseslint from 'typescript-eslint'
 import vuePlugin from 'eslint-plugin-vue'
 
 export default tseslint.config([
+  { ignores: ['dist', 'dist-ssr', 'coverage', '*.local'] },
   eslint.configs.recommended,
   {
-    root: true,
     plugins: {
       vue: vuePlugin
     },
