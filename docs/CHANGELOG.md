@@ -1,5 +1,33 @@
 # Changelog
 
+## v0.3.36
+
+[compare changes](https://github.com/thestrangetoolstore/nodenogg.in/compare/v0.3.35...v0.3.36)
+
+### 🚀 Features
+
+- **editor:** Add Tiptap extension for splitting nodes with '---' shortcut ([90bce7ff](https://github.com/thestrangetoolstore/nodenogg.in/commit/90bce7ff))
+- Node splitter text ([b209956d](https://github.com/thestrangetoolstore/nodenogg.in/commit/b209956d))
+
+### 🐛 Bug Fixes
+
+- Edited some of the join copy ([5a9708cf](https://github.com/thestrangetoolstore/nodenogg.in/commit/5a9708cf))
+- Focus when splitting in collect view ([3cc2c330](https://github.com/thestrangetoolstore/nodenogg.in/commit/3cc2c330))
+- Added focus in spatial view when adding nodes ([6d31b3c7](https://github.com/thestrangetoolstore/nodenogg.in/commit/6d31b3c7))
+- Sorted the focus for adding and splitting nodes ([afff9bee](https://github.com/thestrangetoolstore/nodenogg.in/commit/afff9bee))
+- Linting issues ([4c2e3882](https://github.com/thestrangetoolstore/nodenogg.in/commit/4c2e3882))
+- Undo linting changes ([20302b49](https://github.com/thestrangetoolstore/nodenogg.in/commit/20302b49))
+- Move patchedDependencies to pnpm-workspace.yaml for pnpm v11 ([d2ad9320](https://github.com/thestrangetoolstore/nodenogg.in/commit/d2ad9320))
+- Move all pnpm overrides to pnpm-workspace.yaml, fix audit vulnerabilities ([83ae9aa1](https://github.com/thestrangetoolstore/nodenogg.in/commit/83ae9aa1))
+
+### 🏠 Chore
+
+- Migrate to pnpm v11 and update lockfile ([358b4869](https://github.com/thestrangetoolstore/nodenogg.in/commit/358b4869))
+
+### ❤️ Contributors
+
+- Adam Procter ([@adamprocter](https://github.com/adamprocter))
+
 ## v0.3.35
 
 [compare changes](https://github.com/thestrangetoolstore/nodenogg.in/compare/v0.3.34...v0.3.35)
