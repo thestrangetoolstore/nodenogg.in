@@ -1,5 +1,17 @@
 # Changelog
 
+## v0.3.38
+
+[compare changes](https://github.com/thestrangetoolstore/nodenogg.in/compare/v0.3.37...v0.3.38)
+
+### 🐛 Bug Fixes
+
+- Cap vite override at <8.0.0 to prevent build breakage ([0d7202d6](https://github.com/thestrangetoolstore/nodenogg.in/commit/0d7202d6))
+
+### ❤️ Contributors
+
+- Adam Procter ([@adamprocter](https://github.com/adamprocter))
+
 ## v0.3.37
 
 [compare changes](https://github.com/thestrangetoolstore/nodenogg.in/compare/v0.3.35...v0.3.37)
