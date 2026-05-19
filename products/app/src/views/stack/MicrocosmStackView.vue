@@ -185,6 +185,41 @@ const handleCreateEntity = async () => {
   }
 }
 
+const handleSplitEntity = async (entity: Entity) => {
+  if (!EntitySchema.utils.isType(entity, 'html')) return
+
+  const preferredPosition = {
+    x: entity.data.x,
+    y: entity.data.y + (entity.data.height || 200) + 16
+  }
+
+  const dimensions = { width: entity.data.width || 300, height: entity.data.height || 200 }
+  const position = findNonOverlappingPosition(preferredPosition, dimensions, entities.value)
+
+  const newEntity = await create({
+    type: 'html',
+    x: position.x,
+    y: position.y,
+    width: dimensions.width,
+    height: dimensions.height,
+    content: ''
+  })
+
+  if (newEntity) {
+    await nextTick()
+    setTimeout(() => {
+      const nodeElement = document.querySelector(`[data-entity-id="${newEntity.id}"]`)
+      if (nodeElement) {
+        nodeElement.scrollIntoView({ behavior: 'smooth', block: 'center' })
+        const editorElement = nodeElement.querySelector('.tiptap') as HTMLElement
+        if (editorElement) {
+          editorElement.focus()
+        }
+      }
+    }, 100)
+  }
+}
+
 const handleDuplicateEntity = async (e: Entity) => {
   if (EntitySchema.utils.isType(e, 'html')) {
     const htmlData = e.data as Extract<Entity['data'], { type: 'html' }>
@@ -280,6 +315,7 @@ const onPointerUp = () => {
               :onDelete="() => deleteEntity(e)"
               :isEditing="isEditing(e.id)"
               :onDuplicate="() => handleDuplicateEntity(e)"
+              :onSplit="() => handleSplitEntity(e)"
               :onEmojiCreate="(emoji: string) => handleEmojiCreate(emoji, e)"
               :onEmojiDelete="(emojiEntity) => deleteEntity(emojiEntity)"
               :emojis="emojisByParent.get(e.id) || []"

@@ -18,6 +18,7 @@ const props = defineProps<{
     onChange: (update: EntityUpdate) => void
     onDelete: () => void
     onDuplicate: () => void
+    onSplit?: () => void
     entity: Entity
     isEditing: boolean
 }>()
@@ -45,7 +46,7 @@ const { isType } = EntitySchema.utils
     <div class="node" :style="`background-color: ${getColor(entity.data.backgroundColor || 'yellow')}`"
         v-if="isType(entity, 'html')" :class="{ 'is-editing': isEditing }" tabindex="0" :data-entity-id="entity.id">
         <Editor :value="entity.data.content" :onChange="content => onChange({ content })" :editable="isEditing"
-            @click="onStartEditing" @cancel="onStopEditing" />
+            :onSplit="onSplit" @click="onStartEditing" @cancel="onStopEditing" />
 
         <!-- Tag input section -->
         <TagInput :entity="entity" :onUpdate="handleTagUpdate" />

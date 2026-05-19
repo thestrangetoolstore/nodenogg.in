@@ -15,7 +15,7 @@ export const COPY = {
       actionText: 'Add'
     }
   },
-  
+
   buttons: {
     add: 'Add',
     delete: 'Delete',
@@ -23,7 +23,7 @@ export const COPY = {
     save: 'Save',
     cancel: 'Cancel'
   },
-  
+
   views: {
     collect: {
       title: 'Collect',
@@ -38,21 +38,21 @@ export const COPY = {
       description: 'Organize nodes by tags in columns'
     }
   },
-  
+
   footer: {
     madeBy: 'Made by the University of Southampton, Winchester School of Art'
   },
-  
+
   dialogs: {
     joinMicrocosm: {
-      buttonText: 'Join or Create Microcosm',
-      title: 'Join or Create Microcosm',
-      description: 'Enter a microcosm name and press enter to join or create',
+      buttonText: 'Join a Microcosm',
+      title: 'Join a Microcosm',
+      description: 'Enter a microcosm name and press enter to join',
       placeholder: 'Enter microcosm name...',
       instruction: 'Type a microcosm name to get started',
-      enterToCreate: 'create',
+      enterToCreate: 'join',
       enterToJoin: 'join',
-      keyLabel: 'Enter'
+      keyLabel: 'Enter ↵'
     }
   }
 } as const

@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
-import { SpatialView, EmojiEntity } from '@nodenogg.in/spatial-view'
+import { computed, nextTick, ref } from 'vue'
+import { SpatialView, EmojiEntity, useSpatialSelection } from '@nodenogg.in/spatial-view'
 import HTMLEntity from '@/components/entity/HTMLEntity.vue'
 import { useCurrentMicrocosm } from '@/state'
 import { EntitySchema, type Entity } from '@nodenogg.in/schema'
@@ -37,6 +37,7 @@ defineProps({
 // Use the unified entity operations API
 const microcosm = useCurrentMicrocosm()
 const { update, create, deleteEntity } = microcosm
+const { startEditing } = useSpatialSelection()
 
 const { entities } = storeToRefs(microcosm)
 
@@ -289,8 +290,7 @@ const handleCreateNode = async () => {
   const nodeDimensions = { width: 200, height: 200 }
   const position = findNonOverlappingPosition(preferredPosition, nodeDimensions, entities.value)
 
-  // Create node at non-overlapping position
-  await create({
+  const newEntity = await create({
     type: 'html',
     x: position.x,
     y: position.y,
@@ -298,6 +298,15 @@ const handleCreateNode = async () => {
     height: nodeDimensions.height,
     content: ''
   })
+
+  if (newEntity?.id) {
+    startEditing(newEntity.id)
+    await nextTick()
+    setTimeout(() => {
+      const editorElement = document.querySelector(`.vue-flow__node[data-id="${newEntity.id}"] .tiptap`) as HTMLElement
+      editorElement?.focus()
+    }, 100)
+  }
 }
 
 // Handler for entity duplication with overlap prevention
@@ -360,6 +369,37 @@ const handleDuplicateEntity = async (entityOrData: Entity | Entity['data']) => {
   }
 }
 
+// Handler for split node (--- shortcut) from HTMLEntity
+const handleSplitEntity = async (entity: Entity) => {
+  if (!EntitySchema.utils.isType(entity, 'html')) return
+
+  const preferredPosition = {
+    x: entity.data.x,
+    y: entity.data.y + (entity.data.height || 200) + 16
+  }
+
+  const dimensions = { width: entity.data.width || 200, height: entity.data.height || 200 }
+  const position = findNonOverlappingPosition(preferredPosition, dimensions, entities.value)
+
+  const newEntity = await create({
+    type: 'html',
+    x: position.x,
+    y: position.y,
+    width: dimensions.width,
+    height: dimensions.height,
+    content: ''
+  })
+
+  if (newEntity?.id) {
+    startEditing(newEntity.id)
+    await nextTick()
+    setTimeout(() => {
+      const editorElement = document.querySelector(`.vue-flow__node[data-id="${newEntity.id}"] .tiptap`) as HTMLElement
+      editorElement?.focus()
+    }, 100)
+  }
+}
+
 // Handler for emoji creation from HTMLEntity dropdown
 const handleEmojiCreateFromEntity = (emoji: string, entity: Entity) => {
   if (EntitySchema.utils.isType(entity, 'html')) {
@@ -397,8 +437,8 @@ const handleEmojiCreateFromEntity = (emoji: string, entity: Entity) => {
   <ViewContainer>
     <div class="spatial-canvas">
       <SpatialView :view_id="view_id" :ui="ui" :nodes="positionedNodes" :HTMLEntity="HTMLEntity" :Editor="Editor"
-        :onUpdate="update" :onDelete="deleteEntity" :onDuplicate="handleDuplicateEntity" :editable="true"
-        :current-user-identity-id="currentIdentity?.id" :zoom-controls="true"
+        :onUpdate="update" :onDelete="deleteEntity" :onDuplicate="handleDuplicateEntity" :onSplit="handleSplitEntity"
+        :editable="true" :current-user-identity-id="currentIdentity?.id" :zoom-controls="true"
         :on-emoji-create="handleEmojiCreateFromEntity" @nodes-change="handleNodeChange">
         <template #node-resizable="resizableNodeProps">
           <!-- HTML entities with resizable handles will now use the app's HTMLEntity -->

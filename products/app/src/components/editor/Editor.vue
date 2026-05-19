@@ -3,7 +3,7 @@ import { type PropType, ref, watch, computed, nextTick } from 'vue'
 import { FocusTrap } from 'focus-trap-vue'
 import { useEditor, EditorContent } from '@tiptap/vue-3'
 import Scrollable from './Scrollable.vue'
-import { extensions } from './tiptap-editor'
+import { createExtensions } from './tiptap-editor'
 import { MAX_CHARACTER_COUNT } from '@nodenogg.in/core'
 
 const props = defineProps({
@@ -24,6 +24,9 @@ const props = defineProps({
   editable: {
     type: Boolean,
     default: false
+  },
+  onSplit: {
+    type: Function as PropType<() => void>
   }
 })
 
@@ -34,9 +37,11 @@ const focusActive = ref(false)
 const isInitialized = ref(false)
 const lastEmittedContent = ref(props.value)
 
+const handleSplit = () => props.onSplit?.()
+
 const editor = useEditor({
   editable: props.editable,
-  extensions,
+  extensions: createExtensions({ onSplit: handleSplit }),
   injectCSS: false,
   content: props.value,
   onCreate: () => {

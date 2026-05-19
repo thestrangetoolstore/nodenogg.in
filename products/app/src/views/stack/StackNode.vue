@@ -21,6 +21,7 @@ const props = defineProps<{
     onChange: (update: EntityUpdate) => void
     onDelete: () => void
     onDuplicate: () => void
+    onSplit?: () => void
     onEmojiCreate: (emoji: string) => void
     onEmojiDelete: (emoji: EntityOfType<'emoji'>) => void
     entity: Entity
@@ -63,7 +64,7 @@ const { isType } = EntitySchema.utils
         <div class="node" :style="`background-color: ${getColor(entity.data.backgroundColor || 'yellow', isOwner ? 50 : 50)}`"
             :class="{ 'is-editing': isEditing, 'read-only': !isOwner }" tabindex="0" :data-entity-id="entity.id">
             <Editor :value="entity.data.content" :onChange="content => onChange({ content })" :editable="isEditing && isOwner"
-                @click="onStartEditing" @cancel="onStopEditing" />
+                :onSplit="onSplit" @click="onStartEditing" @cancel="onStopEditing" />
 
             <!-- Tag input section - only for owners -->
             <TagInput v-if="isOwner" :entity="entity" :onUpdate="handleTagUpdate" />
