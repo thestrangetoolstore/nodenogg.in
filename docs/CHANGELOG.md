@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.3.40
+
+[compare changes](https://github.com/thestrangetoolstore/nodenogg.in/compare/v0.3.39...v0.3.40)
+
 ## v0.3.39
 
 [compare changes](https://github.com/thestrangetoolstore/nodenogg.in/compare/v0.3.38...v0.3.39)
