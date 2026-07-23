@@ -1,5 +1,17 @@
 # Changelog
 
+## v0.3.41
+
+[compare changes](https://github.com/thestrangetoolstore/nodenogg.in/compare/v0.3.40...v0.3.41)
+
+### 🐛 Bug Fixes
+
+- Delete was not working in spatial view ([3fcd9bba](https://github.com/thestrangetoolstore/nodenogg.in/commit/3fcd9bba))
+
+### ❤️ Contributors
+
+- Adam Procter ([@adamprocter](https://github.com/adamprocter))
+
 ## v0.3.40
 
 [compare changes](https://github.com/thestrangetoolstore/nodenogg.in/compare/v0.3.39...v0.3.40)
