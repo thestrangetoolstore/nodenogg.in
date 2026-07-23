@@ -20,7 +20,7 @@ const props = defineProps<{
   entity: EntityOfType<'html'>
   Editor?: any
   onUpdate?: (id: string, data: any) => void
-  onDelete?: (id: string) => void
+  onDelete?: (entity: EntityOfType<'html'>) => void
   onDuplicate?: (entityOrData: any) => void
   onEmojiCreate?: (emoji: string, entity: EntityOfType<'html'>) => void
   onSplit?: (entity: EntityOfType<'html'>) => void
@@ -110,7 +110,7 @@ const handleWheel = (event: WheelEvent) => {
 // Handler functions for dropdown menu actions
 const handleDelete = () => {
   if (props.onDelete && props.entity) {
-    props.onDelete(props.entity.id)
+    props.onDelete(props.entity)
   }
 }
 
