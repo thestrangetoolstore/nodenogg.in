@@ -55,7 +55,7 @@ export const createExtensions = (options: { onSplit?: () => void } = {}): Extens
       if (node.type.name === 'heading') {
         return 'Heading'
       }
-      return ''
+      return 'Type here'
     }
   }),
   SplitNode.configure({ onSplit: options.onSplit })

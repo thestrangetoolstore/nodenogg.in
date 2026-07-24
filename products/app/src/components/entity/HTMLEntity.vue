@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import {
   DropdownMenuRoot,
   DropdownMenuTrigger,
@@ -12,9 +12,12 @@ import Icon from '@/components/icon/Icon.vue'
 import ColorSelector from '@/components/color-selector/ColorSelector.vue'
 import EmojiSelector from '@/components/emoji-selector/EmojiSelector.vue'
 import TagInput from '@/components/tags/TagInput.vue'
+import EditorFooter from '@/components/editor/EditorFooter.vue'
 import type { EntityOfType } from '@nodenogg.in/schema'
 import { getColor } from '@/utils/color'
 import { NodeResizer } from '@nodenogg.in/spatial-view'
+
+const editorInstance = ref<{ characterCount: number; maxCharacterCount: number; showSaved: boolean } | null>(null)
 
 const props = defineProps<{
   entity: EntityOfType<'html'>
@@ -149,13 +152,17 @@ const handleEmojiSelect = (emoji: string) => {
       <slot name="content" :entity="entity" :is-editing="isEditing" :is-editable="isEditable"
         :on-change="handleContentChange" :on-cancel="handleCancel">
         <!-- Default content if no slot provided -->
-        <component v-if="Editor" :is="Editor" :value="entity?.data.content" :onChange="handleContentChange"
-          :editable="isEditing && isEditable" :onSplit="handleSplit" @cancel="handleCancel" />
+        <component v-if="Editor" ref="editorInstance" :is="Editor" :value="entity?.data.content"
+          :onChange="handleContentChange" :editable="isEditing && isEditable" :onSplit="handleSplit"
+          @cancel="handleCancel" />
       </slot>
     </div>
 
     <!-- Tag input section - only for owners -->
     <TagInput v-if="isOwner && onUpdate" :entity="entity" :onUpdate="onUpdate" :disabled="!isEditable" />
+
+    <EditorFooter v-if="isEditing && isEditable && editorInstance" :character-count="editorInstance.characterCount"
+      :max-character-count="editorInstance.maxCharacterCount" :show-saved="editorInstance.showSaved" />
 
     <!-- Menu trigger slot with default implementation - show for all entities -->
     <DropdownMenuRoot :modal="true">

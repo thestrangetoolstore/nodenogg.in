@@ -7,15 +7,18 @@ import {
     DropdownMenuItem,
     DropdownMenuSeparator
 } from 'reka-ui'
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import { client } from '@/state'
 import Editor from '@/components/editor/Editor.vue'
 import Icon from '@/components/icon/Icon.vue'
 import TagInput from '@/components/tags/TagInput.vue'
+import EditorFooter from '@/components/editor/EditorFooter.vue'
 import { EntitySchema, type Entity, type EntityUpdate, type EntityOfType } from '@nodenogg.in/schema'
 import ColorSelector from '@/components/color-selector/ColorSelector.vue'
 import EmojiSelector from '@/components/emoji-selector/EmojiSelector.vue'
 import { getColor } from '@/utils/color'
+
+const editorInstance = ref<InstanceType<typeof Editor> | null>(null)
 
 const props = defineProps<{
     onChange: (update: EntityUpdate) => void
@@ -63,11 +66,14 @@ const { isType } = EntitySchema.utils
     <div class="stack-node-wrapper" v-if="isType(entity, 'html')">
         <div class="node" :style="`background-color: ${getColor(entity.data.backgroundColor || 'yellow', isOwner ? 50 : 50)}`"
             :class="{ 'is-editing': isEditing, 'read-only': !isOwner }" tabindex="0" :data-entity-id="entity.id">
-            <Editor :value="entity.data.content" :onChange="content => onChange({ content })" :editable="isEditing && isOwner"
-                :onSplit="onSplit" @click="onStartEditing" @cancel="onStopEditing" />
+            <Editor ref="editorInstance" :value="entity.data.content" :onChange="content => onChange({ content })"
+                :editable="isEditing && isOwner" :onSplit="onSplit" @click="onStartEditing" @cancel="onStopEditing" />
 
             <!-- Tag input section - only for owners -->
             <TagInput v-if="isOwner" :entity="entity" :onUpdate="handleTagUpdate" />
+
+            <EditorFooter v-if="isEditing && isOwner && editorInstance" :character-count="editorInstance.characterCount"
+                :max-character-count="editorInstance.maxCharacterCount" :show-saved="editorInstance.showSaved" />
 
             <DropdownMenuRoot :modal="true">
                 <DropdownMenuTrigger class="node-menu-trigger">
