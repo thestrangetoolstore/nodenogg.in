@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { type PropType, ref, watch, computed, nextTick } from 'vue'
+import { type PropType, ref, watch, computed, nextTick, onBeforeUnmount } from 'vue'
 import { FocusTrap } from 'focus-trap-vue'
 import { useEditor, EditorContent } from '@tiptap/vue-3'
 import Scrollable from './Scrollable.vue'
@@ -36,6 +36,33 @@ const emit = defineEmits(['cancel', 'click'])
 const focusActive = ref(false)
 const isInitialized = ref(false)
 const lastEmittedContent = ref(props.value)
+const characterCount = ref(0)
+
+// Shows a brief "saved" tick after the user pauses typing, since content
+// syncs instantly and there's no explicit submit action to confirm it.
+const SAVED_INDICATOR_DELAY = 600
+const SAVED_INDICATOR_DURATION = 1400
+const showSaved = ref(false)
+let savedShowTimer: ReturnType<typeof setTimeout> | undefined
+let savedHideTimer: ReturnType<typeof setTimeout> | undefined
+
+const scheduleSavedIndicator = () => {
+  clearTimeout(savedShowTimer)
+  clearTimeout(savedHideTimer)
+  showSaved.value = false
+
+  savedShowTimer = setTimeout(() => {
+    showSaved.value = true
+    savedHideTimer = setTimeout(() => {
+      showSaved.value = false
+    }, SAVED_INDICATOR_DURATION)
+  }, SAVED_INDICATOR_DELAY)
+}
+
+onBeforeUnmount(() => {
+  clearTimeout(savedShowTimer)
+  clearTimeout(savedHideTimer)
+})
 
 const handleSplit = () => props.onSplit?.()
 
@@ -48,15 +75,21 @@ const editor = useEditor({
     nextTick(() => {
       isInitialized.value = true
       lastEmittedContent.value = editor.value?.getHTML() || ''
+      characterCount.value = editor.value?.storage.characterCount.characters() ?? 0
     })
   },
   onUpdate: ({ editor }) => {
     if (!isInitialized.value) return
 
+    characterCount.value = editor.storage.characterCount.characters()
+
     const html = editor.getHTML()
     if (html !== lastEmittedContent.value) {
       lastEmittedContent.value = html
       props.onChange(html)
+      if (props.editable) {
+        scheduleSavedIndicator()
+      }
     }
   },
   onBlur: () => {
@@ -92,7 +125,14 @@ watch(() => props.value, (newValue) => {
   if (newValue !== currentContent && newValue !== lastEmittedContent.value) {
     lastEmittedContent.value = newValue
     editor.value.commands.setContent(newValue, { emitUpdate: false })
+    characterCount.value = editor.value.storage.characterCount.characters()
   }
+})
+
+defineExpose({
+  characterCount,
+  maxCharacterCount: MAX_CHARACTER_COUNT,
+  showSaved
 })
 
 // Handle editable state changes
@@ -116,9 +156,6 @@ watch(() => props.editable, (newValue) => {
         <!-- <EditorMenu :editor="editor" v-if="editor" :blur="onBlur" /> -->
         <Scrollable :scroll="scroll">
           <editor-content :editor="editor" class="tiptap-wrapper" />
-          <span class="character-count" v-if="editable"> {{ editor.storage.characterCount.characters() }} / {{
-            MAX_CHARACTER_COUNT }}
-          </span>
         </Scrollable>
       </template>
     </div>
@@ -132,15 +169,6 @@ watch(() => props.editable, (newValue) => {
   border: 2px solid transparent;
   border-radius: var(--ui-radius);
   transition: border-color 0.2s ease;
-}
-
-.character-count {
-  position: absolute;
-  bottom: var(--size-8);
-  left: var(--size-12);
-  pointer-events: none;
-  font-size: 0.75em;
-  opacity: 0.5;
 }
 
 .wrapper.is-active {

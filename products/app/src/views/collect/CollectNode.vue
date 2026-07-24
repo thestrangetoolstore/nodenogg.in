@@ -7,12 +7,16 @@ import {
     DropdownMenuItem,
     DropdownMenuSeparator
 } from 'reka-ui'
+import { ref } from 'vue'
 import Editor from '@/components/editor/Editor.vue'
 import Icon from '@/components/icon/Icon.vue'
 import TagInput from '@/components/tags/TagInput.vue'
+import EditorFooter from '@/components/editor/EditorFooter.vue'
 import { EntitySchema, type Entity, type EntityUpdate } from '@nodenogg.in/schema'
 import ColorSelector from '@/components/color-selector/ColorSelector.vue'
 import { getColor } from '@/utils/color'
+
+const editorInstance = ref<InstanceType<typeof Editor> | null>(null)
 
 const props = defineProps<{
     onChange: (update: EntityUpdate) => void
@@ -45,11 +49,14 @@ const { isType } = EntitySchema.utils
 <template>
     <div class="node" :style="`background-color: ${getColor(entity.data.backgroundColor || 'yellow')}`"
         v-if="isType(entity, 'html')" :class="{ 'is-editing': isEditing }" tabindex="0" :data-entity-id="entity.id">
-        <Editor :value="entity.data.content" :onChange="content => onChange({ content })" :editable="isEditing"
-            :onSplit="onSplit" @click="onStartEditing" @cancel="onStopEditing" />
+        <Editor ref="editorInstance" :value="entity.data.content" :onChange="content => onChange({ content })"
+            :editable="isEditing" :onSplit="onSplit" @click="onStartEditing" @cancel="onStopEditing" />
 
         <!-- Tag input section -->
         <TagInput :entity="entity" :onUpdate="handleTagUpdate" />
+
+        <EditorFooter v-if="isEditing && editorInstance" :character-count="editorInstance.characterCount"
+            :max-character-count="editorInstance.maxCharacterCount" :show-saved="editorInstance.showSaved" />
 
         <DropdownMenuRoot :modal="true">
             <DropdownMenuTrigger class="node-menu-trigger">
