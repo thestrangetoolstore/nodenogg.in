@@ -18,12 +18,12 @@ patchedDependencies:
 allowUnusedPatches: true
 
 overrides:
-  esbuild: '>=0.25.8'
-  vite: '>=6.4.2 <8.0.0'
+  esbuild: '>=0.28.1'
+  vite: '>=7.3.5 <8.0.0'
   glob: '>=10.5.0'
-  js-yaml: '>=4.1.1'
+  js-yaml: '>=4.3.0'
   preact: '>=10.27.3'
-  '@isaacs/brace-expansion': '>=5.0.1'
+  brace-expansion: '>=5.0.7'
   mdast-util-to-hast: '>=13.2.1'
   markdown-it: '>=14.1.1'
   'vite>rollup': '^4.59.0'
@@ -40,3 +40,10 @@ overrides:
   '@rollup/plugin-terser>serialize-javascript': '^7.0.3'
   'npm-run-all2>minimatch': '^9.0.7'
   '@vue/language-core>minimatch': '^9.0.7'
+  ws: '>=8.21.0'
+  'npm-run-all2>shell-quote': '>=1.8.5'
+  'ajv>fast-uri': '>=3.1.4'
+  '@babel/core': '>=7.29.1'
+
+minimumReleaseAgeExclude:
+  - hono@4.12.32
