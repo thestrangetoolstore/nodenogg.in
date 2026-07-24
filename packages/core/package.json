@@ -1,6 +1,6 @@
 {
   "name": "@nodenogg.in/core",
-  "version": "0.3.41",
+  "version": "0.3.42",
   "type": "module",
   "main": "./src/index.ts",
   "types": "./src/index.ts",

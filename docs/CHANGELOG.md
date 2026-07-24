@@ -1,5 +1,21 @@
 # Changelog
 
+## v0.3.42
+
+[compare changes](https://github.com/thestrangetoolstore/nodenogg.in/compare/v0.3.41...v0.3.42)
+
+### 🚀 Features
+
+- Added "saved" indictor and css changes to improve UX ([eff871c1](https://github.com/thestrangetoolstore/nodenogg.in/commit/eff871c1))
+
+### 🏠 Chore
+
+- Updated dependancies ([2073d430](https://github.com/thestrangetoolstore/nodenogg.in/commit/2073d430))
+
+### ❤️ Contributors
+
+- Adam Procter ([@adamprocter](https://github.com/adamprocter))
+
 ## v0.3.41
 
 [compare changes](https://github.com/thestrangetoolstore/nodenogg.in/compare/v0.3.40...v0.3.41)
