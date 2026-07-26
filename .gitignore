@@ -24,3 +24,11 @@ docs/.vitepress/dist
 docs/.vitepress/cache
 
 docs/guide/.Ulysses-Settings.plist
+
+# Claude Code local config (may contain machine-specific settings, tokens, or personal data)
+.claude/
+.claude.json
+.claude.json.backup
+.mcp.json
+.mcp.json.local
+CLAUDE.local.md
