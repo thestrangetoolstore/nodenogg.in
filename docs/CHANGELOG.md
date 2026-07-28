@@ -1,5 +1,19 @@
 # Changelog
 
+## v0.3.43
+
+[compare changes](https://github.com/thestrangetoolstore/nodenogg.in/compare/v0.3.42...v0.3.43)
+
+### 🐛 Bug Fixes
+
+- Updated gitignore to ensure claude files are excluded ([5182b771](https://github.com/thestrangetoolstore/nodenogg.in/commit/5182b771))
+- Removed a potential slient clash of export files having same names ([65255fcd](https://github.com/thestrangetoolstore/nodenogg.in/commit/65255fcd))
+- Security updates ([29a05180](https://github.com/thestrangetoolstore/nodenogg.in/commit/29a05180))
+
+### ❤️ Contributors
+
+- Adam Procter ([@adamprocter](https://github.com/adamprocter))
+
 ## v0.3.42
 
 [compare changes](https://github.com/thestrangetoolstore/nodenogg.in/compare/v0.3.41...v0.3.42)
