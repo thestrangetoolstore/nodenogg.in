@@ -46,6 +46,33 @@ function createFilename(entity: Entity, index: number): string {
 }
 
 /**
+ * Ensures a filename is unique within the export by appending a numeric
+ * suffix (e.g. "-2", "-3") before the extension when it collides with a
+ * filename already used, so entities with the same first line don't
+ * overwrite each other in the zip.
+ */
+function ensureUniqueFilename(filename: string, usedFilenames: Set<string>): string {
+  if (!usedFilenames.has(filename)) {
+    usedFilenames.add(filename)
+    return filename
+  }
+
+  const extensionIndex = filename.lastIndexOf('.')
+  const base = extensionIndex === -1 ? filename : filename.slice(0, extensionIndex)
+  const extension = extensionIndex === -1 ? '' : filename.slice(extensionIndex)
+
+  let suffix = 2
+  let candidate = `${base}-${suffix}${extension}`
+  while (usedFilenames.has(candidate)) {
+    suffix++
+    candidate = `${base}-${suffix}${extension}`
+  }
+
+  usedFilenames.add(candidate)
+  return candidate
+}
+
+/**
  * Converts a Unicode character to RTF Unicode escape sequence
  */
 function unicodeToRtf(char: string): string {
@@ -408,6 +435,7 @@ export async function exportMicrocosmEntitiesAsRtf(
   })
 
   // Second pass: export entities with their related emojis
+  const usedFilenames = new Set<string>()
   for (const entity of allEntities) {
     try {
       // Skip emojis that have a parent (they'll be included with their parent)
@@ -421,11 +449,11 @@ export async function exportMicrocosmEntitiesAsRtf(
       if (entity.data.type === 'html') {
         // Include related emojis for HTML entities
         const relatedEmojis = emojiMap.get(entity.id) || []
-        filename = createFilename(entity, index)
+        filename = ensureUniqueFilename(createFilename(entity, index), usedFilenames)
         content = entityToRtf(entity, entity.identity_id, relatedEmojis)
       } else {
         // For other entity types (standalone emojis, connections)
-        filename = createFilename(entity, index)
+        filename = ensureUniqueFilename(createFilename(entity, index), usedFilenames)
         content = entityToRtf(entity, entity.identity_id)
       }
 
