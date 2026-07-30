@@ -1,6 +1,6 @@
 {
   "name": "@nodenogg.in/schema",
-  "version": "0.3.43",
+  "version": "0.3.44",
   "type": "module",
   "main": "./src/index.ts",
   "types": "./src/index.ts",

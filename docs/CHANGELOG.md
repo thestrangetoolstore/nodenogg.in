@@ -1,5 +1,17 @@
 # Changelog
 
+## v0.3.44
+
+[compare changes](https://github.com/thestrangetoolstore/nodenogg.in/compare/v0.3.43...v0.3.44)
+
+### 🐛 Bug Fixes
+
+- Edited view order to have collect as first option ([f4ffdc0a](https://github.com/thestrangetoolstore/nodenogg.in/commit/f4ffdc0a))
+
+### ❤️ Contributors
+
+- Adam Procter ([@adamprocter](https://github.com/adamprocter))
+
 ## v0.3.43
 
 [compare changes](https://github.com/thestrangetoolstore/nodenogg.in/compare/v0.3.42...v0.3.43)
