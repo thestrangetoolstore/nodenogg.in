@@ -169,17 +169,22 @@ export function findNonOverlappingPosition(
   }
 
   // Last resort: return a position that's guaranteed to be away from existing nodes
-  return findFallbackPosition(preferredPosition, dimensions, existingEntities)
+  return findFallbackPosition(preferredPosition, dimensions, existingEntities, searchRadius, gridSize)
 }
 
 /**
  * Generate positions in a circle around a center point
  */
-function generateCirclePositions(center: NodePosition, radius: number, count: number): NodePosition[] {
+function generateCirclePositions(
+  center: NodePosition,
+  radius: number,
+  count: number,
+  startAngle = 0
+): NodePosition[] {
   const positions: NodePosition[] = []
 
   for (let i = 0; i < count; i++) {
-    const angle = (i / count) * 2 * Math.PI
+    const angle = startAngle + (i / count) * 2 * Math.PI
     positions.push({
       x: center.x + Math.cos(angle) * radius,
       y: center.y + Math.sin(angle) * radius
@@ -189,35 +194,44 @@ function generateCirclePositions(center: NodePosition, radius: number, count: nu
   return positions
 }
 
+// Rotates each ring's starting angle so no single direction is always tried first
+const GOLDEN_ANGLE = Math.PI * (3 - Math.sqrt(5))
+
 /**
- * Find a fallback position when all else fails
+ * Find a fallback position when all else fails by continuing to spiral
+ * outward from the preferred position until a free spot is found.
+ * Nodes therefore fill in around where they were requested rather than
+ * being pushed off to one side of the canvas.
  */
 function findFallbackPosition(
   preferredPosition: NodePosition,
   dimensions: { width: number; height: number },
-  existingEntities: Entity[]
+  existingEntities: Entity[],
+  startRadius: number,
+  gridSize: number,
+  maxRings = 100
 ): NodePosition {
-  // Find the rightmost node and place the new node to its right
-  let rightmostX = preferredPosition.x
+  // Step by roughly half the node size: fine enough to find gaps,
+  // coarse enough to stay cheap at large radii
+  const step = Math.max(gridSize, Math.min(dimensions.width, dimensions.height) / 2)
 
-  existingEntities.forEach(entity => {
-    if (EntitySchema.utils.isType(entity, 'html')) {
-      const bounds = getNodeBounds(entity)
-      rightmostX = Math.max(rightmostX, bounds.x + bounds.width)
-    }
+  let radius = startRadius
+  for (let ring = 0; ring < maxRings; ring++) {
+    radius += step
+    const count = Math.max(8, Math.ceil((2 * Math.PI * radius) / step))
+    const positions = generateCirclePositions(preferredPosition, radius, count, ring * GOLDEN_ANGLE)
 
-    if (EntitySchema.utils.isType(entity, 'emoji')) {
-      const emojiData = entity.data as Extract<Entity['data'], { type: 'emoji' }>
-      if (!emojiData.parentNodeId) {
-        const bounds = getNodeBounds(entity)
-        rightmostX = Math.max(rightmostX, bounds.x + bounds.width)
+    for (const position of positions) {
+      if (!wouldOverlap(position, dimensions, existingEntities)) {
+        return position
       }
     }
-  })
+  }
 
+  // Extremely crowded canvas: place just beyond the outermost ring searched
   return {
-    x: rightmostX + 50, // 50px gap
-    y: preferredPosition.y
+    x: preferredPosition.x,
+    y: preferredPosition.y + radius + step
   }
 }
 
