@@ -1,5 +1,17 @@
 # Changelog
 
+## v0.3.45
+
+[compare changes](https://github.com/thestrangetoolstore/nodenogg.in/compare/v0.3.44...v0.3.45)
+
+### 🐛 Bug Fixes
+
+- Edited the way nodes are placed to stop them all moving right ([d90d7a6e](https://github.com/thestrangetoolstore/nodenogg.in/commit/d90d7a6e))
+
+### ❤️ Contributors
+
+- Adam Procter <adam.procter@soton.ac.uk>
+
 ## v0.3.44
 
 [compare changes](https://github.com/thestrangetoolstore/nodenogg.in/compare/v0.3.43...v0.3.44)
